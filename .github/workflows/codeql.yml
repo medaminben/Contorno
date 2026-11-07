@@ -1,0 +1,24 @@
+name: CodeQL
+
+on:
+  push:
+    branches: [main, Beta]
+  pull_request:
+  schedule:
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  codeql:
+    uses: medaminben/buildkit/.github/workflows/codeql.yml@v2.0.0
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    with:
+      preset: ci
+      apt-packages: "libwxgtk3.2-dev libopencv-dev gettext python3-venv"
