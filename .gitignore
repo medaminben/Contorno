@@ -1,0 +1,25 @@
+# Build trees
+build/
+build-*/
+# Machine specific presets (local paths)
+CMakeUserPresets.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Editors
+.vscode/
+.idea/
+.cache/
+
+# Claude Code (local skills/settings), Cursor
+.claude/
+.cursor/
+
+# Working documents: specs, plans, experiments (local only)
+docs/superpowers/
+
+# Brainstorming mockups (superpowers visual companion)
+.superpowers/

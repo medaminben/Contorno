@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>المرجع — Contorno Indicator</title>
+<meta name="description" content="الصيغ والنطاقات والدقة والملفات والإعدادات.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>دليل الاستخدام</small></a>
+  <nav class="langs" aria-label="اللغة"><a href="../en/reference.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/reference.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/reference.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/reference.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/reference.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/reference.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/reference.html" lang="ar" title="العربية" aria-current="true"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="المحتويات">
+    <h2>المحتويات</h2>
+    <ol><li><a href="index.html">الرئيسية</a></li><li><a href="getting-started.html">البدء</a></li><li><a href="set-up.html">الإعداد</a></li><li><a href="measure.html">قياس جلد</a></li><li><a href="camera.html">من أين يأتي المقياس</a></li><li><a href="inspections.html">حفظ الفحوص وفتحها</a></li><li><a href="messages.html">الرسائل والمشكلات</a></li><li><a href="reference.html" aria-current="page">المرجع</a></li></ol>
+  </nav>
+  <main>
+    <h1>المرجع</h1>
+    <p class="summary">الصيغ والنطاقات والدقة والملفات والإعدادات.</p>
+    <h2 id="formulas">الصيغ</h2>
+<div class="formula"><p>المقياس بالعرض (mm/px) = المسافة × عرض البكسل ÷ البعد البؤري</p><p>المقياس بالطول (mm/px) = المسافة × ارتفاع البكسل ÷ البعد البؤري</p><p>حجم البكسل (وضع حجم المستشعر) = الضلع الأطول للمستشعر ÷ الضلع الأطول للصورة (px)</p><p>المساحة (mm²) = البكسلات داخل الحدّ × المقياس بالعرض × المقياس بالطول</p></div>
+<p>الحدّ المرسوم والمحفوظ مبسَّط ضمن <bdi dir="ltr">0.5 mm</bdi> من حافة البكسلات؛ أما المساحة المعروضة فتُحسب على البكسلات نفسها، فهي تساوي بياض القناع.</p>
+<h2 id="ranges">النطاقات</h2>
+<table><thead><tr><th>القيمة</th><th>النطاق</th><th>الافتراضي</th></tr></thead><tbody><tr><td>المسافة إلى الطاولة</td><td><bdi dir="ltr">1–100000 mm</bdi></td><td><bdi dir="ltr">1500 mm</bdi></td></tr><tr><td>البعد البؤري</td><td><bdi dir="ltr">0.1–2000 mm</bdi></td><td><bdi dir="ltr">13.02 mm</bdi></td></tr><tr><td>عرض المستشعر × ارتفاعه</td><td><bdi dir="ltr">0.1–100 mm</bdi> لكلٍّ منهما</td><td><bdi dir="ltr">15.04 × 11.28 mm</bdi></td></tr><tr><td>عرض البكسل × ارتفاعه</td><td><bdi dir="ltr">0.1–100 µm</bdi> لكلٍّ منهما</td><td><bdi dir="ltr">3.76 × 3.76 µm</bdi></td></tr><tr><td>أصغر جسم أو ثقب يُحتفظ به</td><td>الإعداد objects/min_area_mm2</td><td><bdi dir="ltr">100 mm²</bdi></td></tr></tbody></table>
+<h2 id="accuracy">الدقة</h2>
+<p>تزداد المساحة بمربع المقياس، لذا يُحسب الخطأ النسبي في المسافة أو البعد البؤري أو حجم البكسل مرتين:</p>
+<table><thead><tr><th>الخطأ في</th><th>الخطأ في المساحة</th></tr></thead><tbody><tr><td>المسافة <bdi dir="ltr">+1 %</bdi> (<bdi dir="ltr">15 mm</bdi> عند <bdi dir="ltr">1500 mm</bdi>)</td><td><bdi dir="ltr">+2 %</bdi></td></tr><tr><td>البعد البؤري <bdi dir="ltr">+1 %</bdi></td><td><bdi dir="ltr">−2 %</bdi></td></tr><tr><td>ميل الكاميرا بزاوية <bdi dir="ltr">2°</bdi>، والجلد في الوسط</td><td>أقل من <bdi dir="ltr">0.1 %</bdi></td></tr><tr><td>ميل الكاميرا بزاوية <bdi dir="ltr">2°</bdi>، والجلد على بُعد <bdi dir="ltr">300 mm</bdi> من الوسط</td><td>نحو <bdi dir="ltr">1.4 %</bdi></td></tr><tr><td>الحدّ أبعد ببكسل واحد إلى الخارج، جلد <bdi dir="ltr">2 m²</bdi> عند <bdi dir="ltr">1.4 mm/px</bdi></td><td>نحو <bdi dir="ltr">+0.5 %</bdi></td></tr><tr><td>عدسة مضبوطة البؤرة على الطاولة (<bdi dir="ltr">13 mm</bdi> عند <bdi dir="ltr">1500 mm</bdi>)</td><td>نحو <bdi dir="ltr">+1.7 %</bdi></td></tr></tbody></table>
+<p>تُعامَل الكاميرا كثقب إبرة. العدسة الحقيقية المضبوطة البؤرة على الطاولة تجعل المقياس أكبر بنحو البعد البؤري ÷ المسافة؛ والتحقق بجسم معروف (انظر <a href="measure.html#check">قياس جلد</a>) يزيل ذلك مع أي خطأ في المسافة. لا يُصحَّح تشوّه العدسة، والمساحة هي إسقاط الجلد على الطاولة. أبقِ الجلد في وسط الصورة، حيث يكون تشوّه أغلب العدسات أصغر ما يمكن.</p>
+<h2 id="article">المقال</h2>
+<p>كيف يُعثر على الحدّ، وكيف تُستنتج المساحة من الكاميرا، وكيف اختُبر كلاهما، وما مقدار عدم اليقين: انظر المقال <a href="../../articles/contorno-area-measurement/contorno-area-measurement.html">Measuring the surface of animal hides from a single photograph</a> (بالإنجليزية).</p>
+<h2 id="files">الملفات</h2>
+<ul><li>الصور: JPEG وPNG وBMP وTIFF. تُقرأ بيانات الكاميرا من JPEG وTIFF.</li><li>الفحوص: zip؛ انظر <a href="inspections.html#save">حفظ الفحوص وفتحها</a>.</li><li>الإعدادات: indicator.ini، في مجلد إعدادات البرنامج (في لينكس ~/.config/Contorno/Indicator/).</li></ul>
+<h2 id="settings">الإعدادات المحفوظة</h2>
+<p>تُحفظ بين الجلسات كاميرا <span class="ui">إعداد</span> واللغة والسمة وآخر مجلد وأصغر مساحة. ليس لأصغر مساحة حقل في النافذة؛ ويمكن تغييرها في indicator.ini (objects/min_area_mm2، وهي إحدى القيم <bdi dir="ltr">0</bdi> و10 و50 و100 و500 و1000 و5000 و10000 و50000 mm²).</p>
+<h2 id="photos">الصور</h2>
+<p>الجلد البقري في لقطات الشاشة هو «Stretched Cowhide Skin» من تصوير Enda012، ويكيميديا كومنز (commons.wikimedia.org/wiki/File:Stretched_Cowhide_Skin.jpg)، بترخيص CC BY <bdi dir="ltr">4.0</bdi> ‏(creativecommons.org/licenses/by/4.0/). صُغّر حجمه وعُرض في Contorno Indicator مع حدّه.</p>
+    <nav class="pager"><a class="prev" href="messages.html"><span>السابق</span>الرسائل والمشكلات</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+/* The article, on screen and printed (A4). */
+@page { size: A4; margin: 20mm 18mm 22mm; }
+:root { --text: #1a1d1a; --muted: #5d665f; --rule: #d6dbd6; --accent: #127a3a; --soft: #f3f5f3; }
+body { margin: 0 auto; max-width: 46rem; padding: 2rem 1.2rem 4rem; color: var(--text); background: #fff;
+       font-family: "Source Serif 4", "Noto Serif", Georgia, serif; font-size: 11pt; line-height: 1.5;
+       hyphens: auto; text-align: justify; }
+header#title-block-header { text-align: center; margin-bottom: 1.5rem; }
+h1.title { font-size: 1.75rem; line-height: 1.2; margin: 0 0 .3rem; text-align: center; }
+p.subtitle { font-size: 1.1rem; color: var(--muted); margin: 0 0 .8rem; }
+p.author, p.date { margin: .15rem 0; color: var(--muted); }
+h2 { font-size: 1.2rem; margin: 1.8rem 0 .5rem; color: var(--accent); break-after: avoid; }
+h3 { font-size: 1.02rem; margin: 1.2rem 0 .35rem; break-after: avoid; }
+hr { border: 0; border-top: 1px solid var(--rule); margin: 1.6rem 0; }
+code { font-family: "DejaVu Sans Mono", monospace; font-size: .86em; background: var(--soft); padding: 0 .2em; border-radius: 3px; }
+figure { margin: 1rem 0; text-align: center; break-inside: avoid; }
+figure img { max-width: 100%; max-height: 130mm; }
+figcaption { font-size: .9em; color: var(--muted); text-align: left; margin-top: .3rem; }
+table { border-collapse: collapse; margin: .8rem auto .3rem; font-size: .88em; break-inside: avoid; text-align: left; }
+th, td { border-bottom: 1px solid var(--rule); padding: .25rem .55rem; vertical-align: top; }
+th { border-bottom: 1.5px solid var(--text); }
+math[display="block"] { margin: .6rem 0; }
+ol li, ul li { margin: .2rem 0; }
+p em:only-child { display: block; font-size: .9em; color: var(--muted); text-align: center; }
+/* the Contorno wordmark above the title, in the section titles' green; the introduction starts on page 2 */
+.title-logo { text-align: center; margin: 0 0 1.2rem; }
+.title-logo img { width: 38%; }
+.first-page-end { height: 0; }
+@media print {
+  .first-page-end { break-after: page; }
+  /* smaller figures on paper, so a figure that does not fit leaves less empty space before it */
+  figure { margin: .6rem 0; }
+  figure img { max-width: 80%; max-height: 85mm; }
+}

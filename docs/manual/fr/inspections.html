@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enregistrer et ouvrir des inspections — Contorno Indicator</title>
+<meta name="description" content="Un fichier zip garde la photo, la caméra, le contour et la surface.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>Manuel d'utilisation</small></a>
+  <nav class="langs" aria-label="Langue"><a href="../en/inspections.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/inspections.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/inspections.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/inspections.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/inspections.html" lang="fr" title="Français" aria-current="true"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/inspections.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/inspections.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Sommaire">
+    <h2>Sommaire</h2>
+    <ol><li><a href="index.html">Accueil</a></li><li><a href="getting-started.html">Premiers pas</a></li><li><a href="set-up.html">Réglages</a></li><li><a href="measure.html">Mesurer une peau</a></li><li><a href="camera.html">D&#x27;où vient l&#x27;échelle</a></li><li><a href="inspections.html" aria-current="page">Enregistrer et ouvrir des inspections</a></li><li><a href="messages.html">Messages et problèmes</a></li><li><a href="reference.html">Référence</a></li></ol>
+  </nav>
+  <main>
+    <h1>Enregistrer et ouvrir des inspections</h1>
+    <p class="summary">Un fichier zip garde la photo, la caméra, le contour et la surface.</p>
+    <h2 id="save">Enregistrer</h2>
+<p>Appuyez sur <span class="ui">Enregistrer</span> dès que l'afficheur montre le résultat. Choisissez un dossier et un nom ; le nom de la photo est proposé. Pendant l'analyse d'une photo, <span class="ui">Enregistrer</span> attend le résultat : le panneau de messages indique <em>Attendez la fin de l'analyse.</em></p>
+<p>Le fichier est un zip ordinaire que tout programme sait lire :</p>
+<table><thead><tr><th>Fichier</th><th>Contenu</th></tr></thead><tbody><tr><td>original.jpg (ou .png, …)</td><td>la photo, octet pour octet telle qu'importée</td></tr><tr><td>mask.png</td><td>l'objet en blanc sur noir, à la taille de la photo</td></tr><tr><td>camera.json</td><td>la distance, la focale et la taille de pixel utilisées, et la provenance de chacune</td></tr><tr><td>parameters.json</td><td>l'aire minimale et la tolérance du contour</td></tr><tr><td>objects.dxf</td><td>le contour et les trous en millimètres, pour la CAO et les machines de découpe</td></tr><tr><td>result.json</td><td>la taille de la photo, l'échelle et la surface en mm²</td></tr></tbody></table>
+<h2 id="open">Ouvrir</h2>
+<p>Appuyez sur <span class="ui">Ouvrir</span> et choisissez un zip enregistré. La photo, le contour et la surface reviennent exactement comme ils ont été enregistrés, sans nouvelle analyse, avec la caméra enregistrée. Le panneau de messages termine la ligne par <em>résultat enregistré</em>.</p>
+<p>Le prochain <span class="ui">Importer</span> revient à la caméra de <span class="ui">Réglages</span>.</p>
+<aside class="note"><p>Une inspection enregistrée par une ancienne version de Contorno (une inspection de peau) ouvre sa photo et sa caméra et est analysée de nouveau avec le contour IA. Le panneau de messages l'indique.</p></aside>
+<h2 id="folders">Dossiers</h2>
+<p><span class="ui">Importer</span>, <span class="ui">Ouvrir</span> et <span class="ui">Enregistrer</span> commencent tous dans le dossier du dernier fichier choisi dans l'un d'eux.</p>
+    <nav class="pager"><a class="prev" href="camera.html"><span>Précédent</span>D&#x27;où vient l&#x27;échelle</a><a class="next" href="messages.html"><span>Suivant</span>Messages et problèmes</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

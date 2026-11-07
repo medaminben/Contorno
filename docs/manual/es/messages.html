@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mensajes y problemas — Contorno Indicator</title>
+<meta name="description" content="Qué dice el panel de mensajes y qué hacer cuando el resultado parece incorrecto.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>Manual de usuario</small></a>
+  <nav class="langs" aria-label="Idioma"><a href="../en/messages.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/messages.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/messages.html" lang="es" title="Español" aria-current="true"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/messages.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/messages.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/messages.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/messages.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Contenido">
+    <h2>Contenido</h2>
+    <ol><li><a href="index.html">Inicio</a></li><li><a href="getting-started.html">Primeros pasos</a></li><li><a href="set-up.html">Ajustes</a></li><li><a href="measure.html">Medir una piel</a></li><li><a href="camera.html">De dónde sale la escala</a></li><li><a href="inspections.html">Guardar y abrir inspecciones</a></li><li><a href="messages.html" aria-current="page">Mensajes y problemas</a></li><li><a href="reference.html">Referencia</a></li></ol>
+  </nav>
+  <main>
+    <h1>Mensajes y problemas</h1>
+    <p class="summary">Qué dice el panel de mensajes y qué hacer cuando el resultado parece incorrecto.</p>
+    <h2 id="usual">Líneas habituales</h2>
+<table><thead><tr><th>Línea</th><th>Significado</th></tr></thead><tbody><tr><td>Importado cowhide.jpg, 1600 x 1200 px.</td><td>La foto se muestra; su tamaño en píxeles.</td></tr><tr><td>Cámara: …</td><td>De dónde sale la escala. Vea <a href="camera.html#line">De dónde sale la escala</a>.</td></tr><tr><td>Analizando…</td><td>El análisis está en marcha; la barra de actividad avanza.</td></tr><tr><td>1 objeto · 1.411 mm/px · 3.2 s</td><td>El resultado: los objetos, la escala y el tiempo empleado.</td></tr><tr><td>Parte de la piel se encontró a partir de la mesa que la rodea, …</td><td>La IA tomó solo una parte de la piel, por ejemplo las manchas oscuras de una piel moteada. El contorno se encontró en cambio a partir de la mesa que rodea la piel. Compruébelo antes de guardar.</td></tr><tr><td>No se encontró ningún objeto</td><td>Nada en la foto es lo bastante grande. El visor muestra 0.0 cm².</td></tr><tr><td>Guardado … / Abierto …</td><td>El archivo escrito o leído.</td></tr></tbody></table>
+<h2 id="ai">El contorno de IA no está disponible</h2>
+<p><em>Contorno de IA no disponible: modelo no encontrado</em> — falta el archivo del modelo IS-Net. El mensaje enumera los lugares donde se buscó. En una compilación desde las fuentes, compile el objetivo isnet_model; en una instalación, vuelva a instalar.</p>
+<p><em>Contorno de IA no disponible: Vision se compiló sin LibTorch</em> — esta copia del programa se compiló sin la IA. Muestra la foto pero no mide: nunca recurre en silencio a un método menos exacto.</p>
+<h2 id="outline">El contorno está mal</h2>
+<ul><li><strong>Sigue una sombra.</strong> Ilumine la mesa de forma más uniforme, o desde arriba.</li><li><strong>Corta una parte clara de la piel.</strong> Use una mesa cuyo color se distinga más del de la piel.</li><li><strong>Deja fuera una gran parte lisa de una piel de dos colores.</strong> La IA puede tomar una zona amplia y uniforme, como el blanco de una piel de vaca, por la mesa. Contorno encuentra entonces la piel a partir de la mesa que la rodea, y el panel de mensajes lo dice. Para ello debe verse mesa alrededor de toda la piel: donde la piel llega al borde de la foto, se mantiene el contorno de la IA. Compruebe siempre el contorno antes de guardar.</li><li><strong>Abarca dos pieles.</strong> Dos objetos que se tocan son un solo objeto. Deje un espacio entre ellos o mídalos uno a uno.</li><li><strong>Incluye la mesa junto a una alfombrilla.</strong> Una alfombrilla o una tela más pequeña que la foto muestra dos colores en el borde de la foto, y la mesa junto a la alfombrilla puede tomarse por piel. Use una alfombrilla o una tela que llene toda la foto, o ninguna.</li><li><strong>Una marca o una mancha se recorta como agujero.</strong> Solo deberían recortarse los agujeros a través de los que se ve la mesa. Envíe la foto al soporte.</li></ul>
+<h2 id="surface">La superficie está mal</h2>
+<ul><li>Revise primero la <span class="ui">Distancia a la mesa</span>. Un error del 1 % en la distancia es un error del 2 % en la superficie.</li><li>Revise la <span class="ui">Distancia focal</span>: la real, no el equivalente de 35 mm.</li><li>Lea la línea de cámara: ¿toma los valores de la foto o de los ajustes, y son correctos?</li><li>Compruebe con un objeto de tamaño conocido (vea <a href="measure.html#check">Medir una piel</a>).</li></ul>
+<h2 id="manual">El manual no se abre</h2>
+<p>El ? busca este manual junto al programa y lo abre en Chromium o Google Chrome (Linux) o Microsoft Edge (Windows), o si no en el navegador predeterminado. Si ninguno puede, un mensaje indica el archivo del manual: ábralo en cualquier navegador.</p>
+    <nav class="pager"><a class="prev" href="inspections.html"><span>Anterior</span>Guardar y abrir inspecciones</a><a class="next" href="reference.html"><span>Siguiente</span>Referencia</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Premiers pas — Contorno Indicator</title>
+<meta name="description" content="La fenêtre, ses parties, le zoom et le thème clair.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>Manuel d'utilisation</small></a>
+  <nav class="langs" aria-label="Langue"><a href="../en/getting-started.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/getting-started.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/getting-started.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/getting-started.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/getting-started.html" lang="fr" title="Français" aria-current="true"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/getting-started.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/getting-started.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Sommaire">
+    <h2>Sommaire</h2>
+    <ol><li><a href="index.html">Accueil</a></li><li><a href="getting-started.html" aria-current="page">Premiers pas</a></li><li><a href="set-up.html">Réglages</a></li><li><a href="measure.html">Mesurer une peau</a></li><li><a href="camera.html">D&#x27;où vient l&#x27;échelle</a></li><li><a href="inspections.html">Enregistrer et ouvrir des inspections</a></li><li><a href="messages.html">Messages et problèmes</a></li><li><a href="reference.html">Référence</a></li></ol>
+  </nav>
+  <main>
+    <h1>Premiers pas</h1>
+    <p class="summary">La fenêtre, ses parties, le zoom et le thème clair.</p>
+    <p>Ouvrez Contorno Indicator. La fenêtre occupe tout l'écran. Avant la première photo, l'afficheur montre des tirets et le panneau de messages indique <em>Importez une photo des objets posés sur la table.</em></p>
+<figure class="shot"><a href="../assets/shots/fr/window.png"><img src="../assets/shots/fr/window.png" alt="La fenêtre après l&#x27;analyse d&#x27;une peau de vache, ses parties numérotées." loading="lazy"></a><figcaption>La fenêtre après l'analyse d'une peau de vache, ses parties numérotées.</figcaption></figure>
+<ol><li>La photo telle qu'elle a été prise, intacte.</li><li>La même photo avec le contour trouvé, en vert. C'est à l'intérieur de ce contour que la surface est mesurée.</li><li><span class="ui">Importer</span> — choisir une photo de l'objet sur la table. Son analyse commence aussitôt.</li><li><span class="ui">Ouvrir</span> — revoir une inspection enregistrée. Voir <a href="inspections.html">Enregistrer et ouvrir des inspections</a>.</li><li><span class="ui">Enregistrer</span> — garder la photo, la caméra, le contour et la surface dans un seul fichier zip.</li><li><span class="ui">Réglages</span> — la caméra, la langue et le thème. Voir <a href="set-up.html">Réglages</a>.</li><li>Le masque : l'objet tel que l'analyse le voit, en noir, avec son contour en vert.</li><li>Le panneau de messages. Chaque ligne commence par son heure. Il dit ce qui a été importé, d'où vient l'échelle, combien d'objets ont été trouvés et combien de temps cela a pris.</li><li>L'afficheur : la surface à l'intérieur du contour.</li><li>La barre d'activité. Elle avance pendant l'analyse de la photo et reste pleine une seconde quand le résultat arrive.</li></ol>
+<h2 id="zoom">Zoomer et défiler</h2>
+<p>Tournez la molette de la souris au-dessus d'une photo pour zoomer ou dézoomer à l'endroit du pointeur. Faites glisser pour défiler. Les deux photos zooment et défilent ensemble : le contour de droite reste toujours au-dessus du même endroit que la photo de gauche. Une nouvelle photo est de nouveau montrée entière.</p>
+<h2 id="readout">L'afficheur</h2>
+<p>L'afficheur donne la surface en <strong>cm²</strong> en dessous de 0.1 m² (une décimale, par exemple 125.4 cm²) et en <strong>m²</strong> à partir de 0.1 m² (trois décimales, par exemple 2.226 m²). Quand une nouvelle valeur arrive, les chiffres défilent depuis la précédente. Les nombres s'écrivent avec un point, comme dans le programme.</p>
+<ul><li><strong>Tirets</strong> : pas encore de photo, ou l'analyse a échoué. Le panneau de messages dit pourquoi.</li><li><strong>Chiffres atténués</strong> : la valeur de la photo précédente pendant l'analyse de la nouvelle. Un nombre atténué n'est jamais le résultat actuel.</li><li><strong>Chiffres vifs</strong> : la surface à l'intérieur du contour montré à droite.</li></ul>
+<h2 id="theme">Le thème clair</h2>
+<p>La fenêtre est noire par défaut. La touche du thème dans <a href="set-up.html#keys">Réglages</a> rend les panneaux gris clair avec un logotype noir ; les photos ne changent pas.</p>
+<figure class="shot"><a href="../assets/shots/fr/window-light.png"><img src="../assets/shots/fr/window-light.png" alt="La même fenêtre dans le thème clair." loading="lazy"></a><figcaption>La même fenêtre dans le thème clair.</figcaption></figure>
+    <nav class="pager"><a class="prev" href="index.html"><span>Précédent</span>Accueil</a><a class="next" href="set-up.html"><span>Suivant</span>Réglages</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

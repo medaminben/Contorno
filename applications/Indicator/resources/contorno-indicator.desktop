@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Contorno Indicator
+Comment=Object outline and surface area
+Exec=Indicator %f
+Icon=contorno-indicator
+Categories=Graphics;Engineering;
+StartupWMClass=contorno-indicator

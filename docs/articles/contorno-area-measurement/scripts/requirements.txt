@@ -1,0 +1,9 @@
+# Python packages of the article's scripts: the algorithm, the experiment, the model export and the figures.
+# run_experiment.sh installs them into build/article/venv.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.12.0+cpu
+numpy==2.5.4
+opencv-python-headless==4.10.0.84
+matplotlib==3.11.2
+pillow==13.0.0
+scipy==1.18.1

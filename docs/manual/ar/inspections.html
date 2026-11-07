@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>حفظ الفحوص وفتحها — Contorno Indicator</title>
+<meta name="description" content="ملف zip واحد يحفظ الصورة والكاميرا والحدّ والمساحة.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>دليل الاستخدام</small></a>
+  <nav class="langs" aria-label="اللغة"><a href="../en/inspections.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/inspections.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/inspections.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/inspections.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/inspections.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/inspections.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/inspections.html" lang="ar" title="العربية" aria-current="true"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="المحتويات">
+    <h2>المحتويات</h2>
+    <ol><li><a href="index.html">الرئيسية</a></li><li><a href="getting-started.html">البدء</a></li><li><a href="set-up.html">الإعداد</a></li><li><a href="measure.html">قياس جلد</a></li><li><a href="camera.html">من أين يأتي المقياس</a></li><li><a href="inspections.html" aria-current="page">حفظ الفحوص وفتحها</a></li><li><a href="messages.html">الرسائل والمشكلات</a></li><li><a href="reference.html">المرجع</a></li></ol>
+  </nav>
+  <main>
+    <h1>حفظ الفحوص وفتحها</h1>
+    <p class="summary">ملف zip واحد يحفظ الصورة والكاميرا والحدّ والمساحة.</p>
+    <h2 id="save">الحفظ</h2>
+<p>اضغط <span class="ui">حفظ</span> حالما تعرض الشاشة النتيجة. اختر مجلدًا واسمًا؛ ويُقترح اسم الصورة. أثناء تحليل صورة ينتظر <span class="ui">حفظ</span> النتيجة: تقول لوحة الرسائل <em>انتظر انتهاء التحليل.</em></p>
+<p>الملف أرشيف zip عادي يقرؤه أي برنامج:</p>
+<table><thead><tr><th>الملف</th><th>ما يحتويه</th></tr></thead><tbody><tr><td>original.jpg (أو .png، …)</td><td>الصورة، بايتًا ببايت كما استُوردت</td></tr><tr><td>mask.png</td><td>الجسم أبيض على أسود، بمقاس الصورة</td></tr><tr><td>camera.json</td><td>المسافة والبعد البؤري وحجم البكسل المستعملة، ومن أين جاءت كل قيمة</td></tr><tr><td>parameters.json</td><td>أصغر مساحة وتفاوت الحدّ</td></tr><tr><td>objects.dxf</td><td>الحدّ والثقوب بالمليمتر، لبرامج التصميم وآلات القصّ</td></tr><tr><td>result.json</td><td>مقاس الصورة والمقياس والمساحة بالـ mm²</td></tr></tbody></table>
+<h2 id="open">الفتح</h2>
+<p>اضغط <span class="ui">فتح</span> واختر ملف zip محفوظًا. تعود الصورة والحدّ والمساحة تمامًا كما حُفظت، دون تحليل جديد، وبالكاميرا المحفوظة. وتنهي لوحة الرسائل السطر بـ <em>نتيجة محفوظة</em>.</p>
+<p>الـ <span class="ui">استيراد</span> التالي يعود إلى كاميرا <span class="ui">إعداد</span>.</p>
+<aside class="note"><p>الفحص الذي حفظته نسخة أقدم من Contorno (فحص جلد) يفتح صورته وكاميرته ثم يُعاد تحليله بحدّ الذكاء الاصطناعي. وتقول لوحة الرسائل ذلك.</p></aside>
+<h2 id="folders">المجلدات</h2>
+<p><span class="ui">استيراد</span> و<span class="ui">فتح</span> و<span class="ui">حفظ</span> تبدأ كلها في مجلد آخر ملف اختير في أيٍّ منها.</p>
+    <nav class="pager"><a class="prev" href="camera.html"><span>السابق</span>من أين يأتي المقياس</a><a class="next" href="messages.html"><span>التالي</span>الرسائل والمشكلات</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

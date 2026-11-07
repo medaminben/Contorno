@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>من أين يأتي المقياس — Contorno Indicator</title>
+<meta name="description" content="بيانات الكاميرا في الصورة، والإعدادات، والسطر الذي يقول أيّها استُعمل.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>دليل الاستخدام</small></a>
+  <nav class="langs" aria-label="اللغة"><a href="../en/camera.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/camera.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/camera.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/camera.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/camera.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/camera.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/camera.html" lang="ar" title="العربية" aria-current="true"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="المحتويات">
+    <h2>المحتويات</h2>
+    <ol><li><a href="index.html">الرئيسية</a></li><li><a href="getting-started.html">البدء</a></li><li><a href="set-up.html">الإعداد</a></li><li><a href="measure.html">قياس جلد</a></li><li><a href="camera.html" aria-current="page">من أين يأتي المقياس</a></li><li><a href="inspections.html">حفظ الفحوص وفتحها</a></li><li><a href="messages.html">الرسائل والمشكلات</a></li><li><a href="reference.html">المرجع</a></li></ol>
+  </nav>
+  <main>
+    <h1>من أين يأتي المقياس</h1>
+    <p class="summary">بيانات الكاميرا في الصورة، والإعدادات، والسطر الذي يقول أيّها استُعمل.</p>
+    <p>المساحة هي عدد البكسلات داخل الحدّ مضروبًا في مساحة البكسل الواحد على الطاولة. ومقاس ذلك البكسل، أي <strong>المقياس</strong> بالـ mm/px، يأتي من ثلاث قيم:</p>
+<div class="formula"><p>المقياس = المسافة إلى الطاولة × حجم البكسل ÷ البعد البؤري</p></div>
+<h2 id="order">الصورة أولًا، ثم الإعدادات</h2>
+<p>عند استيراد صورة يقرأ Contorno Indicator بيانات الكاميرا التي تكتبها الكاميرا في ملفات JPEG أو TIFF الخاصة بها (EXIF):</p>
+<ul><li><strong>البعد البؤري</strong> — من الصورة إن كان فيها بعد بين <bdi dir="ltr">0.1</bdi> و2000 mm.</li><li><strong>حجم البكسل</strong> — من دقة المستوى البؤري في الصورة، وإلا فيُحسب من بُعدها البؤري المكافئ لـ <bdi dir="ltr">35 mm</bdi>، إن كانت النتيجة بين <bdi dir="ltr">0.1</bdi> و100 µm.</li><li><strong>المسافة</strong> — دائمًا من <span class="ui">إعداد</span>. لا تستطيع الصورة أن تعرف على أي ارتفاع كانت الكاميرا.</li></ul>
+<p>القيمة التي ليست في الصورة، أو التي فيها خارج هذه النطاقات، تؤخذ بدلًا من ذلك من <span class="ui">إعداد</span>، كلٌّ على حدة.</p>
+<p>عدد البكسلات يأتي دائمًا من الصورة نفسها، بعد تعديل اتجاهها. والصورة التي صُغّرت بعد التقاطها تُقاس قياسًا صحيحًا في وضع <span class="ui">حجم المستشعر</span>، لأن مقاس المستشعر يوزَّع على البكسلات الموجودة فعلًا في الصورة.</p>
+<h2 id="line">سطر الكاميرا</h2>
+<p>بعد كل استيراد يقول سطرٌ في لوحة الرسائل من أين جاءت كل قيمة وما المقياس الناتج، مثلًا:</p>
+<p><em>الكاميرا: البعد البؤري <bdi dir="ltr">5.56 mm</bdi> وحجم البكسل <bdi dir="ltr">5.23 µm</bdi> (ما يعادل <bdi dir="ltr">35 mm</bdi>) من الصورة، المسافة <bdi dir="ltr">1500 mm</bdi> من الإعدادات: <bdi dir="ltr">1.411 mm/px</bdi>.</em></p>
+<p>صيغ أخرى:</p>
+<ul><li><em>لا توجد بيانات كاميرا في الصورة، استُخدمت الإعدادات</em> — ليس في الصورة بيانات EXIF صالحة للاستعمال (صورة PNG، أو لقطة شاشة، أو نسخة معدّلة).</li><li><em>البعد البؤري … في الصورة غير صالح</em> — وُجدت قيمة لكنها خارج النطاق؛ فاستُعمل الإعداد.</li><li><em>ربما قُصّت الصورة</em> — أضلاع الصورة ليست بنسبة أضلاع المستشعر نفسها. إن كانت قد قُصّت، فالمقياس المأخوذ من مقاس المستشعر خاطئ: استعمل الصورة الأصلية.</li></ul>
+<aside class="warning"><p>يقرّب صانعُ الكاميرا مكافئَ <bdi dir="ltr">35 mm</bdi>، فيكون حجم البكسل المحسوب منه تقريبيًا. لأفضل دقة أدخل المقاس الحقيقي للمستشعر أو للبكسل في <span class="ui">إعداد</span>، واستعمل صورًا تحمل دقة المستوى البؤري في بياناتها، أو تحقّق من المقياس بجسم معروف.</p></aside>
+<h2 id="non-square">البكسلات غير المربّعة</h2>
+<p>لبعض المستشعرات بكسلات غير مربّعة. أدخل عرض البكسل وارتفاعه في وضع <span class="ui">حجم البكسل</span>، والسلسلة معطّلة. يصبح للمقياس عندئذ قيمتان، واحدة بعرض الصورة وأخرى بطولها، وتُحسب المساحة بهما معًا.</p>
+    <nav class="pager"><a class="prev" href="measure.html"><span>السابق</span>قياس جلد</a><a class="next" href="inspections.html"><span>التالي</span>حفظ الفحوص وفتحها</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

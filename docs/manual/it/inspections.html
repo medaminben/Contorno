@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="it" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Salvare e aprire ispezioni — Contorno Indicator</title>
+<meta name="description" content="Un file zip conserva la foto, la fotocamera, il contorno e la superficie.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>Manuale utente</small></a>
+  <nav class="langs" aria-label="Lingua"><a href="../en/inspections.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/inspections.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/inspections.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/inspections.html" lang="it" title="Italiano" aria-current="true"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/inspections.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/inspections.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/inspections.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Indice">
+    <h2>Indice</h2>
+    <ol><li><a href="index.html">Home</a></li><li><a href="getting-started.html">Primi passi</a></li><li><a href="set-up.html">Impostazioni</a></li><li><a href="measure.html">Misurare una pelle</a></li><li><a href="camera.html">Da dove viene la scala</a></li><li><a href="inspections.html" aria-current="page">Salvare e aprire ispezioni</a></li><li><a href="messages.html">Messaggi e problemi</a></li><li><a href="reference.html">Riferimento</a></li></ol>
+  </nav>
+  <main>
+    <h1>Salvare e aprire ispezioni</h1>
+    <p class="summary">Un file zip conserva la foto, la fotocamera, il contorno e la superficie.</p>
+    <h2 id="save">Salvare</h2>
+<p>Premete <span class="ui">Salva</span> non appena il display mostra il risultato. Scegliete una cartella e un nome; viene proposto il nome della foto. Mentre una foto è in analisi, <span class="ui">Salva</span> attende il risultato: il pannello dei messaggi dice <em>Attendi la fine dell'analisi.</em></p>
+<p>Il file è un normale zip che qualsiasi programma può leggere:</p>
+<table><thead><tr><th>File</th><th>Contenuto</th></tr></thead><tbody><tr><td>original.jpg (o .png, …)</td><td>la foto, byte per byte come importata</td></tr><tr><td>mask.png</td><td>l'oggetto bianco su nero, alla dimensione della foto</td></tr><tr><td>camera.json</td><td>la distanza, la lunghezza focale e la dimensione del pixel usate, e da dove viene ciascuna</td></tr><tr><td>parameters.json</td><td>l'area minima e la tolleranza del contorno</td></tr><tr><td>objects.dxf</td><td>il contorno e i fori in millimetri, per CAD e macchine da taglio</td></tr><tr><td>result.json</td><td>la dimensione della foto, la scala e la superficie in mm²</td></tr></tbody></table>
+<h2 id="open">Aprire</h2>
+<p>Premete <span class="ui">Apri</span> e scegliete uno zip salvato. Foto, contorno e superficie tornano esattamente come sono stati salvati, senza una nuova analisi, con la fotocamera salvata. Il pannello dei messaggi chiude la riga con <em>risultato salvato</em>.</p>
+<p>Il successivo <span class="ui">Importa</span> torna alla fotocamera di <span class="ui">Imposta</span>.</p>
+<aside class="note"><p>Un'ispezione salvata da una versione precedente di Contorno (un'ispezione di pelle) apre la sua foto e la sua fotocamera e viene analizzata di nuovo con il contorno IA. Il pannello dei messaggi lo dice.</p></aside>
+<h2 id="folders">Cartelle</h2>
+<p><span class="ui">Importa</span>, <span class="ui">Apri</span> e <span class="ui">Salva</span> partono tutti dalla cartella dell'ultimo file scelto in uno di essi.</p>
+    <nav class="pager"><a class="prev" href="camera.html"><span>Precedente</span>Da dove viene la scala</a><a class="next" href="messages.html"><span>Successivo</span>Messaggi e problemi</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

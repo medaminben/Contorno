@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Save and open inspections — Contorno Indicator</title>
+<meta name="description" content="One zip file keeps the photo, the camera, the outline and the surface.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>User manual</small></a>
+  <nav class="langs" aria-label="Language"><a href="../en/inspections.html" lang="en" title="English" aria-current="true"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/inspections.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/inspections.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/inspections.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/inspections.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/inspections.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/inspections.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Contents">
+    <h2>Contents</h2>
+    <ol><li><a href="index.html">Home</a></li><li><a href="getting-started.html">Getting started</a></li><li><a href="set-up.html">Set Up</a></li><li><a href="measure.html">Measure a hide</a></li><li><a href="camera.html">Where the scale comes from</a></li><li><a href="inspections.html" aria-current="page">Save and open inspections</a></li><li><a href="messages.html">Messages and problems</a></li><li><a href="reference.html">Reference</a></li></ol>
+  </nav>
+  <main>
+    <h1>Save and open inspections</h1>
+    <p class="summary">One zip file keeps the photo, the camera, the outline and the surface.</p>
+    <h2 id="save">Save</h2>
+<p>Press <span class="ui">Save</span> once the readout shows the result. Choose a folder and a name; the photo's name is suggested. While a photo is being analysed, <span class="ui">Save</span> waits for the result: the message panel says <em>Wait for the analysis to end.</em></p>
+<p>The file is an ordinary zip that any program can read:</p>
+<table><thead><tr><th>File</th><th>What it holds</th></tr></thead><tbody><tr><td>original.jpg (or .png, …)</td><td>the photo, byte for byte as imported</td></tr><tr><td>mask.png</td><td>the object white on black, at the photo's size</td></tr><tr><td>camera.json</td><td>the distance, focal length and pixel size used, and where each came from</td></tr><tr><td>parameters.json</td><td>the minimum area and the outline tolerance</td></tr><tr><td>objects.dxf</td><td>the outline and the holes in millimetres, for CAD and cutting machines</td></tr><tr><td>result.json</td><td>the photo's size, the scale and the surface in mm²</td></tr></tbody></table>
+<h2 id="open">Open</h2>
+<p>Press <span class="ui">Open</span> and choose a saved zip. The photo, the outline and the surface come back exactly as they were saved, without a new analysis, with the camera that was saved. The message panel ends the line with <em>saved result</em>.</p>
+<p>The next <span class="ui">Import</span> returns to the camera of <span class="ui">Set up</span>.</p>
+<aside class="note"><p>An inspection saved by an older version of Contorno (a hide inspection) opens its photo and camera and is analysed again with the AI outline. The message panel says so.</p></aside>
+<h2 id="folders">Folders</h2>
+<p><span class="ui">Import</span>, <span class="ui">Open</span> and <span class="ui">Save</span> all start in the folder of the last file chosen in any of them.</p>
+    <nav class="pager"><a class="prev" href="camera.html"><span>Previous</span>Where the scale comes from</a><a class="next" href="messages.html"><span>Next</span>Messages and problems</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

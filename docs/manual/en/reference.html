@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reference — Contorno Indicator</title>
+<meta name="description" content="The formulas, the ranges, the accuracy, the files and the settings.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>User manual</small></a>
+  <nav class="langs" aria-label="Language"><a href="../en/reference.html" lang="en" title="English" aria-current="true"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/reference.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/reference.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/reference.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/reference.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/reference.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/reference.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Contents">
+    <h2>Contents</h2>
+    <ol><li><a href="index.html">Home</a></li><li><a href="getting-started.html">Getting started</a></li><li><a href="set-up.html">Set Up</a></li><li><a href="measure.html">Measure a hide</a></li><li><a href="camera.html">Where the scale comes from</a></li><li><a href="inspections.html">Save and open inspections</a></li><li><a href="messages.html">Messages and problems</a></li><li><a href="reference.html" aria-current="page">Reference</a></li></ol>
+  </nav>
+  <main>
+    <h1>Reference</h1>
+    <p class="summary">The formulas, the ranges, the accuracy, the files and the settings.</p>
+    <h2 id="formulas">Formulas</h2>
+<div class="formula"><p>scale across (mm/px) = distance × pixel width ÷ focal length</p><p>scale down (mm/px) = distance × pixel height ÷ focal length</p><p>pixel size (Sensor size mode) = sensor's long side ÷ photo's long side (px)</p><p>surface (mm²) = pixels inside the outline × scale across × scale down</p></div>
+<p>The outline drawn and saved is simplified within 0.5 mm of the pixel edge; the surface shown is counted on the pixels themselves, so it equals the white of the mask.</p>
+<h2 id="ranges">Ranges</h2>
+<table><thead><tr><th>Value</th><th>Range</th><th>Default</th></tr></thead><tbody><tr><td>Distance to the table</td><td>1–100000 mm</td><td>1500 mm</td></tr><tr><td>Focal length</td><td>0.1–2000 mm</td><td>13.02 mm</td></tr><tr><td>Sensor width × height</td><td>0.1–100 mm each</td><td>15.04 × 11.28 mm</td></tr><tr><td>Pixel width × height</td><td>0.1–100 µm each</td><td>3.76 × 3.76 µm</td></tr><tr><td>Smallest object or hole kept</td><td>setting objects/min_area_mm2</td><td>100 mm²</td></tr></tbody></table>
+<h2 id="accuracy">Accuracy</h2>
+<p>The surface grows with the square of the scale, so a relative error in the distance, the focal length or the pixel size counts twice:</p>
+<table><thead><tr><th>Error in</th><th>Error in the surface</th></tr></thead><tbody><tr><td>distance +1 % (15 mm at 1500 mm)</td><td>+2 %</td></tr><tr><td>focal length +1 %</td><td>−2 %</td></tr><tr><td>camera tilted by 2°, hide centred</td><td>under 0.1 %</td></tr><tr><td>camera tilted by 2°, hide 300 mm off centre</td><td>about 1.4 %</td></tr><tr><td>outline 1 pixel too far out, 2 m² hide at 1.4 mm/px</td><td>about +0.5 %</td></tr><tr><td>lens focused on the table (13 mm lens at 1500 mm)</td><td>about +1.7 %</td></tr></tbody></table>
+<p>The camera is treated as a pinhole. A real lens focused on the table makes the scale too large by about focal length ÷ distance; the check with a known object (see <a href="measure.html#check">Measure a hide</a>) removes this together with any error in the distance. The lens's distortion is not corrected, and the surface is the hide's projection on the table. Keep the hide in the middle of the picture, where the distortion of most lenses is smallest.</p>
+<h2 id="article">The article</h2>
+<p>How the outline is found, how the surface follows from the camera, how both were tested and how large the uncertainty is: see the article <a href="../../articles/contorno-area-measurement/contorno-area-measurement.html">Measuring the surface of animal hides from a single photograph</a>.</p>
+<h2 id="files">Files</h2>
+<ul><li>Photos: JPEG, PNG, BMP, TIFF. Camera data is read from JPEG and TIFF.</li><li>Inspections: zip; see <a href="inspections.html#save">Save and open inspections</a>.</li><li>Settings: indicator.ini, in the application's settings folder (on Linux ~/.config/Contorno/Indicator/).</li></ul>
+<h2 id="settings">Settings kept</h2>
+<p>The camera of <span class="ui">Set up</span>, the language, the theme, the last folder and the minimum area are kept between sessions. The minimum area has no field in the window; it can be changed in indicator.ini (objects/min_area_mm2, one of 0, 10, 50, 100, 500, 1000, 5000, 10000, 50000 mm²).</p>
+<h2 id="photos">Photos</h2>
+<p>The cowhide in the screenshots is "Stretched Cowhide Skin" by Enda012, Wikimedia Commons (commons.wikimedia.org/wiki/File:Stretched_Cowhide_Skin.jpg), licensed under CC BY 4.0 (creativecommons.org/licenses/by/4.0/). It was reduced in size and shown in Contorno Indicator with its outline.</p>
+    <nav class="pager"><a class="prev" href="messages.html"><span>Previous</span>Messages and problems</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

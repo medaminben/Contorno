@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 560" font-family="DejaVu Sans, sans-serif">
+  <style>
+    .box { fill: #fff; stroke: #1a1d1a; stroke-width: 1.2; }
+    .app { fill: #f3f5f3; stroke: #127a3a; stroke-width: 1.6; }
+    .t { font-size: 13px; fill: #1a1d1a; }
+    .s { font-size: 11px; fill: #5d665f; }
+    .a { stroke: #127a3a; stroke-width: 1.4; fill: none; }
+  </style>
+  <rect class="box" x="110" y="8" width="220" height="48" rx="2"/>
+  <text class="t" x="220" y="28" text-anchor="middle">Camera, outside the program</text>
+  <text class="s" x="220" y="46" text-anchor="middle">one photo, straight down</text>
+  <line class="a" x1="220" y1="56" x2="220" y2="78"/>
+  <polygon points="220,84 215,74 225,74" fill="#127a3a"/>
+  <rect class="box" x="110" y="84" width="220" height="44"/>
+  <text class="t" x="220" y="110" text-anchor="middle">Photo file, JPEG or TIFF</text>
+  <rect class="box" x="110" y="148" width="220" height="44"/>
+  <text class="t" x="220" y="168" text-anchor="middle">IS-Net TorchScript file</text>
+  <text class="s" x="220" y="184" text-anchor="middle">local, 177 MB</text>
+  <line class="a" x1="220" y1="128" x2="220" y2="148"/>
+  <polygon points="220,148 215,140 225,140" fill="#127a3a"/>
+  <line class="a" x1="220" y1="192" x2="220" y2="228"/>
+  <polygon points="220,234 215,224 225,224" fill="#127a3a"/>
+  <rect class="app" x="70" y="234" width="300" height="64"/>
+  <text class="t" x="220" y="258" text-anchor="middle">Contorno Indicator</text>
+  <text class="s" x="220" y="276" text-anchor="middle">desktop application, no network at run time</text>
+  <line class="a" x1="150" y1="298" x2="150" y2="334"/>
+  <polygon points="150,340 145,330 155,330" fill="#127a3a"/>
+  <line class="a" x1="290" y1="298" x2="290" y2="334"/>
+  <polygon points="290,340 285,330 295,330" fill="#127a3a"/>
+  <rect class="box" x="40" y="340" width="200" height="52"/>
+  <text class="t" x="140" y="362" text-anchor="middle">Area on the readout</text>
+  <text class="s" x="140" y="378" text-anchor="middle">operator at the table</text>
+  <rect class="box" x="250" y="340" width="160" height="52"/>
+  <text class="t" x="330" y="362" text-anchor="middle">Inspection zip</text>
+  <text class="s" x="330" y="378" text-anchor="middle">photo, mask, outline</text>
+  <line class="a" x1="330" y1="392" x2="330" y2="428"/>
+  <polygon points="330,434 325,424 335,424" fill="#127a3a"/>
+  <rect class="box" x="250" y="434" width="160" height="44"/>
+  <text class="t" x="330" y="460" text-anchor="middle">CAD, nesting, cutting</text>
+  <text class="s" x="220" y="520" text-anchor="middle">The program does not drive the camera</text>
+  <text class="s" x="220" y="538" text-anchor="middle">and does not move the hide.</text>
+</svg>

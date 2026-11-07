@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="de" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Woher der Maßstab kommt — Contorno Indicator</title>
+<meta name="description" content="Die Kameradaten des Fotos, die Einstellungen und die Zeile, die sagt, was verwendet wurde.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>Benutzerhandbuch</small></a>
+  <nav class="langs" aria-label="Sprache"><a href="../en/camera.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/camera.html" lang="de" title="Deutsch" aria-current="true"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/camera.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/camera.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/camera.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/camera.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/camera.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Inhalt">
+    <h2>Inhalt</h2>
+    <ol><li><a href="index.html">Start</a></li><li><a href="getting-started.html">Erste Schritte</a></li><li><a href="set-up.html">Einrichten</a></li><li><a href="measure.html">Eine Haut messen</a></li><li><a href="camera.html" aria-current="page">Woher der Maßstab kommt</a></li><li><a href="inspections.html">Prüfungen speichern und öffnen</a></li><li><a href="messages.html">Meldungen und Probleme</a></li><li><a href="reference.html">Referenz</a></li></ol>
+  </nav>
+  <main>
+    <h1>Woher der Maßstab kommt</h1>
+    <p class="summary">Die Kameradaten des Fotos, die Einstellungen und die Zeile, die sagt, was verwendet wurde.</p>
+    <p>Die Fläche ist die Zahl der Pixel innerhalb der Kontur mal die Fläche eines Pixels auf dem Tisch. Die Größe dieses Pixels, der <strong>Maßstab</strong> in mm/px, ergibt sich aus drei Werten:</p>
+<div class="formula"><p>Maßstab = Abstand zum Tisch × Pixelgröße ÷ Brennweite</p></div>
+<h2 id="order">Zuerst das Foto, dann die Einstellungen</h2>
+<p>Beim Import liest Contorno Indicator die Kameradaten, die eine Kamera in ihre JPEG- oder TIFF-Dateien schreibt (EXIF):</p>
+<ul><li><strong>Brennweite</strong> — aus dem Foto, wenn es eine zwischen 0.1 und 2000 mm enthält.</li><li><strong>Pixelgröße</strong> — aus der Brennebenen-Auflösung des Fotos, sonst aus seiner Kleinbild-äquivalenten Brennweite berechnet, wenn das Ergebnis zwischen 0.1 und 100 µm liegt.</li><li><strong>Abstand</strong> — immer aus <span class="ui">Einrichten</span>. Das Foto kann nicht wissen, wie hoch die Kamera war.</li></ul>
+<p>Ein Wert, den das Foto nicht hat oder außerhalb dieser Bereiche hat, kommt stattdessen aus <span class="ui">Einrichten</span>, jeder für sich.</p>
+<p>Die Pixelzahl kommt immer aus dem Foto selbst, nachdem es aufgerichtet wurde. Ein nach der Aufnahme verkleinertes Foto wird im Modus <span class="ui">Sensorgröße</span> richtig gemessen, weil die Größe des Sensors auf die Pixel verteilt wird, die das Foto wirklich hat.</p>
+<h2 id="line">Die Kamerazeile</h2>
+<p>Nach jedem Import sagt eine Zeile in der Meldungsanzeige, woher jeder Wert kam und welcher Maßstab sich ergibt, zum Beispiel:</p>
+<p><em>Kamera: Brennweite 5.56 mm und Pixelgröße 5.23 µm (35 mm-Äquivalent) aus dem Foto, Abstand 1500 mm aus den Einstellungen: 1.411 mm/px.</em></p>
+<p>Andere Formen:</p>
+<ul><li><em>keine Kameradaten im Foto, Einstellungen verwendet</em> — das Foto hat keine verwendbaren EXIF-Daten (ein PNG, ein Bildschirmfoto, eine bearbeitete Kopie).</li><li><em>die Brennweite … des Fotos ist ungültig</em> — ein Wert wurde gefunden, liegt aber außerhalb des Bereichs; die Einstellung wurde verwendet.</li><li><em>das Foto ist möglicherweise beschnitten</em> — die Seiten des Fotos stehen nicht im selben Verhältnis wie die des Sensors. Wurde es beschnitten, ist der Maßstab aus der Sensorgröße falsch: Verwenden Sie das Originalfoto.</li></ul>
+<aside class="warning"><p>Das Kleinbild-Äquivalent wird vom Kamerahersteller gerundet, daher ist eine daraus berechnete Pixelgröße nur ungefähr. Für die beste Genauigkeit geben Sie unter <span class="ui">Einrichten</span> die echte Sensor- oder Pixelgröße ein und verwenden Fotos mit der Brennebenen-Auflösung in ihren Daten, oder prüfen den Maßstab mit einem bekannten Objekt.</p></aside>
+<h2 id="non-square">Nicht quadratische Pixel</h2>
+<p>Manche Sensoren haben Pixel, die nicht quadratisch sind. Geben Sie im Modus <span class="ui">Pixelgröße</span> Breite und Höhe des Pixels an, mit ausgeschalteter Kette. Der Maßstab hat dann zwei Werte, einen quer und einen längs des Fotos, und die Fläche wird mit beiden gezählt.</p>
+    <nav class="pager"><a class="prev" href="measure.html"><span>Zurück</span>Eine Haut messen</a><a class="next" href="inspections.html"><span>Weiter</span>Prüfungen speichern und öffnen</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

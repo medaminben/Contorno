@@ -1,0 +1,6 @@
+# Python packages of compare.py (Table 1, Fig. 3) and accuracy.py: the models through rembg on the CPU.
+# Install them with ../requirements.txt (accuracy.py also runs the article's IS-Net).
+# The comparison of 2026-10-28 did not record the rembg version; the runs of 2026-11-05 used these.
+rembg[cpu]==2.0.86
+onnxruntime==1.31.1
+opencv-python-headless==4.10.0.84

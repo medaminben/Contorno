@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Primeros pasos — Contorno Indicator</title>
+<meta name="description" content="La ventana, sus partes, el zoom y el tema claro.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>Manual de usuario</small></a>
+  <nav class="langs" aria-label="Idioma"><a href="../en/getting-started.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/getting-started.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/getting-started.html" lang="es" title="Español" aria-current="true"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/getting-started.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/getting-started.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/getting-started.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/getting-started.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Contenido">
+    <h2>Contenido</h2>
+    <ol><li><a href="index.html">Inicio</a></li><li><a href="getting-started.html" aria-current="page">Primeros pasos</a></li><li><a href="set-up.html">Ajustes</a></li><li><a href="measure.html">Medir una piel</a></li><li><a href="camera.html">De dónde sale la escala</a></li><li><a href="inspections.html">Guardar y abrir inspecciones</a></li><li><a href="messages.html">Mensajes y problemas</a></li><li><a href="reference.html">Referencia</a></li></ol>
+  </nav>
+  <main>
+    <h1>Primeros pasos</h1>
+    <p class="summary">La ventana, sus partes, el zoom y el tema claro.</p>
+    <p>Abra Contorno Indicator. La ventana ocupa toda la pantalla. Antes de la primera foto el visor muestra guiones y el panel de mensajes dice <em>Importe una foto de los objetos sobre la mesa.</em></p>
+<figure class="shot"><a href="../assets/shots/es/window.png"><img src="../assets/shots/es/window.png" alt="La ventana tras analizar una piel de vaca, con sus partes numeradas." loading="lazy"></a><figcaption>La ventana tras analizar una piel de vaca, con sus partes numeradas.</figcaption></figure>
+<ol><li>La foto tal como se tomó, sin tocar.</li><li>La misma foto con el contorno encontrado, en verde. Dentro de este contorno se mide la superficie.</li><li><span class="ui">Importar</span> — elegir una foto del objeto sobre la mesa. Su análisis empieza enseguida.</li><li><span class="ui">Abrir</span> — volver a mostrar una inspección guardada. Vea <a href="inspections.html">Guardar y abrir inspecciones</a>.</li><li><span class="ui">Guardar</span> — conservar la foto, la cámara, el contorno y la superficie en un solo archivo zip.</li><li><span class="ui">Ajustes</span> — la cámara, el idioma y el tema. Vea <a href="set-up.html">Ajustes</a>.</li><li>La máscara: el objeto tal como lo ve el análisis, en negro, con su contorno en verde.</li><li>El panel de mensajes. Cada línea empieza con su hora. Dice qué se importó, de dónde salió la escala, cuántos objetos se encontraron y cuánto tardó.</li><li>El visor: la superficie dentro del contorno.</li><li>La barra de actividad. Avanza mientras se analiza la foto y queda llena un segundo cuando llega el resultado.</li></ol>
+<h2 id="zoom">Zoom y desplazamiento</h2>
+<p>Gire la rueda del ratón sobre una foto para acercar o alejar en el punto del puntero. Arrastre para desplazarse. Las dos fotos se acercan y se desplazan juntas, de modo que el contorno de la derecha queda siempre sobre el mismo lugar que la foto de la izquierda. Una foto nueva se vuelve a mostrar entera.</p>
+<h2 id="readout">El visor</h2>
+<p>El visor muestra la superficie en <strong>cm²</strong> por debajo de 0.1 m² (un decimal, por ejemplo 125.4 cm²) y en <strong>m²</strong> a partir de 0.1 m² (tres decimales, por ejemplo 2.226 m²). Cuando llega un valor nuevo, las cifras cuentan hasta él desde el anterior. Los números se escriben con punto, como en el programa.</p>
+<ul><li><strong>Guiones</strong>: todavía no hay foto, o el análisis falló. El panel de mensajes dice por qué.</li><li><strong>Cifras atenuadas</strong>: el valor de la foto anterior mientras se analiza la nueva. Un número atenuado nunca es el resultado actual.</li><li><strong>Cifras brillantes</strong>: la superficie dentro del contorno mostrado a la derecha.</li></ul>
+<h2 id="theme">El tema claro</h2>
+<p>La ventana es negra por defecto. La tecla del tema en <a href="set-up.html#keys">Ajustes</a> vuelve los paneles gris claro con el logotipo en negro; las fotos no cambian.</p>
+<figure class="shot"><a href="../assets/shots/es/window-light.png"><img src="../assets/shots/es/window-light.png" alt="La misma ventana en el tema claro." loading="lazy"></a><figcaption>La misma ventana en el tema claro.</figcaption></figure>
+    <nav class="pager"><a class="prev" href="index.html"><span>Anterior</span>Inicio</a><a class="next" href="set-up.html"><span>Siguiente</span>Ajustes</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

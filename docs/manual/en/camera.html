@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where the scale comes from — Contorno Indicator</title>
+<meta name="description" content="The photo&#x27;s camera data, the settings, and the line that says which was used.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>User manual</small></a>
+  <nav class="langs" aria-label="Language"><a href="../en/camera.html" lang="en" title="English" aria-current="true"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/camera.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/camera.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/camera.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/camera.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/camera.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/camera.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Contents">
+    <h2>Contents</h2>
+    <ol><li><a href="index.html">Home</a></li><li><a href="getting-started.html">Getting started</a></li><li><a href="set-up.html">Set Up</a></li><li><a href="measure.html">Measure a hide</a></li><li><a href="camera.html" aria-current="page">Where the scale comes from</a></li><li><a href="inspections.html">Save and open inspections</a></li><li><a href="messages.html">Messages and problems</a></li><li><a href="reference.html">Reference</a></li></ol>
+  </nav>
+  <main>
+    <h1>Where the scale comes from</h1>
+    <p class="summary">The photo&#x27;s camera data, the settings, and the line that says which was used.</p>
+    <p>The surface is the number of pixels inside the outline times the surface of one pixel on the table. That pixel's size, the <strong>scale</strong> in mm/px, comes from three values:</p>
+<div class="formula"><p>scale = distance to the table × pixel size ÷ focal length</p></div>
+<h2 id="order">The photo first, then the settings</h2>
+<p>When a photo is imported, Contorno Indicator reads the camera data a camera writes into its JPEG or TIFF files (EXIF):</p>
+<ul><li><strong>Focal length</strong> — from the photo when it has one between 0.1 and 2000 mm.</li><li><strong>Pixel size</strong> — from the photo's focal-plane resolution, or else worked out from its 35 mm equivalent focal length, when the result is between 0.1 and 100 µm.</li><li><strong>Distance</strong> — always from <span class="ui">Set up</span>. The photo cannot know how high the camera was.</li></ul>
+<p>A value the photo does not have, or has outside these ranges, comes from <span class="ui">Set up</span> instead, on its own.</p>
+<p>The pixel count always comes from the photo itself, after turning it upright. A photo made smaller after it was taken is measured correctly in <span class="ui">Sensor size</span> mode, because the sensor's size is spread over the pixels the photo really has.</p>
+<h2 id="line">The camera line</h2>
+<p>After each import one line in the message panel says where each value came from and the scale that results, for example:</p>
+<p><em>Camera: focal length 5.56 mm and pixel size 5.23 µm (35 mm equivalent) from the photo, distance 1500 mm from the settings: 1.411 mm/px.</em></p>
+<p>Other forms:</p>
+<ul><li><em>no camera data in the photo, settings used</em> — the photo has no usable EXIF data (a PNG, a screenshot, an edited copy).</li><li><em>the photo's focal length … is not valid</em> — a value was found but is out of range; the setting was used.</li><li><em>the photo may be cropped</em> — the photo's sides are not in the same ratio as the sensor's. If it was cropped, the scale from the sensor size is wrong: use the original photo.</li></ul>
+<aside class="warning"><p>The 35 mm equivalent is rounded by the camera maker, so a pixel size taken from it is approximate. For the best accuracy enter the true sensor or pixel size in <span class="ui">Set up</span> and use photos with the focal-plane resolution in their data, or check the scale with a known object.</p></aside>
+<h2 id="non-square">Non-square pixels</h2>
+<p>Some sensors have pixels that are not square. Give the pixel's width and height in <span class="ui">Pixel size</span> mode, with the chain off. The scale then has two values, one across and one down the photo, and the surface is counted with both.</p>
+    <nav class="pager"><a class="prev" href="measure.html"><span>Previous</span>Measure a hide</a><a class="next" href="inspections.html"><span>Next</span>Save and open inspections</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

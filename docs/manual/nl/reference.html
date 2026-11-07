@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="nl" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Naslag — Contorno Indicator</title>
+<meta name="description" content="De formules, de bereiken, de nauwkeurigheid, de bestanden en de instellingen.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>Handleiding</small></a>
+  <nav class="langs" aria-label="Taal"><a href="../en/reference.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/reference.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/reference.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/reference.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/reference.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/reference.html" lang="nl" title="Nederlands" aria-current="true"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/reference.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Inhoud">
+    <h2>Inhoud</h2>
+    <ol><li><a href="index.html">Start</a></li><li><a href="getting-started.html">Aan de slag</a></li><li><a href="set-up.html">Instellen</a></li><li><a href="measure.html">Een huid meten</a></li><li><a href="camera.html">Waar de schaal vandaan komt</a></li><li><a href="inspections.html">Inspecties opslaan en openen</a></li><li><a href="messages.html">Meldingen en problemen</a></li><li><a href="reference.html" aria-current="page">Naslag</a></li></ol>
+  </nav>
+  <main>
+    <h1>Naslag</h1>
+    <p class="summary">De formules, de bereiken, de nauwkeurigheid, de bestanden en de instellingen.</p>
+    <h2 id="formulas">Formules</h2>
+<div class="formula"><p>schaal dwars (mm/px) = afstand × pixelbreedte ÷ brandpuntsafstand</p><p>schaal langs (mm/px) = afstand × pixelhoogte ÷ brandpuntsafstand</p><p>pixelgrootte (modus Sensorgrootte) = lange zijde van de sensor ÷ lange zijde van de foto (px)</p><p>oppervlak (mm²) = pixels binnen de contour × schaal dwars × schaal langs</p></div>
+<p>De getekende en opgeslagen contour is vereenvoudigd binnen 0.5 mm van de pixelrand; het getoonde oppervlak wordt op de pixels zelf geteld en is dus gelijk aan het wit van het masker.</p>
+<h2 id="ranges">Bereiken</h2>
+<table><thead><tr><th>Waarde</th><th>Bereik</th><th>Standaard</th></tr></thead><tbody><tr><td>Afstand tot de tafel</td><td>1–100000 mm</td><td>1500 mm</td></tr><tr><td>Brandpuntsafstand</td><td>0.1–2000 mm</td><td>13.02 mm</td></tr><tr><td>Sensorbreedte × -hoogte</td><td>elk 0.1–100 mm</td><td>15.04 × 11.28 mm</td></tr><tr><td>Pixelbreedte × -hoogte</td><td>elk 0.1–100 µm</td><td>3.76 × 3.76 µm</td></tr><tr><td>Kleinste voorwerp of gat dat blijft</td><td>instelling objects/min_area_mm2</td><td>100 mm²</td></tr></tbody></table>
+<h2 id="accuracy">Nauwkeurigheid</h2>
+<p>Het oppervlak groeit met het kwadraat van de schaal, dus een relatieve fout in de afstand, de brandpuntsafstand of de pixelgrootte telt dubbel:</p>
+<table><thead><tr><th>Fout in</th><th>Fout in het oppervlak</th></tr></thead><tbody><tr><td>afstand +1 % (15 mm bij 1500 mm)</td><td>+2 %</td></tr><tr><td>brandpuntsafstand +1 %</td><td>−2 %</td></tr><tr><td>camera 2° gekanteld, huid in het midden</td><td>minder dan 0.1 %</td></tr><tr><td>camera 2° gekanteld, huid 300 mm uit het midden</td><td>ongeveer 1.4 %</td></tr><tr><td>contour 1 pixel te ver naar buiten, huid van 2 m² bij 1.4 mm/px</td><td>ongeveer +0.5 %</td></tr><tr><td>objectief scherpgesteld op de tafel (13 mm bij 1500 mm)</td><td>ongeveer +1.7 %</td></tr></tbody></table>
+<p>De camera wordt als gaatjescamera behandeld. Een echt objectief dat op de tafel is scherpgesteld, maakt de schaal ongeveer brandpuntsafstand ÷ afstand te groot; de controle met een bekend voorwerp (zie <a href="measure.html#check">Een huid meten</a>) haalt dat weg, samen met elke fout in de afstand. De vertekening van het objectief wordt niet gecorrigeerd, en het oppervlak is de projectie van de huid op de tafel. Houd de huid in het midden van het beeld, waar de vertekening van de meeste objectieven het kleinst is.</p>
+<h2 id="article">Het artikel</h2>
+<p>Hoe de contour gevonden wordt, hoe het oppervlak uit de camera volgt, hoe beide getest zijn en hoe groot de onzekerheid is: zie het artikel <a href="../../articles/contorno-area-measurement/contorno-area-measurement.html">Measuring the surface of animal hides from a single photograph</a> (in het Engels).</p>
+<h2 id="files">Bestanden</h2>
+<ul><li>Foto's: JPEG, PNG, BMP, TIFF. Cameragegevens worden uit JPEG en TIFF gelezen.</li><li>Inspecties: zip; zie <a href="inspections.html#save">Inspecties opslaan en openen</a>.</li><li>Instellingen: indicator.ini, in de instellingenmap van het programma (onder Linux ~/.config/Contorno/Indicator/).</li></ul>
+<h2 id="settings">Bewaarde instellingen</h2>
+<p>De camera van <span class="ui">Instellen</span>, de taal, het thema, de laatste map en het minimale oppervlak blijven tussen sessies bewaard. Het minimale oppervlak heeft geen veld in het venster; het is te wijzigen in indicator.ini (objects/min_area_mm2, een van 0, 10, 50, 100, 500, 1000, 5000, 10000, 50000 mm²).</p>
+<h2 id="photos">Foto's</h2>
+<p>De koeienhuid in de schermafbeeldingen is "Stretched Cowhide Skin" van Enda012, Wikimedia Commons (commons.wikimedia.org/wiki/File:Stretched_Cowhide_Skin.jpg), gelicentieerd onder CC BY 4.0 (creativecommons.org/licenses/by/4.0/). Ze is verkleind en in Contorno Indicator met haar contour getoond.</p>
+    <nav class="pager"><a class="prev" href="messages.html"><span>Vorige</span>Meldingen en problemen</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

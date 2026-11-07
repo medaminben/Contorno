@@ -1,0 +1,15 @@
+/* The look is the measurement article's. This paper adds code blocks, and
+   long code spans must be allowed to break or the justification opens wide
+   gaps between words. */
+code { overflow-wrap: anywhere; }
+pre {
+  text-align: start;
+  hyphens: manual;
+  background: var(--soft);
+  padding: .4rem .6rem;
+  margin: .6rem 0;
+  white-space: pre-wrap;
+  line-height: 1.35;
+  border-radius: 3px;
+}
+pre code { background: transparent; padding: 0; overflow-wrap: normal; font-size: .78em; }

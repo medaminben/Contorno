@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="de" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prüfungen speichern und öffnen — Contorno Indicator</title>
+<meta name="description" content="Eine Zip-Datei bewahrt Foto, Kamera, Kontur und Fläche auf.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>Benutzerhandbuch</small></a>
+  <nav class="langs" aria-label="Sprache"><a href="../en/inspections.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/inspections.html" lang="de" title="Deutsch" aria-current="true"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/inspections.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/inspections.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/inspections.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/inspections.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/inspections.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Inhalt">
+    <h2>Inhalt</h2>
+    <ol><li><a href="index.html">Start</a></li><li><a href="getting-started.html">Erste Schritte</a></li><li><a href="set-up.html">Einrichten</a></li><li><a href="measure.html">Eine Haut messen</a></li><li><a href="camera.html">Woher der Maßstab kommt</a></li><li><a href="inspections.html" aria-current="page">Prüfungen speichern und öffnen</a></li><li><a href="messages.html">Meldungen und Probleme</a></li><li><a href="reference.html">Referenz</a></li></ol>
+  </nav>
+  <main>
+    <h1>Prüfungen speichern und öffnen</h1>
+    <p class="summary">Eine Zip-Datei bewahrt Foto, Kamera, Kontur und Fläche auf.</p>
+    <h2 id="save">Speichern</h2>
+<p>Drücken Sie <span class="ui">Speichern</span>, sobald die Anzeige das Ergebnis zeigt. Wählen Sie einen Ordner und einen Namen; der Name des Fotos wird vorgeschlagen. Während ein Foto analysiert wird, wartet <span class="ui">Speichern</span> auf das Ergebnis: Die Meldungsanzeige sagt <em>Warten Sie, bis die Analyse beendet ist.</em></p>
+<p>Die Datei ist ein gewöhnliches Zip, das jedes Programm lesen kann:</p>
+<table><thead><tr><th>Datei</th><th>Inhalt</th></tr></thead><tbody><tr><td>original.jpg (oder .png, …)</td><td>das Foto, Byte für Byte wie importiert</td></tr><tr><td>mask.png</td><td>das Objekt weiß auf schwarz, in der Größe des Fotos</td></tr><tr><td>camera.json</td><td>Abstand, Brennweite und Pixelgröße, die verwendet wurden, und woher jeder Wert kam</td></tr><tr><td>parameters.json</td><td>die Mindestfläche und die Toleranz der Kontur</td></tr><tr><td>objects.dxf</td><td>die Kontur und die Löcher in Millimetern, für CAD und Schneidemaschinen</td></tr><tr><td>result.json</td><td>die Größe des Fotos, der Maßstab und die Fläche in mm²</td></tr></tbody></table>
+<h2 id="open">Öffnen</h2>
+<p>Drücken Sie <span class="ui">Öffnen</span> und wählen Sie ein gespeichertes Zip. Foto, Kontur und Fläche kommen genau so zurück, wie sie gespeichert wurden, ohne neue Analyse, mit der gespeicherten Kamera. Die Meldungsanzeige beendet die Zeile mit <em>gespeichertes Ergebnis</em>.</p>
+<p>Der nächste <span class="ui">Import</span> kehrt zur Kamera aus <span class="ui">Einrichten</span> zurück.</p>
+<aside class="note"><p>Eine von einer älteren Version von Contorno gespeicherte Prüfung (eine Hautprüfung) öffnet ihr Foto und ihre Kamera und wird mit der KI-Kontur neu analysiert. Die Meldungsanzeige sagt es.</p></aside>
+<h2 id="folders">Ordner</h2>
+<p><span class="ui">Import</span>, <span class="ui">Öffnen</span> und <span class="ui">Speichern</span> beginnen alle im Ordner der zuletzt in einem von ihnen gewählten Datei.</p>
+    <nav class="pager"><a class="prev" href="camera.html"><span>Zurück</span>Woher der Maßstab kommt</a><a class="next" href="messages.html"><span>Weiter</span>Meldungen und Probleme</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

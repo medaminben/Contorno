@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="de" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Erste Schritte — Contorno Indicator</title>
+<meta name="description" content="Das Fenster, seine Teile, Zoomen und das helle Design.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>Benutzerhandbuch</small></a>
+  <nav class="langs" aria-label="Sprache"><a href="../en/getting-started.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/getting-started.html" lang="de" title="Deutsch" aria-current="true"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/getting-started.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/getting-started.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/getting-started.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/getting-started.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/getting-started.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Inhalt">
+    <h2>Inhalt</h2>
+    <ol><li><a href="index.html">Start</a></li><li><a href="getting-started.html" aria-current="page">Erste Schritte</a></li><li><a href="set-up.html">Einrichten</a></li><li><a href="measure.html">Eine Haut messen</a></li><li><a href="camera.html">Woher der Maßstab kommt</a></li><li><a href="inspections.html">Prüfungen speichern und öffnen</a></li><li><a href="messages.html">Meldungen und Probleme</a></li><li><a href="reference.html">Referenz</a></li></ol>
+  </nav>
+  <main>
+    <h1>Erste Schritte</h1>
+    <p class="summary">Das Fenster, seine Teile, Zoomen und das helle Design.</p>
+    <p>Öffnen Sie Contorno Indicator. Das Fenster füllt den Bildschirm. Vor dem ersten Foto zeigt die Anzeige Striche, und die Meldungsanzeige sagt <em>Importieren Sie ein Foto der Objekte auf dem Tisch.</em></p>
+<figure class="shot"><a href="../assets/shots/de/window.png"><img src="../assets/shots/de/window.png" alt="Das Fenster nach der Analyse einer Kuhhaut, seine Teile nummeriert." loading="lazy"></a><figcaption>Das Fenster nach der Analyse einer Kuhhaut, seine Teile nummeriert.</figcaption></figure>
+<ol><li>Das Foto, wie es aufgenommen wurde, unverändert.</li><li>Dasselbe Foto mit der gefundenen Kontur in Grün. Innerhalb dieser Kontur wird die Fläche gemessen.</li><li><span class="ui">Import</span> — ein Foto des Objekts auf dem Tisch wählen. Seine Analyse beginnt sofort.</li><li><span class="ui">Öffnen</span> — eine gespeicherte Prüfung wieder anzeigen. Siehe <a href="inspections.html">Prüfungen speichern und öffnen</a>.</li><li><span class="ui">Speichern</span> — Foto, Kamera, Kontur und Fläche in einer Zip-Datei aufbewahren.</li><li><span class="ui">Einrichten</span> — die Kamera, die Sprache und das Design. Siehe <a href="set-up.html">Einrichten</a>.</li><li>Die Maske: das Objekt, wie die Analyse es sieht, schwarz, mit seiner Kontur in Grün.</li><li>Die Meldungsanzeige. Jede Zeile beginnt mit ihrer Uhrzeit. Sie sagt, was importiert wurde, woher der Maßstab kommt, wie viele Objekte gefunden wurden und wie lange es dauerte.</li><li>Die Anzeige: die Fläche innerhalb der Kontur.</li><li>Der Fortschrittsbalken. Er läuft, während das Foto analysiert wird, und bleibt eine Sekunde lang voll, wenn das Ergebnis da ist.</li></ol>
+<h2 id="zoom">Zoomen und verschieben</h2>
+<p>Drehen Sie das Mausrad über einem Foto, um am Zeiger hinein- oder herauszuzoomen. Ziehen Sie, um zu verschieben. Beide Fotos zoomen und verschieben sich gemeinsam, so dass die Kontur rechts immer über derselben Stelle liegt wie das Foto links. Ein neues Foto wird wieder ganz gezeigt.</p>
+<h2 id="readout">Die Anzeige</h2>
+<p>Die Anzeige zeigt die Fläche unter 0.1 m² in <strong>cm²</strong> (eine Nachkommastelle, zum Beispiel 125.4 cm²) und ab 0.1 m² in <strong>m²</strong> (drei Nachkommastellen, zum Beispiel 2.226 m²). Kommt ein neuer Wert, zählen die Ziffern vom vorigen zu ihm hin. Zahlen werden wie im Programm mit Punkt geschrieben.</p>
+<ul><li><strong>Striche</strong>: noch kein Foto, oder die Analyse ist fehlgeschlagen. Die Meldungsanzeige sagt, warum.</li><li><strong>Gedimmte Ziffern</strong>: der Wert des vorigen Fotos, während das neue analysiert wird. Eine gedimmte Zahl ist nie das aktuelle Ergebnis.</li><li><strong>Helle Ziffern</strong>: die Fläche innerhalb der rechts gezeigten Kontur.</li></ul>
+<h2 id="theme">Das helle Design</h2>
+<p>Das Fenster ist standardmäßig schwarz. Die Design-Taste unter <a href="set-up.html#keys">Einrichten</a> macht die Bereiche hellgrau mit schwarzem Schriftzug; die Fotos ändern sich nicht.</p>
+<figure class="shot"><a href="../assets/shots/de/window-light.png"><img src="../assets/shots/de/window-light.png" alt="Dasselbe Fenster im hellen Design." loading="lazy"></a><figcaption>Dasselbe Fenster im hellen Design.</figcaption></figure>
+    <nav class="pager"><a class="prev" href="index.html"><span>Zurück</span>Start</a><a class="next" href="set-up.html"><span>Weiter</span>Einrichten</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

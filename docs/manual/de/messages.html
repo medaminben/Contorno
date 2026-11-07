@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="de" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meldungen und Probleme — Contorno Indicator</title>
+<meta name="description" content="Was die Meldungsanzeige sagt und was zu tun ist, wenn das Ergebnis falsch aussieht.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>Benutzerhandbuch</small></a>
+  <nav class="langs" aria-label="Sprache"><a href="../en/messages.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/messages.html" lang="de" title="Deutsch" aria-current="true"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/messages.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/messages.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/messages.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/messages.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/messages.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Inhalt">
+    <h2>Inhalt</h2>
+    <ol><li><a href="index.html">Start</a></li><li><a href="getting-started.html">Erste Schritte</a></li><li><a href="set-up.html">Einrichten</a></li><li><a href="measure.html">Eine Haut messen</a></li><li><a href="camera.html">Woher der Maßstab kommt</a></li><li><a href="inspections.html">Prüfungen speichern und öffnen</a></li><li><a href="messages.html" aria-current="page">Meldungen und Probleme</a></li><li><a href="reference.html">Referenz</a></li></ol>
+  </nav>
+  <main>
+    <h1>Meldungen und Probleme</h1>
+    <p class="summary">Was die Meldungsanzeige sagt und was zu tun ist, wenn das Ergebnis falsch aussieht.</p>
+    <h2 id="usual">Übliche Zeilen</h2>
+<table><thead><tr><th>Zeile</th><th>Bedeutung</th></tr></thead><tbody><tr><td>cowhide.jpg importiert, 1600 x 1200 px.</td><td>Das Foto wird gezeigt; seine Größe in Pixeln.</td></tr><tr><td>Kamera: …</td><td>Woher der Maßstab kommt. Siehe <a href="camera.html#line">Woher der Maßstab kommt</a>.</td></tr><tr><td>Analyse läuft…</td><td>Die Analyse läuft; der Fortschrittsbalken bewegt sich.</td></tr><tr><td>1 Objekt · 1.411 mm/px · 3.2 s</td><td>Das Ergebnis: die Objekte, der Maßstab und die benötigte Zeit.</td></tr><tr><td>Ein Teil der Haut wurde über den Tisch um sie herum gefunden, …</td><td>Die KI hat nur einen Teil der Haut erkannt, etwa die dunklen Flecken einer gefleckten Haut. Die Kontur wurde stattdessen über den Tisch um die Haut gefunden. Prüfen Sie sie vor dem Speichern.</td></tr><tr><td>Kein Objekt gefunden</td><td>Nichts auf dem Foto ist groß genug. Die Anzeige zeigt 0.0 cm².</td></tr><tr><td>… gespeichert / … geöffnet</td><td>Die geschriebene oder gelesene Datei.</td></tr></tbody></table>
+<h2 id="ai">Die KI-Kontur ist nicht verfügbar</h2>
+<p><em>KI-Kontur nicht verfügbar: Modell nicht gefunden</em> — die Datei des IS-Net-Modells fehlt. Die Meldung nennt die durchsuchten Orte. In einem Build aus den Quellen bauen Sie das Ziel isnet_model; in einer Installation installieren Sie neu.</p>
+<p><em>KI-Kontur nicht verfügbar: Vision wurde ohne LibTorch gebaut</em> — diese Kopie des Programms wurde ohne die KI gebaut. Sie zeigt das Foto, misst aber nicht: Sie greift nie stillschweigend auf eine ungenauere Methode zurück.</p>
+<h2 id="outline">Die Kontur ist falsch</h2>
+<ul><li><strong>Sie folgt einem Schatten.</strong> Beleuchten Sie den Tisch gleichmäßiger oder von oben.</li><li><strong>Sie schneidet in einen hellen Teil der Haut.</strong> Verwenden Sie einen Tisch, dessen Farbe sich stärker von der Haut unterscheidet.</li><li><strong>Sie lässt einen großen einfarbigen Teil einer zweifarbigen Haut aus.</strong> Die KI kann eine große gleichmäßige Fläche, etwa das Weiß einer Kuhhaut, für den Tisch halten. Contorno findet die Haut dann über den Tisch um sie herum, und die Meldungsanzeige sagt es. Dazu muss rundum Tisch zu sehen sein: Wo die Haut den Bildrand erreicht, bleibt die Kontur der KI. Prüfen Sie die Kontur immer vor dem Speichern.</li><li><strong>Sie umfasst zwei Häute.</strong> Zwei Objekte, die sich berühren, sind ein Objekt. Lassen Sie einen Abstand zwischen ihnen oder messen Sie eins nach dem anderen.</li><li><strong>Sie nimmt den Tisch neben einer Matte mit.</strong> Eine Matte oder ein Tuch, kleiner als das Foto, zeigt am Bildrand zwei Farben, und der Tisch neben der Matte kann für Haut gehalten werden. Verwenden Sie eine Matte oder ein Tuch, das das ganze Foto füllt, oder keines.</li><li><strong>Ein Zeichen oder Fleck wird als Loch ausgeschnitten.</strong> Nur Löcher, durch die man den Tisch sieht, sollten ausgeschnitten werden. Melden Sie das Foto dem Support.</li></ul>
+<h2 id="surface">Die Fläche ist falsch</h2>
+<ul><li>Prüfen Sie zuerst den <span class="ui">Abstand zum Tisch</span>. Ein Fehler von 1 % im Abstand ist ein Fehler von 2 % in der Fläche.</li><li>Prüfen Sie die <span class="ui">Brennweite</span>: die echte, nicht das Kleinbild-Äquivalent.</li><li>Lesen Sie die Kamerazeile: Nimmt sie die Werte aus dem Foto oder aus den Einstellungen, und stimmen sie?</li><li>Prüfen Sie mit einem Objekt bekannter Größe (siehe <a href="measure.html#check">Eine Haut messen</a>).</li></ul>
+<h2 id="manual">Das Handbuch öffnet sich nicht</h2>
+<p>Das ? sucht dieses Handbuch neben dem Programm und öffnet es in Chromium oder Google Chrome (Linux) oder Microsoft Edge (Windows), sonst im Standardbrowser. Gelingt das keinem, nennt eine Meldung die Datei des Handbuchs: Öffnen Sie sie in einem beliebigen Browser.</p>
+    <nav class="pager"><a class="prev" href="inspections.html"><span>Zurück</span>Prüfungen speichern und öffnen</a><a class="next" href="reference.html"><span>Weiter</span>Referenz</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

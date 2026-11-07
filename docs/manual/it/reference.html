@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="it" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Riferimento — Contorno Indicator</title>
+<meta name="description" content="Le formule, gli intervalli, la precisione, i file e le impostazioni.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>Manuale utente</small></a>
+  <nav class="langs" aria-label="Lingua"><a href="../en/reference.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/reference.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/reference.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/reference.html" lang="it" title="Italiano" aria-current="true"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/reference.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/reference.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/reference.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Indice">
+    <h2>Indice</h2>
+    <ol><li><a href="index.html">Home</a></li><li><a href="getting-started.html">Primi passi</a></li><li><a href="set-up.html">Impostazioni</a></li><li><a href="measure.html">Misurare una pelle</a></li><li><a href="camera.html">Da dove viene la scala</a></li><li><a href="inspections.html">Salvare e aprire ispezioni</a></li><li><a href="messages.html">Messaggi e problemi</a></li><li><a href="reference.html" aria-current="page">Riferimento</a></li></ol>
+  </nav>
+  <main>
+    <h1>Riferimento</h1>
+    <p class="summary">Le formule, gli intervalli, la precisione, i file e le impostazioni.</p>
+    <h2 id="formulas">Formule</h2>
+<div class="formula"><p>scala in larghezza (mm/px) = distanza × larghezza del pixel ÷ lunghezza focale</p><p>scala in altezza (mm/px) = distanza × altezza del pixel ÷ lunghezza focale</p><p>dimensione del pixel (modalità Dimensione del sensore) = lato lungo del sensore ÷ lato lungo della foto (px)</p><p>superficie (mm²) = pixel dentro il contorno × scala in larghezza × scala in altezza</p></div>
+<p>Il contorno disegnato e salvato è semplificato entro 0.5 mm dal bordo dei pixel; la superficie mostrata è contata sui pixel stessi, quindi è uguale al bianco della maschera.</p>
+<h2 id="ranges">Intervalli</h2>
+<table><thead><tr><th>Valore</th><th>Intervallo</th><th>Predefinito</th></tr></thead><tbody><tr><td>Distanza dal tavolo</td><td>1–100000 mm</td><td>1500 mm</td></tr><tr><td>Lunghezza focale</td><td>0.1–2000 mm</td><td>13.02 mm</td></tr><tr><td>Larghezza × altezza del sensore</td><td>0.1–100 mm ciascuna</td><td>15.04 × 11.28 mm</td></tr><tr><td>Larghezza × altezza del pixel</td><td>0.1–100 µm ciascuna</td><td>3.76 × 3.76 µm</td></tr><tr><td>Oggetto o foro più piccolo conservato</td><td>impostazione objects/min_area_mm2</td><td>100 mm²</td></tr></tbody></table>
+<h2 id="accuracy">Precisione</h2>
+<p>La superficie cresce con il quadrato della scala, quindi un errore relativo sulla distanza, sulla lunghezza focale o sulla dimensione del pixel conta doppio:</p>
+<table><thead><tr><th>Errore su</th><th>Errore sulla superficie</th></tr></thead><tbody><tr><td>distanza +1 % (15 mm a 1500 mm)</td><td>+2 %</td></tr><tr><td>lunghezza focale +1 %</td><td>−2 %</td></tr><tr><td>fotocamera inclinata di 2°, pelle al centro</td><td>meno dello 0.1 %</td></tr><tr><td>fotocamera inclinata di 2°, pelle a 300 mm dal centro</td><td>circa 1.4 %</td></tr><tr><td>contorno 1 pixel troppo fuori, pelle di 2 m² a 1.4 mm/px</td><td>circa +0.5 %</td></tr><tr><td>obiettivo messo a fuoco sul tavolo (13 mm a 1500 mm)</td><td>circa +1.7 %</td></tr></tbody></table>
+<p>La fotocamera è trattata come un foro stenopeico. Un obiettivo reale messo a fuoco sul tavolo rende la scala troppo grande di circa lunghezza focale ÷ distanza; la verifica con un oggetto noto (vedete <a href="measure.html#check">Misurare una pelle</a>) elimina questo errore insieme a qualsiasi errore sulla distanza. La distorsione dell'obiettivo non è corretta, e la superficie è la proiezione della pelle sul tavolo. Tenete la pelle al centro dell'immagine, dove la distorsione della maggior parte degli obiettivi è minima.</p>
+<h2 id="article">L'articolo</h2>
+<p>Come si trova il contorno, come la superficie deriva dalla fotocamera, come sono stati verificati entrambi e quanto è grande l'incertezza: vedete l'articolo <a href="../../articles/contorno-area-measurement/contorno-area-measurement.html">Measuring the surface of animal hides from a single photograph</a> (in inglese).</p>
+<h2 id="files">File</h2>
+<ul><li>Foto: JPEG, PNG, BMP, TIFF. I dati della fotocamera si leggono da JPEG e TIFF.</li><li>Ispezioni: zip; vedete <a href="inspections.html#save">Salvare e aprire ispezioni</a>.</li><li>Impostazioni: indicator.ini, nella cartella di configurazione dell'applicazione (su Linux ~/.config/Contorno/Indicator/).</li></ul>
+<h2 id="settings">Impostazioni conservate</h2>
+<p>La fotocamera di <span class="ui">Imposta</span>, la lingua, il tema, l'ultima cartella e l'area minima si conservano fra una sessione e l'altra. L'area minima non ha un campo nella finestra; si cambia in indicator.ini (objects/min_area_mm2, uno fra 0, 10, 50, 100, 500, 1000, 5000, 10000, 50000 mm²).</p>
+<h2 id="photos">Foto</h2>
+<p>La pelle bovina degli screenshot è «Stretched Cowhide Skin» di Enda012, Wikimedia Commons (commons.wikimedia.org/wiki/File:Stretched_Cowhide_Skin.jpg), con licenza CC BY 4.0 (creativecommons.org/licenses/by/4.0/). È stata ridotta di dimensioni e mostrata in Contorno Indicator con il suo contorno.</p>
+    <nav class="pager"><a class="prev" href="messages.html"><span>Precedente</span>Messaggi e problemi</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

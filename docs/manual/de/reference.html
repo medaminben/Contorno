@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="de" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Referenz — Contorno Indicator</title>
+<meta name="description" content="Die Formeln, die Bereiche, die Genauigkeit, die Dateien und die Einstellungen.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>Benutzerhandbuch</small></a>
+  <nav class="langs" aria-label="Sprache"><a href="../en/reference.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/reference.html" lang="de" title="Deutsch" aria-current="true"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/reference.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/reference.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/reference.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/reference.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/reference.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Inhalt">
+    <h2>Inhalt</h2>
+    <ol><li><a href="index.html">Start</a></li><li><a href="getting-started.html">Erste Schritte</a></li><li><a href="set-up.html">Einrichten</a></li><li><a href="measure.html">Eine Haut messen</a></li><li><a href="camera.html">Woher der Maßstab kommt</a></li><li><a href="inspections.html">Prüfungen speichern und öffnen</a></li><li><a href="messages.html">Meldungen und Probleme</a></li><li><a href="reference.html" aria-current="page">Referenz</a></li></ol>
+  </nav>
+  <main>
+    <h1>Referenz</h1>
+    <p class="summary">Die Formeln, die Bereiche, die Genauigkeit, die Dateien und die Einstellungen.</p>
+    <h2 id="formulas">Formeln</h2>
+<div class="formula"><p>Maßstab quer (mm/px) = Abstand × Pixelbreite ÷ Brennweite</p><p>Maßstab längs (mm/px) = Abstand × Pixelhöhe ÷ Brennweite</p><p>Pixelgröße (Modus Sensorgröße) = lange Seite des Sensors ÷ lange Seite des Fotos (px)</p><p>Fläche (mm²) = Pixel innerhalb der Kontur × Maßstab quer × Maßstab längs</p></div>
+<p>Die gezeichnete und gespeicherte Kontur ist innerhalb von 0.5 mm um den Pixelrand vereinfacht; die angezeigte Fläche wird auf den Pixeln selbst gezählt und gleicht daher dem Weiß der Maske.</p>
+<h2 id="ranges">Bereiche</h2>
+<table><thead><tr><th>Wert</th><th>Bereich</th><th>Vorgabe</th></tr></thead><tbody><tr><td>Abstand zum Tisch</td><td>1–100000 mm</td><td>1500 mm</td></tr><tr><td>Brennweite</td><td>0.1–2000 mm</td><td>13.02 mm</td></tr><tr><td>Sensorbreite × -höhe</td><td>je 0.1–100 mm</td><td>15.04 × 11.28 mm</td></tr><tr><td>Pixelbreite × -höhe</td><td>je 0.1–100 µm</td><td>3.76 × 3.76 µm</td></tr><tr><td>Kleinstes behaltenes Objekt oder Loch</td><td>Einstellung objects/min_area_mm2</td><td>100 mm²</td></tr></tbody></table>
+<h2 id="accuracy">Genauigkeit</h2>
+<p>Die Fläche wächst mit dem Quadrat des Maßstabs, daher zählt ein relativer Fehler im Abstand, in der Brennweite oder in der Pixelgröße doppelt:</p>
+<table><thead><tr><th>Fehler in</th><th>Fehler in der Fläche</th></tr></thead><tbody><tr><td>Abstand +1 % (15 mm bei 1500 mm)</td><td>+2 %</td></tr><tr><td>Brennweite +1 %</td><td>−2 %</td></tr><tr><td>Kamera um 2° geneigt, Haut mittig</td><td>unter 0.1 %</td></tr><tr><td>Kamera um 2° geneigt, Haut 300 mm außermittig</td><td>etwa 1.4 %</td></tr><tr><td>Kontur 1 Pixel zu weit außen, Haut von 2 m² bei 1.4 mm/px</td><td>etwa +0.5 %</td></tr><tr><td>Objektiv auf den Tisch fokussiert (13-mm-Objektiv bei 1500 mm)</td><td>etwa +1.7 %</td></tr></tbody></table>
+<p>Die Kamera wird als Lochkamera behandelt. Ein echtes, auf den Tisch fokussiertes Objektiv macht den Maßstab um etwa Brennweite ÷ Abstand zu groß; die Prüfung mit einem bekannten Objekt (siehe <a href="measure.html#check">Eine Haut messen</a>) beseitigt das zusammen mit jedem Fehler im Abstand. Die Verzeichnung des Objektivs wird nicht korrigiert, und die Fläche ist die Projektion der Haut auf den Tisch. Halten Sie die Haut in der Bildmitte, wo die Verzeichnung der meisten Objektive am kleinsten ist.</p>
+<h2 id="article">Der Artikel</h2>
+<p>Wie die Kontur gefunden wird, wie die Fläche aus der Kamera folgt, wie beides geprüft wurde und wie groß die Unsicherheit ist: siehe den Artikel <a href="../../articles/contorno-area-measurement/contorno-area-measurement.html">Measuring the surface of animal hides from a single photograph</a> (auf Englisch).</p>
+<h2 id="files">Dateien</h2>
+<ul><li>Fotos: JPEG, PNG, BMP, TIFF. Kameradaten werden aus JPEG und TIFF gelesen.</li><li>Prüfungen: Zip; siehe <a href="inspections.html#save">Prüfungen speichern und öffnen</a>.</li><li>Einstellungen: indicator.ini im Einstellungsordner des Programms (unter Linux ~/.config/Contorno/Indicator/).</li></ul>
+<h2 id="settings">Gespeicherte Einstellungen</h2>
+<p>Die Kamera aus <span class="ui">Einrichten</span>, die Sprache, das Design, der letzte Ordner und die Mindestfläche bleiben zwischen den Sitzungen erhalten. Die Mindestfläche hat kein Feld im Fenster; sie lässt sich in indicator.ini ändern (objects/min_area_mm2, einer der Werte 0, 10, 50, 100, 500, 1000, 5000, 10000, 50000 mm²).</p>
+<h2 id="photos">Fotos</h2>
+<p>Die Kuhhaut in den Bildschirmfotos ist „Stretched Cowhide Skin“ von Enda012, Wikimedia Commons (commons.wikimedia.org/wiki/File:Stretched_Cowhide_Skin.jpg), lizenziert unter CC BY 4.0 (creativecommons.org/licenses/by/4.0/). Sie wurde verkleinert und in Contorno Indicator mit ihrer Kontur gezeigt.</p>
+    <nav class="pager"><a class="prev" href="messages.html"><span>Zurück</span>Meldungen und Probleme</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

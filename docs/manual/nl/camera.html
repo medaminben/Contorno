@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="nl" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Waar de schaal vandaan komt — Contorno Indicator</title>
+<meta name="description" content="De cameragegevens van de foto, de instellingen en de regel die zegt wat gebruikt is.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>Handleiding</small></a>
+  <nav class="langs" aria-label="Taal"><a href="../en/camera.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/camera.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/camera.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/camera.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/camera.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/camera.html" lang="nl" title="Nederlands" aria-current="true"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/camera.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Inhoud">
+    <h2>Inhoud</h2>
+    <ol><li><a href="index.html">Start</a></li><li><a href="getting-started.html">Aan de slag</a></li><li><a href="set-up.html">Instellen</a></li><li><a href="measure.html">Een huid meten</a></li><li><a href="camera.html" aria-current="page">Waar de schaal vandaan komt</a></li><li><a href="inspections.html">Inspecties opslaan en openen</a></li><li><a href="messages.html">Meldingen en problemen</a></li><li><a href="reference.html">Naslag</a></li></ol>
+  </nav>
+  <main>
+    <h1>Waar de schaal vandaan komt</h1>
+    <p class="summary">De cameragegevens van de foto, de instellingen en de regel die zegt wat gebruikt is.</p>
+    <p>Het oppervlak is het aantal pixels binnen de contour maal het oppervlak van één pixel op de tafel. De grootte van die pixel, de <strong>schaal</strong> in mm/px, volgt uit drie waarden:</p>
+<div class="formula"><p>schaal = afstand tot de tafel × pixelgrootte ÷ brandpuntsafstand</p></div>
+<h2 id="order">Eerst de foto, dan de instellingen</h2>
+<p>Bij het importeren leest Contorno Indicator de cameragegevens die een camera in haar JPEG- of TIFF-bestanden schrijft (EXIF):</p>
+<ul><li><strong>Brandpuntsafstand</strong> — uit de foto, als die er een tussen 0.1 en 2000 mm heeft.</li><li><strong>Pixelgrootte</strong> — uit de brandvlakresolutie van de foto, anders berekend uit zijn kleinbeeldequivalente brandpuntsafstand, als het resultaat tussen 0.1 en 100 µm ligt.</li><li><strong>Afstand</strong> — altijd uit <span class="ui">Instellen</span>. De foto kan niet weten hoe hoog de camera hing.</li></ul>
+<p>Een waarde die de foto niet heeft, of buiten deze bereiken heeft, komt in plaats daarvan uit <span class="ui">Instellen</span>, elk op zich.</p>
+<p>Het aantal pixels komt altijd uit de foto zelf, nadat hij rechtop is gezet. Een foto die na het nemen verkleind is, wordt in de modus <span class="ui">Sensorgrootte</span> juist gemeten, omdat de grootte van de sensor verdeeld wordt over de pixels die de foto werkelijk heeft.</p>
+<h2 id="line">De cameraregel</h2>
+<p>Na elke import zegt een regel in het meldingenpaneel waar elke waarde vandaan kwam en welke schaal dat geeft, bijvoorbeeld:</p>
+<p><em>Camera: brandpuntsafstand 5.56 mm en pixelgrootte 5.23 µm (35 mm-equivalent) uit de foto, afstand 1500 mm uit de instellingen: 1.411 mm/px.</em></p>
+<p>Andere vormen:</p>
+<ul><li><em>geen cameragegevens in de foto, instellingen gebruikt</em> — de foto heeft geen bruikbare EXIF-gegevens (een PNG, een schermafbeelding, een bewerkte kopie).</li><li><em>de brandpuntsafstand … van de foto is ongeldig</em> — er is een waarde gevonden maar die ligt buiten het bereik; de instelling is gebruikt.</li><li><em>de foto is mogelijk bijgesneden</em> — de zijden van de foto staan niet in dezelfde verhouding als die van de sensor. Is hij bijgesneden, dan is de schaal uit de sensorgrootte fout: gebruik de originele foto.</li></ul>
+<aside class="warning"><p>Het kleinbeeldequivalent wordt door de camerafabrikant afgerond, dus een daaruit berekende pixelgrootte is bij benadering. Voor de beste nauwkeurigheid voert u de echte sensor- of pixelgrootte in onder <span class="ui">Instellen</span> en gebruikt u foto's met de brandvlakresolutie in hun gegevens, of controleert u de schaal met een bekend voorwerp.</p></aside>
+<h2 id="non-square">Niet-vierkante pixels</h2>
+<p>Sommige sensoren hebben pixels die niet vierkant zijn. Geef in de modus <span class="ui">Pixelgrootte</span> de breedte en hoogte van de pixel op, met de ketting uit. De schaal heeft dan twee waarden, één dwars en één langs de foto, en het oppervlak wordt met beide geteld.</p>
+    <nav class="pager"><a class="prev" href="measure.html"><span>Vorige</span>Een huid meten</a><a class="next" href="inspections.html"><span>Volgende</span>Inspecties opslaan en openen</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

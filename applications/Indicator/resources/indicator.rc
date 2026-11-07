@@ -1,0 +1,5 @@
+// Windows: the executable's icon (Explorer, taskbar before the window shows),
+// and the resources wxWidgets' own dialogs need.
+#include "wx/msw/wx.rc"
+
+IDI_ICON1 ICON "indicator.ico"

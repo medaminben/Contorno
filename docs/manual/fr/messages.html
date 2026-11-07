@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Messages et problèmes — Contorno Indicator</title>
+<meta name="description" content="Ce que dit le panneau de messages, et que faire quand le résultat semble faux.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>Manuel d'utilisation</small></a>
+  <nav class="langs" aria-label="Langue"><a href="../en/messages.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/messages.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/messages.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/messages.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/messages.html" lang="fr" title="Français" aria-current="true"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/messages.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/messages.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Sommaire">
+    <h2>Sommaire</h2>
+    <ol><li><a href="index.html">Accueil</a></li><li><a href="getting-started.html">Premiers pas</a></li><li><a href="set-up.html">Réglages</a></li><li><a href="measure.html">Mesurer une peau</a></li><li><a href="camera.html">D&#x27;où vient l&#x27;échelle</a></li><li><a href="inspections.html">Enregistrer et ouvrir des inspections</a></li><li><a href="messages.html" aria-current="page">Messages et problèmes</a></li><li><a href="reference.html">Référence</a></li></ol>
+  </nav>
+  <main>
+    <h1>Messages et problèmes</h1>
+    <p class="summary">Ce que dit le panneau de messages, et que faire quand le résultat semble faux.</p>
+    <h2 id="usual">Lignes habituelles</h2>
+<table><thead><tr><th>Ligne</th><th>Signification</th></tr></thead><tbody><tr><td>cowhide.jpg importé, 1600 x 1200 px.</td><td>La photo est affichée ; sa taille en pixels.</td></tr><tr><td>Caméra : …</td><td>D'où vient l'échelle. Voir <a href="camera.html#line">D'où vient l'échelle</a>.</td></tr><tr><td>Analyse en cours…</td><td>L'analyse tourne ; la barre d'activité avance.</td></tr><tr><td>1 objet · 1.411 mm/px · 3.2 s</td><td>Le résultat : les objets, l'échelle et le temps pris.</td></tr><tr><td>Une partie de la peau a été trouvée à partir de la table autour, …</td><td>L'IA n'a pris qu'une partie de la peau, par exemple les taches sombres d'une peau tachetée. Le contour a été trouvé à la place à partir de la table autour de la peau. Vérifiez-le avant d'enregistrer.</td></tr><tr><td>Aucun objet trouvé</td><td>Rien sur la photo n'est assez grand. L'afficheur montre 0.0 cm².</td></tr><tr><td>… enregistré / … ouvert</td><td>Le fichier écrit ou lu.</td></tr></tbody></table>
+<h2 id="ai">Le contour IA est indisponible</h2>
+<p><em>Contour IA indisponible : modèle introuvable</em> — le fichier du modèle IS-Net manque. Le message énumère les endroits où il a été cherché. Dans une compilation depuis les sources, compilez la cible isnet_model ; dans une installation, réinstallez.</p>
+<p><em>Contour IA indisponible : Vision a été compilé sans LibTorch</em> — cette copie du programme a été compilée sans l'IA. Elle montre la photo mais ne mesure pas : elle ne se rabat jamais sur une méthode moins exacte sans le dire.</p>
+<h2 id="outline">Le contour est faux</h2>
+<ul><li><strong>Il suit une ombre.</strong> Éclairez la table plus uniformément, ou par le dessus.</li><li><strong>Il entame une partie claire de la peau.</strong> Utilisez une table dont la couleur diffère davantage de celle de la peau.</li><li><strong>Il laisse de côté une grande partie unie d'une peau bicolore.</strong> L'IA peut prendre une grande zone uniforme, comme le blanc d'une peau de vache, pour la table. Contorno trouve alors la peau à partir de la table autour, et le panneau de messages le dit. Il faut pour cela de la table tout autour de la peau : là où la peau atteint le bord de la photo, le contour de l'IA est gardé. Vérifiez toujours le contour avant d'enregistrer.</li><li><strong>Il englobe deux peaux.</strong> Deux objets qui se touchent forment un seul objet. Laissez un écart entre eux, ou mesurez-les l'un après l'autre.</li><li><strong>Il englobe la table à côté d'un tapis.</strong> Un tapis ou un tissu plus petit que la photo montre deux couleurs au bord de la photo, et la table à côté du tapis peut être prise pour de la peau. Utilisez un tapis ou un tissu qui remplit toute la photo, ou aucun.</li><li><strong>Une marque ou une tache est découpée comme un trou.</strong> Seuls les trous à travers lesquels on voit la table devraient être découpés. Signalez la photo au support.</li></ul>
+<h2 id="surface">La surface est fausse</h2>
+<ul><li>Vérifiez d'abord la <span class="ui">Distance à la table</span>. Une erreur de 1 % sur la distance fait une erreur de 2 % sur la surface.</li><li>Vérifiez la <span class="ui">Focale</span> : la vraie, pas l'équivalent 35 mm.</li><li>Lisez la ligne de caméra : prend-elle les valeurs de la photo ou des réglages, et sont-elles justes ?</li><li>Vérifiez avec un objet de taille connue (voir <a href="measure.html#check">Mesurer une peau</a>).</li></ul>
+<h2 id="manual">Le manuel ne s'ouvre pas</h2>
+<p>Le ? cherche ce manuel à côté du programme et l'ouvre dans Chromium ou Google Chrome (Linux) ou Microsoft Edge (Windows), sinon dans le navigateur par défaut. Si aucun n'y parvient, un message donne le fichier du manuel : ouvrez-le dans n'importe quel navigateur.</p>
+    <nav class="pager"><a class="prev" href="inspections.html"><span>Précédent</span>Enregistrer et ouvrir des inspections</a><a class="next" href="reference.html"><span>Suivant</span>Référence</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

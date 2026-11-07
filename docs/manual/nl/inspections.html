@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="nl" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inspecties opslaan en openen — Contorno Indicator</title>
+<meta name="description" content="Eén zip-bestand bewaart de foto, de camera, de contour en het oppervlak.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>Handleiding</small></a>
+  <nav class="langs" aria-label="Taal"><a href="../en/inspections.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/inspections.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/inspections.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/inspections.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/inspections.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/inspections.html" lang="nl" title="Nederlands" aria-current="true"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/inspections.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Inhoud">
+    <h2>Inhoud</h2>
+    <ol><li><a href="index.html">Start</a></li><li><a href="getting-started.html">Aan de slag</a></li><li><a href="set-up.html">Instellen</a></li><li><a href="measure.html">Een huid meten</a></li><li><a href="camera.html">Waar de schaal vandaan komt</a></li><li><a href="inspections.html" aria-current="page">Inspecties opslaan en openen</a></li><li><a href="messages.html">Meldingen en problemen</a></li><li><a href="reference.html">Naslag</a></li></ol>
+  </nav>
+  <main>
+    <h1>Inspecties opslaan en openen</h1>
+    <p class="summary">Eén zip-bestand bewaart de foto, de camera, de contour en het oppervlak.</p>
+    <h2 id="save">Opslaan</h2>
+<p>Druk op <span class="ui">Opslaan</span> zodra de uitlezing het resultaat toont. Kies een map en een naam; de naam van de foto wordt voorgesteld. Terwijl een foto geanalyseerd wordt, wacht <span class="ui">Opslaan</span> op het resultaat: het meldingenpaneel zegt <em>Wacht tot de analyse klaar is.</em></p>
+<p>Het bestand is een gewone zip die elk programma kan lezen:</p>
+<table><thead><tr><th>Bestand</th><th>Inhoud</th></tr></thead><tbody><tr><td>original.jpg (of .png, …)</td><td>de foto, byte voor byte zoals geïmporteerd</td></tr><tr><td>mask.png</td><td>het voorwerp wit op zwart, op de grootte van de foto</td></tr><tr><td>camera.json</td><td>de gebruikte afstand, brandpuntsafstand en pixelgrootte, en waar elk vandaan kwam</td></tr><tr><td>parameters.json</td><td>het minimale oppervlak en de tolerantie van de contour</td></tr><tr><td>objects.dxf</td><td>de contour en de gaten in millimeters, voor CAD en snijmachines</td></tr><tr><td>result.json</td><td>de grootte van de foto, de schaal en het oppervlak in mm²</td></tr></tbody></table>
+<h2 id="open">Openen</h2>
+<p>Druk op <span class="ui">Openen</span> en kies een opgeslagen zip. Foto, contour en oppervlak komen precies terug zoals ze opgeslagen zijn, zonder nieuwe analyse, met de opgeslagen camera. Het meldingenpaneel sluit de regel af met <em>opgeslagen resultaat</em>.</p>
+<p>De volgende <span class="ui">Importeren</span> keert terug naar de camera van <span class="ui">Instellen</span>.</p>
+<aside class="note"><p>Een inspectie die door een oudere versie van Contorno is opgeslagen (een huidinspectie) opent haar foto en camera en wordt opnieuw geanalyseerd met de AI-contour. Het meldingenpaneel zegt het.</p></aside>
+<h2 id="folders">Mappen</h2>
+<p><span class="ui">Importeren</span>, <span class="ui">Openen</span> en <span class="ui">Opslaan</span> beginnen allemaal in de map van het laatste bestand dat in een van hen gekozen is.</p>
+    <nav class="pager"><a class="prev" href="camera.html"><span>Vorige</span>Waar de schaal vandaan komt</a><a class="next" href="messages.html"><span>Volgende</span>Meldingen en problemen</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

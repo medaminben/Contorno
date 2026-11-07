@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Referencia — Contorno Indicator</title>
+<meta name="description" content="Las fórmulas, los rangos, la precisión, los archivos y los ajustes.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>Manual de usuario</small></a>
+  <nav class="langs" aria-label="Idioma"><a href="../en/reference.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/reference.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/reference.html" lang="es" title="Español" aria-current="true"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/reference.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/reference.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/reference.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/reference.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Contenido">
+    <h2>Contenido</h2>
+    <ol><li><a href="index.html">Inicio</a></li><li><a href="getting-started.html">Primeros pasos</a></li><li><a href="set-up.html">Ajustes</a></li><li><a href="measure.html">Medir una piel</a></li><li><a href="camera.html">De dónde sale la escala</a></li><li><a href="inspections.html">Guardar y abrir inspecciones</a></li><li><a href="messages.html">Mensajes y problemas</a></li><li><a href="reference.html" aria-current="page">Referencia</a></li></ol>
+  </nav>
+  <main>
+    <h1>Referencia</h1>
+    <p class="summary">Las fórmulas, los rangos, la precisión, los archivos y los ajustes.</p>
+    <h2 id="formulas">Fórmulas</h2>
+<div class="formula"><p>escala a lo ancho (mm/px) = distancia × ancho del píxel ÷ distancia focal</p><p>escala a lo alto (mm/px) = distancia × alto del píxel ÷ distancia focal</p><p>tamaño del píxel (modo Tamaño del sensor) = lado largo del sensor ÷ lado largo de la foto (px)</p><p>superficie (mm²) = píxeles dentro del contorno × escala a lo ancho × escala a lo alto</p></div>
+<p>El contorno dibujado y guardado se simplifica dentro de 0.5 mm del borde de los píxeles; la superficie mostrada se cuenta sobre los propios píxeles, así que es igual al blanco de la máscara.</p>
+<h2 id="ranges">Rangos</h2>
+<table><thead><tr><th>Valor</th><th>Rango</th><th>Por defecto</th></tr></thead><tbody><tr><td>Distancia a la mesa</td><td>1–100000 mm</td><td>1500 mm</td></tr><tr><td>Distancia focal</td><td>0.1–2000 mm</td><td>13.02 mm</td></tr><tr><td>Ancho × alto del sensor</td><td>0.1–100 mm cada uno</td><td>15.04 × 11.28 mm</td></tr><tr><td>Ancho × alto del píxel</td><td>0.1–100 µm cada uno</td><td>3.76 × 3.76 µm</td></tr><tr><td>Objeto o agujero más pequeño que se conserva</td><td>ajuste objects/min_area_mm2</td><td>100 mm²</td></tr></tbody></table>
+<h2 id="accuracy">Precisión</h2>
+<p>La superficie crece con el cuadrado de la escala, así que un error relativo en la distancia, la distancia focal o el tamaño del píxel cuenta doble:</p>
+<table><thead><tr><th>Error en</th><th>Error en la superficie</th></tr></thead><tbody><tr><td>distancia +1 % (15 mm a 1500 mm)</td><td>+2 %</td></tr><tr><td>distancia focal +1 %</td><td>−2 %</td></tr><tr><td>cámara inclinada 2°, piel centrada</td><td>menos del 0.1 %</td></tr><tr><td>cámara inclinada 2°, piel a 300 mm del centro</td><td>alrededor del 1.4 %</td></tr><tr><td>contorno 1 píxel demasiado afuera, piel de 2 m² a 1.4 mm/px</td><td>alrededor de +0.5 %</td></tr><tr><td>objetivo enfocado a la mesa (13 mm a 1500 mm)</td><td>alrededor de +1.7 %</td></tr></tbody></table>
+<p>La cámara se trata como una cámara estenopeica. Un objetivo real enfocado a la mesa hace la escala demasiado grande en aproximadamente distancia focal ÷ distancia; la comprobación con un objeto conocido (vea <a href="measure.html#check">Medir una piel</a>) elimina este error junto con cualquier error en la distancia. La distorsión del objetivo no se corrige, y la superficie es la proyección de la piel sobre la mesa. Mantenga la piel en el centro de la imagen, donde la distorsión de la mayoría de los objetivos es menor.</p>
+<h2 id="article">El artículo</h2>
+<p>Cómo se encuentra el contorno, cómo la superficie se deduce de la cámara, cómo se probaron ambos y cuál es la incertidumbre: vea el artículo <a href="../../articles/contorno-area-measurement/contorno-area-measurement.html">Measuring the surface of animal hides from a single photograph</a> (en inglés).</p>
+<h2 id="files">Archivos</h2>
+<ul><li>Fotos: JPEG, PNG, BMP, TIFF. Los datos de cámara se leen de JPEG y TIFF.</li><li>Inspecciones: zip; vea <a href="inspections.html#save">Guardar y abrir inspecciones</a>.</li><li>Ajustes: indicator.ini, en la carpeta de configuración de la aplicación (en Linux ~/.config/Contorno/Indicator/).</li></ul>
+<h2 id="settings">Ajustes que se conservan</h2>
+<p>La cámara de <span class="ui">Ajustes</span>, el idioma, el tema, la última carpeta y el área mínima se conservan entre sesiones. El área mínima no tiene campo en la ventana; se puede cambiar en indicator.ini (objects/min_area_mm2, uno de 0, 10, 50, 100, 500, 1000, 5000, 10000, 50000 mm²).</p>
+<h2 id="photos">Fotos</h2>
+<p>La piel de vaca de las capturas es «Stretched Cowhide Skin» de Enda012, Wikimedia Commons (commons.wikimedia.org/wiki/File:Stretched_Cowhide_Skin.jpg), con licencia CC BY 4.0 (creativecommons.org/licenses/by/4.0/). Se redujo de tamaño y se muestra en Contorno Indicator con su contorno.</p>
+    <nav class="pager"><a class="prev" href="messages.html"><span>Anterior</span>Mensajes y problemas</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

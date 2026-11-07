@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>De dónde sale la escala — Contorno Indicator</title>
+<meta name="description" content="Los datos de cámara de la foto, los ajustes y la línea que dice qué se usó.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>Manual de usuario</small></a>
+  <nav class="langs" aria-label="Idioma"><a href="../en/camera.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/camera.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/camera.html" lang="es" title="Español" aria-current="true"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/camera.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/camera.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/camera.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/camera.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Contenido">
+    <h2>Contenido</h2>
+    <ol><li><a href="index.html">Inicio</a></li><li><a href="getting-started.html">Primeros pasos</a></li><li><a href="set-up.html">Ajustes</a></li><li><a href="measure.html">Medir una piel</a></li><li><a href="camera.html" aria-current="page">De dónde sale la escala</a></li><li><a href="inspections.html">Guardar y abrir inspecciones</a></li><li><a href="messages.html">Mensajes y problemas</a></li><li><a href="reference.html">Referencia</a></li></ol>
+  </nav>
+  <main>
+    <h1>De dónde sale la escala</h1>
+    <p class="summary">Los datos de cámara de la foto, los ajustes y la línea que dice qué se usó.</p>
+    <p>La superficie es el número de píxeles dentro del contorno por la superficie de un píxel sobre la mesa. El tamaño de ese píxel, la <strong>escala</strong> en mm/px, sale de tres valores:</p>
+<div class="formula"><p>escala = distancia a la mesa × tamaño del píxel ÷ distancia focal</p></div>
+<h2 id="order">Primero la foto, luego los ajustes</h2>
+<p>Al importar una foto, Contorno Indicator lee los datos de cámara que una cámara escribe en sus archivos JPEG o TIFF (EXIF):</p>
+<ul><li><strong>Distancia focal</strong> — la de la foto, si está entre 0.1 y 2000 mm.</li><li><strong>Tamaño del píxel</strong> — a partir de la resolución del plano focal de la foto, o si no calculado con su distancia focal equivalente de 35 mm, si el resultado está entre 0.1 y 100 µm.</li><li><strong>Distancia</strong> — siempre la de <span class="ui">Ajustes</span>. La foto no puede saber a qué altura estaba la cámara.</li></ul>
+<p>Un valor que la foto no tiene, o que tiene fuera de estos rangos, se toma en su lugar de <span class="ui">Ajustes</span>, cada uno por separado.</p>
+<p>El número de píxeles sale siempre de la propia foto, una vez enderezada. Una foto reducida después de tomarla se mide bien en el modo <span class="ui">Tamaño del sensor</span>, porque el tamaño del sensor se reparte entre los píxeles que la foto tiene de verdad.</p>
+<h2 id="line">La línea de cámara</h2>
+<p>Tras cada importación, una línea del panel de mensajes dice de dónde salió cada valor y la escala resultante, por ejemplo:</p>
+<p><em>Cámara: distancia focal 5.56 mm y tamaño de píxel 5.23 µm (equivalente a 35 mm) de la foto, distancia 1500 mm de los ajustes: 1.411 mm/px.</em></p>
+<p>Otras formas:</p>
+<ul><li><em>sin datos de cámara en la foto, se usan los ajustes</em> — la foto no tiene datos EXIF utilizables (un PNG, una captura de pantalla, una copia editada).</li><li><em>la distancia focal … de la foto no es válida</em> — se encontró un valor pero está fuera de rango; se usó el ajuste.</li><li><em>puede que la foto esté recortada</em> — los lados de la foto no guardan la misma proporción que los del sensor. Si se recortó, la escala obtenida del tamaño del sensor es errónea: use la foto original.</li></ul>
+<aside class="warning"><p>El equivalente de 35 mm lo redondea el fabricante de la cámara, así que un tamaño de píxel calculado con él es aproximado. Para la mejor precisión, introduzca el tamaño real del sensor o del píxel en <span class="ui">Ajustes</span> y use fotos con la resolución del plano focal en sus datos, o compruebe la escala con un objeto conocido.</p></aside>
+<h2 id="non-square">Píxeles no cuadrados</h2>
+<p>Algunos sensores tienen píxeles que no son cuadrados. Indique el ancho y el alto del píxel en el modo <span class="ui">Tamaño del píxel</span>, con la cadena desactivada. La escala tiene entonces dos valores, uno a lo ancho y otro a lo alto de la foto, y la superficie se cuenta con ambos.</p>
+    <nav class="pager"><a class="prev" href="measure.html"><span>Anterior</span>Medir una piel</a><a class="next" href="inspections.html"><span>Siguiente</span>Guardar y abrir inspecciones</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

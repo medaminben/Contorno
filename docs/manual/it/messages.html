@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="it" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Messaggi e problemi — Contorno Indicator</title>
+<meta name="description" content="Che cosa dice il pannello dei messaggi e che cosa fare quando il risultato sembra sbagliato.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>Manuale utente</small></a>
+  <nav class="langs" aria-label="Lingua"><a href="../en/messages.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/messages.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/messages.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/messages.html" lang="it" title="Italiano" aria-current="true"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/messages.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/messages.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/messages.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Indice">
+    <h2>Indice</h2>
+    <ol><li><a href="index.html">Home</a></li><li><a href="getting-started.html">Primi passi</a></li><li><a href="set-up.html">Impostazioni</a></li><li><a href="measure.html">Misurare una pelle</a></li><li><a href="camera.html">Da dove viene la scala</a></li><li><a href="inspections.html">Salvare e aprire ispezioni</a></li><li><a href="messages.html" aria-current="page">Messaggi e problemi</a></li><li><a href="reference.html">Riferimento</a></li></ol>
+  </nav>
+  <main>
+    <h1>Messaggi e problemi</h1>
+    <p class="summary">Che cosa dice il pannello dei messaggi e che cosa fare quando il risultato sembra sbagliato.</p>
+    <h2 id="usual">Righe abituali</h2>
+<table><thead><tr><th>Riga</th><th>Significato</th></tr></thead><tbody><tr><td>Importato cowhide.jpg, 1600 x 1200 px.</td><td>La foto è mostrata; la sua dimensione in pixel.</td></tr><tr><td>Fotocamera: …</td><td>Da dove viene la scala. Vedete <a href="camera.html#line">Da dove viene la scala</a>.</td></tr><tr><td>Analisi in corso…</td><td>L'analisi è in corso; la barra di attività avanza.</td></tr><tr><td>1 oggetto · 1.411 mm/px · 3.2 s</td><td>Il risultato: gli oggetti, la scala e il tempo impiegato.</td></tr><tr><td>Parte della pelle è stata trovata dal tavolo intorno, …</td><td>L'IA ha preso solo una parte della pelle, per esempio le macchie scure di una pelle pezzata. Il contorno è stato trovato invece dal tavolo intorno alla pelle. Controllatelo prima di salvare.</td></tr><tr><td>Nessun oggetto trovato</td><td>Niente sulla foto è abbastanza grande. Il display mostra 0.0 cm².</td></tr><tr><td>Salvato … / Aperto …</td><td>Il file scritto o letto.</td></tr></tbody></table>
+<h2 id="ai">Il contorno IA non è disponibile</h2>
+<p><em>Contorno IA non disponibile: modello non trovato</em> — manca il file del modello IS-Net. Il messaggio elenca i luoghi in cui è stato cercato. In una compilazione dai sorgenti, compilate il target isnet_model; in un'installazione, reinstallate.</p>
+<p><em>Contorno IA non disponibile: Vision è stato compilato senza LibTorch</em> — questa copia del programma è stata compilata senza l'IA. Mostra la foto ma non misura: non ripiega mai in silenzio su un metodo meno esatto.</p>
+<h2 id="outline">Il contorno è sbagliato</h2>
+<ul><li><strong>Segue un'ombra.</strong> Illuminate il tavolo in modo più uniforme, o dall'alto.</li><li><strong>Taglia una parte chiara della pelle.</strong> Usate un tavolo il cui colore si distingua di più da quello della pelle.</li><li><strong>Lascia fuori una grande parte uniforme di una pelle bicolore.</strong> L'IA può scambiare per il tavolo un'area ampia e uniforme, come il bianco di una pelle bovina. Contorno trova allora la pelle dal tavolo intorno, e il pannello dei messaggi lo dice. Per questo il tavolo deve vedersi tutto intorno alla pelle: dove la pelle raggiunge il bordo della foto, resta il contorno dell'IA. Controllate sempre il contorno prima di salvare.</li><li><strong>Racchiude due pelli.</strong> Due oggetti che si toccano sono un unico oggetto. Lasciate uno spazio fra loro o misurateli uno alla volta.</li><li><strong>Include il tavolo accanto a un tappetino.</strong> Un tappetino o un telo più piccolo della foto mostra due colori sul bordo della foto, e il tavolo accanto al tappetino può essere preso per pelle. Usate un tappetino o un telo che riempia tutta la foto, oppure nessuno.</li><li><strong>Un segno o una macchia viene ritagliato come foro.</strong> Solo i fori attraverso cui si vede il tavolo dovrebbero essere ritagliati. Segnalate la foto all'assistenza.</li></ul>
+<h2 id="surface">La superficie è sbagliata</h2>
+<ul><li>Controllate prima la <span class="ui">Distanza dal tavolo</span>. Un errore dell'1 % sulla distanza è un errore del 2 % sulla superficie.</li><li>Controllate la <span class="ui">Lunghezza focale</span>: quella reale, non l'equivalente 35 mm.</li><li>Leggete la riga della fotocamera: prende i valori dalla foto o dalle impostazioni, e sono giusti?</li><li>Verificate con un oggetto di dimensione nota (vedete <a href="measure.html#check">Misurare una pelle</a>).</li></ul>
+<h2 id="manual">Il manuale non si apre</h2>
+<p>Il ? cerca questo manuale accanto al programma e lo apre in Chromium o Google Chrome (Linux) o Microsoft Edge (Windows), altrimenti nel browser predefinito. Se nessuno ci riesce, un messaggio indica il file del manuale: apritelo in un browser qualsiasi.</p>
+    <nav class="pager"><a class="prev" href="inspections.html"><span>Precedente</span>Salvare e aprire ispezioni</a><a class="next" href="reference.html"><span>Successivo</span>Riferimento</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Messages and problems — Contorno Indicator</title>
+<meta name="description" content="What the message panel says, and what to do when the result looks wrong.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>User manual</small></a>
+  <nav class="langs" aria-label="Language"><a href="../en/messages.html" lang="en" title="English" aria-current="true"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/messages.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/messages.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/messages.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/messages.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/messages.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/messages.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Contents">
+    <h2>Contents</h2>
+    <ol><li><a href="index.html">Home</a></li><li><a href="getting-started.html">Getting started</a></li><li><a href="set-up.html">Set Up</a></li><li><a href="measure.html">Measure a hide</a></li><li><a href="camera.html">Where the scale comes from</a></li><li><a href="inspections.html">Save and open inspections</a></li><li><a href="messages.html" aria-current="page">Messages and problems</a></li><li><a href="reference.html">Reference</a></li></ol>
+  </nav>
+  <main>
+    <h1>Messages and problems</h1>
+    <p class="summary">What the message panel says, and what to do when the result looks wrong.</p>
+    <h2 id="usual">Usual lines</h2>
+<table><thead><tr><th>Line</th><th>Meaning</th></tr></thead><tbody><tr><td>Imported cowhide.jpg, 1600 x 1200 px.</td><td>The photo is shown; its size in pixels.</td></tr><tr><td>Camera: …</td><td>Where the scale came from. See <a href="camera.html#line">Where the scale comes from</a>.</td></tr><tr><td>Analysing…</td><td>The analysis runs; the busy bar moves.</td></tr><tr><td>1 object · 1.411 mm/px · 3.2 s</td><td>The result: the objects, the scale and the time taken.</td></tr><tr><td>Part of the hide was found from the table around it, …</td><td>The AI took only part of the hide, for example the dark patches of a spotted hide. The outline was found from the table around the hide instead. Check it before saving.</td></tr><tr><td>No object found</td><td>Nothing on the photo is large enough. The readout shows 0.0 cm².</td></tr><tr><td>Saved … / Opened …</td><td>The file written or read.</td></tr></tbody></table>
+<h2 id="ai">The AI outline is unavailable</h2>
+<p><em>AI outline unavailable: model not found</em> — the IS-Net model file is missing. The message lists the places looked in. In a build from the sources, build the isnet_model target; in an installation, reinstall.</p>
+<p><em>AI outline unavailable: Vision was built without LibTorch</em> — this copy of the program was built without the AI. It shows the photo, but it does not measure: it never falls back to a less exact method without saying so.</p>
+<h2 id="outline">The outline is wrong</h2>
+<ul><li><strong>It follows a shadow.</strong> Light the table more evenly, or from above.</li><li><strong>It cuts into a pale part of the hide.</strong> Use a table whose colour differs more from the hide's.</li><li><strong>It leaves out a large plain part of a two-coloured hide.</strong> The AI can take a large even area, such as the white of a cowhide, for the table. Contorno then finds the hide from the table around it, and the message panel says so. This needs table all around the hide: where the hide reaches the edge of the photo, the AI's outline stands. Always check the outline before saving.</li><li><strong>It holds two hides.</strong> Two objects that touch are one object. Leave a gap between them, or measure one at a time.</li><li><strong>It takes in the table beside a mat.</strong> A mat or cloth smaller than the photo shows two colours at the photo's edge, and the table beside the mat can be taken for hide. Use a mat or cloth that fills the whole photo, or none.</li><li><strong>A mark or stain is cut out as a hole.</strong> Only holes through which the table is seen should be cut out. Report the photo to support.</li></ul>
+<h2 id="surface">The surface is wrong</h2>
+<ul><li>Check <span class="ui">Distance to the table</span> first. An error of 1 % in the distance is an error of 2 % in the surface.</li><li>Check the <span class="ui">Focal length</span>: the real one, not the 35 mm equivalent.</li><li>Read the camera line: does it take the values from the photo or from the settings, and are they right?</li><li>Check with an object of known size (see <a href="measure.html#check">Measure a hide</a>).</li></ul>
+<h2 id="manual">The manual does not open</h2>
+<p>The ? looks for this manual beside the program and opens it in Chromium or Google Chrome (Linux) or Microsoft Edge (Windows), else in the default browser. If none can, a message names the manual's file: open it in any browser.</p>
+    <nav class="pager"><a class="prev" href="inspections.html"><span>Previous</span>Save and open inspections</a><a class="next" href="reference.html"><span>Next</span>Reference</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

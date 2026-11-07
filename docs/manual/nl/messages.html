@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="nl" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meldingen en problemen — Contorno Indicator</title>
+<meta name="description" content="Wat het meldingenpaneel zegt en wat u doet als het resultaat er fout uitziet.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>Handleiding</small></a>
+  <nav class="langs" aria-label="Taal"><a href="../en/messages.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/messages.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/messages.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/messages.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/messages.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/messages.html" lang="nl" title="Nederlands" aria-current="true"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/messages.html" lang="ar" title="العربية"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="Inhoud">
+    <h2>Inhoud</h2>
+    <ol><li><a href="index.html">Start</a></li><li><a href="getting-started.html">Aan de slag</a></li><li><a href="set-up.html">Instellen</a></li><li><a href="measure.html">Een huid meten</a></li><li><a href="camera.html">Waar de schaal vandaan komt</a></li><li><a href="inspections.html">Inspecties opslaan en openen</a></li><li><a href="messages.html" aria-current="page">Meldingen en problemen</a></li><li><a href="reference.html">Naslag</a></li></ol>
+  </nav>
+  <main>
+    <h1>Meldingen en problemen</h1>
+    <p class="summary">Wat het meldingenpaneel zegt en wat u doet als het resultaat er fout uitziet.</p>
+    <h2 id="usual">Gewone regels</h2>
+<table><thead><tr><th>Regel</th><th>Betekenis</th></tr></thead><tbody><tr><td>cowhide.jpg geïmporteerd, 1600 x 1200 px.</td><td>De foto wordt getoond; zijn grootte in pixels.</td></tr><tr><td>Camera: …</td><td>Waar de schaal vandaan komt. Zie <a href="camera.html#line">Waar de schaal vandaan komt</a>.</td></tr><tr><td>Analyseren…</td><td>De analyse loopt; de voortgangsbalk beweegt.</td></tr><tr><td>1 voorwerp · 1.411 mm/px · 3.2 s</td><td>Het resultaat: de voorwerpen, de schaal en de benodigde tijd.</td></tr><tr><td>Een deel van de huid is gevonden vanuit de tafel eromheen, …</td><td>De AI nam maar een deel van de huid, bijvoorbeeld de donkere vlekken van een gevlekte huid. De contour is in plaats daarvan gevonden vanuit de tafel rond de huid. Controleer hem vóór het opslaan.</td></tr><tr><td>Geen voorwerp gevonden</td><td>Niets op de foto is groot genoeg. De uitlezing toont 0.0 cm².</td></tr><tr><td>… opgeslagen / … geopend</td><td>Het geschreven of gelezen bestand.</td></tr></tbody></table>
+<h2 id="ai">De AI-contour is niet beschikbaar</h2>
+<p><em>AI-contour niet beschikbaar: model niet gevonden</em> — het bestand van het IS-Net-model ontbreekt. De melding noemt de plaatsen waar gezocht is. In een build uit de broncode bouwt u het doel isnet_model; in een installatie installeert u opnieuw.</p>
+<p><em>AI-contour niet beschikbaar: Vision is zonder LibTorch gebouwd</em> — deze kopie van het programma is zonder de AI gebouwd. Ze toont de foto maar meet niet: ze valt nooit stil terug op een minder nauwkeurige methode.</p>
+<h2 id="outline">De contour is fout</h2>
+<ul><li><strong>Hij volgt een schaduw.</strong> Belicht de tafel gelijkmatiger, of van boven.</li><li><strong>Hij snijdt in een licht deel van de huid.</strong> Gebruik een tafel waarvan de kleur meer van de huid verschilt.</li><li><strong>Hij laat een groot effen deel van een tweekleurige huid weg.</strong> De AI kan een groot egaal vlak, zoals het wit van een koeienhuid, voor de tafel aanzien. Contorno vindt de huid dan vanuit de tafel eromheen, en het meldingenpaneel zegt dat. Daarvoor moet rondom de huid tafel te zien zijn: waar de huid de rand van de foto raakt, blijft de contour van de AI staan. Controleer de contour altijd vóór het opslaan.</li><li><strong>Hij omvat twee huiden.</strong> Twee voorwerpen die elkaar raken, zijn één voorwerp. Laat ruimte tussen ze, of meet ze een voor een.</li><li><strong>Hij neemt de tafel naast een mat mee.</strong> Een mat of doek die kleiner is dan de foto toont twee kleuren aan de rand van de foto, en de tafel naast de mat kan voor huid worden aangezien. Gebruik een mat of doek die de hele foto vult, of geen.</li><li><strong>Een merkteken of vlek wordt als gat uitgesneden.</strong> Alleen gaten waardoor de tafel te zien is, horen uitgesneden te worden. Meld de foto bij de ondersteuning.</li></ul>
+<h2 id="surface">Het oppervlak is fout</h2>
+<ul><li>Controleer eerst de <span class="ui">Afstand tot de tafel</span>. Een fout van 1 % in de afstand is een fout van 2 % in het oppervlak.</li><li>Controleer de <span class="ui">Brandpuntsafstand</span>: de echte, niet het kleinbeeldequivalent.</li><li>Lees de cameraregel: neemt hij de waarden uit de foto of uit de instellingen, en kloppen ze?</li><li>Controleer met een voorwerp van bekende grootte (zie <a href="measure.html#check">Een huid meten</a>).</li></ul>
+<h2 id="manual">De handleiding opent niet</h2>
+<p>Het ? zoekt deze handleiding naast het programma en opent hem in Chromium of Google Chrome (Linux) of Microsoft Edge (Windows), anders in de standaardbrowser. Lukt dat geen enkele, dan noemt een melding het bestand van de handleiding: open het in een willekeurige browser.</p>
+    <nav class="pager"><a class="prev" href="inspections.html"><span>Vorige</span>Inspecties opslaan en openen</a><a class="next" href="reference.html"><span>Volgende</span>Naslag</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>

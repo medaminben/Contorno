@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الرسائل والمشكلات — Contorno Indicator</title>
+<meta name="description" content="ما تقوله لوحة الرسائل، وما العمل حين تبدو النتيجة خاطئة.">
+<link rel="icon" href="../assets/brand/icon-light.png">
+<link rel="stylesheet" href="../assets/manual.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html"><picture><source srcset="../assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)"><img src="../assets/brand/icon-light.png" alt=""></picture><span>Contorno Indicator</span><small>دليل الاستخدام</small></a>
+  <nav class="langs" aria-label="اللغة"><a href="../en/messages.html" lang="en" title="English"><img src="../assets/flags/en.png" alt="English"></a><a href="../de/messages.html" lang="de" title="Deutsch"><img src="../assets/flags/de.png" alt="Deutsch"></a><a href="../es/messages.html" lang="es" title="Español"><img src="../assets/flags/es.png" alt="Español"></a><a href="../it/messages.html" lang="it" title="Italiano"><img src="../assets/flags/it.png" alt="Italiano"></a><a href="../fr/messages.html" lang="fr" title="Français"><img src="../assets/flags/fr.png" alt="Français"></a><a href="../nl/messages.html" lang="nl" title="Nederlands"><img src="../assets/flags/nl.png" alt="Nederlands"></a><a href="../ar/messages.html" lang="ar" title="العربية" aria-current="true"><img src="../assets/flags/ar.png" alt="العربية"></a></nav>
+</header>
+<div class="layout">
+  <nav class="sidebar" aria-label="المحتويات">
+    <h2>المحتويات</h2>
+    <ol><li><a href="index.html">الرئيسية</a></li><li><a href="getting-started.html">البدء</a></li><li><a href="set-up.html">الإعداد</a></li><li><a href="measure.html">قياس جلد</a></li><li><a href="camera.html">من أين يأتي المقياس</a></li><li><a href="inspections.html">حفظ الفحوص وفتحها</a></li><li><a href="messages.html" aria-current="page">الرسائل والمشكلات</a></li><li><a href="reference.html">المرجع</a></li></ol>
+  </nav>
+  <main>
+    <h1>الرسائل والمشكلات</h1>
+    <p class="summary">ما تقوله لوحة الرسائل، وما العمل حين تبدو النتيجة خاطئة.</p>
+    <h2 id="usual">الأسطر المعتادة</h2>
+<table><thead><tr><th>السطر</th><th>معناه</th></tr></thead><tbody><tr><td>تم استيراد cowhide.jpg، <bdi dir="ltr">1600 x 1200 px</bdi>.</td><td>الصورة معروضة؛ ومقاسها بالبكسل.</td></tr><tr><td>الكاميرا: …</td><td>من أين يأتي المقياس. انظر <a href="camera.html#line">من أين يأتي المقياس</a>.</td></tr><tr><td>جارٍ التحليل…</td><td>التحليل يعمل؛ وشريط الانشغال يتحرك.</td></tr><tr><td>جسم واحد · <bdi dir="ltr">1.411 mm/px</bdi> · <bdi dir="ltr">3.2 s</bdi></td><td>النتيجة: الأجسام والمقياس والوقت المستغرق.</td></tr><tr><td>عُثر على جزء من الجلد انطلاقًا من الطاولة المحيطة به، …</td><td>لم يأخذ الذكاء الاصطناعي إلا جزءًا من الجلد، كالبقع الداكنة لجلد مرقّط. فوُجد الحدّ بدلًا من ذلك انطلاقًا من الطاولة المحيطة بالجلد. تحقّق منه قبل الحفظ.</td></tr><tr><td>لم يُعثر على أي جسم</td><td>لا شيء في الصورة كبير بما يكفي. تعرض الشاشة <bdi dir="ltr">0.0 cm²</bdi>.</td></tr><tr><td>تم حفظ … / تم فتح …</td><td>الملف الذي كُتب أو قُرئ.</td></tr></tbody></table>
+<h2 id="ai">حدّ الذكاء الاصطناعي غير متاح</h2>
+<p><em>حدّ الذكاء الاصطناعي غير متاح: النموذج غير موجود</em> — ملف نموذج IS-Net مفقود. تذكر الرسالة الأماكن التي بُحث فيها. في بناء من المصادر ابنِ الهدف isnet_model؛ وفي تثبيت أعِد التثبيت.</p>
+<p><em>حدّ الذكاء الاصطناعي غير متاح: بُني Vision بدون LibTorch</em> — بُنيت هذه النسخة من البرنامج بدون الذكاء الاصطناعي. تعرض الصورة لكنها لا تقيس: فهي لا تلجأ أبدًا بصمت إلى طريقة أقل دقة.</p>
+<h2 id="outline">الحدّ خاطئ</h2>
+<ul><li><strong>يتبع ظلًّا.</strong> أضِئ الطاولة بتساوٍ أكبر، أو من الأعلى.</li><li><strong>يقتطع جزءًا فاتحًا من الجلد.</strong> استعمل طاولة يختلف لونها أكثر عن لون الجلد.</li><li><strong>يترك جزءًا كبيرًا سادَ اللون من جلد ثنائي اللون.</strong> قد يظنّ الذكاء الاصطناعي أن مساحة كبيرة متجانسة، كبياض الجلد البقري، هي الطاولة. عندئذ يجد Contorno الجلد انطلاقًا من الطاولة المحيطة به، وتقول لوحة الرسائل ذلك. يتطلّب هذا أن تظهر الطاولة حول الجلد كله: حيث يبلغ الجلد حافة الصورة، يبقى حدّ الذكاء الاصطناعي. تحقّق دائمًا من الحدّ قبل الحفظ.</li><li><strong>يضمّ جلدين.</strong> الجسمان المتلامسان جسم واحد. اترك فراغًا بينهما، أو قِسهما واحدًا تلو الآخر.</li><li><strong>يضمّ الطاولة بجانب حصيرة.</strong> الحصيرة أو القماش الأصغر من الصورة يُظهر لونين عند حافة الصورة، وقد تُحسب الطاولة بجانب الحصيرة جلدًا. استعمل حصيرة أو قماشًا يملأ الصورة كلها، أو لا تستعمل شيئًا.</li><li><strong>تُقتطع علامة أو بقعة على أنها ثقب.</strong> لا ينبغي أن تُقتطع إلا الثقوب التي تُرى الطاولة من خلالها. أرسل الصورة إلى الدعم.</li></ul>
+<h2 id="surface">المساحة خاطئة</h2>
+<ul><li>تحقّق أولًا من <span class="ui">المسافة إلى الطاولة</span>. خطأ بنسبة <bdi dir="ltr">1 %</bdi> في المسافة خطأ بنسبة <bdi dir="ltr">2 %</bdi> في المساحة.</li><li>تحقّق من <span class="ui">البعد البؤري</span>: الحقيقي، لا مكافئ <bdi dir="ltr">35 mm</bdi>.</li><li>اقرأ سطر الكاميرا: هل يأخذ القيم من الصورة أم من الإعدادات، وهل هي صحيحة؟</li><li>تحقّق بجسم معروف المقاس (انظر <a href="measure.html#check">قياس جلد</a>).</li></ul>
+<h2 id="manual">الدليل لا يُفتح</h2>
+<p>تبحث علامة ? عن هذا الدليل بجانب البرنامج وتفتحه في Chromium أو Google Chrome (لينكس) أو Microsoft Edge (ويندوز)، وإلا ففي المتصفح الافتراضي. إن لم ينجح أيٌّ منها، تذكر رسالةٌ ملفَّ الدليل: افتحه في أي متصفح.</p>
+    <nav class="pager"><a class="prev" href="inspections.html"><span>السابق</span>حفظ الفحوص وفتحها</a><a class="next" href="reference.html"><span>التالي</span>المرجع</a></nav>
+  </main>
+</div>
+<div class="lightbox" hidden><img alt=""></div>
+<script src="../assets/manual.js"></script>
+</body>
+</html>
