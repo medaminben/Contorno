@@ -8,7 +8,8 @@
 namespace test_Json {
 
 TEST(test_Tools_json, values) {
-    auto json = Tools::parse_json(R"({"a": [1, -2.5, 1e3, true, null], "s": "x\"y\u00e9", "o": {}})");
+    auto json =
+        Tools::parse_json(R"({"a": [1, -2.5, 1e3, true, null], "s": "x\"y\u00e9", "o": {}})");
     ASSERT_TRUE(json.isValue()) << json.error();
     auto const root = json();
     auto const* a = root.find("a")->as_array();
@@ -86,7 +87,8 @@ TEST(test_Tools_json, error_columns_point_at_the_token_start) {
     auto column_of = [](std::string const& text) {
         auto json = Tools::parse_json(text);
         EXPECT_TRUE(json.isError()) << text;
-        return json.isError() ? json.error().text().substr(0, json.error().text().find(':')) : std::string();
+        return json.isError() ? json.error().text().substr(0, json.error().text().find(':'))
+                              : std::string();
     };
     EXPECT_EQ(column_of("[1, -]"), "line 1, column 5");
     EXPECT_EQ(column_of("[1, 1.]"), "line 1, column 5");
@@ -110,16 +112,16 @@ TEST(test_Tools_json, underflow_rounds_to_zero) {
     EXPECT_TRUE(Tools::parse_json("1e999").isError());
     EXPECT_TRUE(Tools::parse_json("-1e999").isError());
     EXPECT_TRUE(Tools::parse_json("0.0000001e320").isError());  // 1e313
-    EXPECT_TRUE(Tools::parse_json("100000e-330").isValue());   // 1e-325 rounds to 0
+    EXPECT_TRUE(Tools::parse_json("100000e-330").isValue());    // 1e-325 rounds to 0
 }
 
 TEST(test_Tools_json, invalid_utf8_is_rejected) {
     EXPECT_TRUE(Tools::parse_json("\"\xC3\"").isError());              // truncated sequence
     EXPECT_TRUE(Tools::parse_json("\"\x80\"").isError());              // lone continuation byte
-    EXPECT_TRUE(Tools::parse_json("\"\xC0\xAF\"").isError());         // overlong '/'
-    EXPECT_TRUE(Tools::parse_json("\"\xE0\x80\xAF\"").isError());     // overlong
-    EXPECT_TRUE(Tools::parse_json("\"\xED\xA0\x80\"").isError());     // UTF-16 surrogate
-    EXPECT_TRUE(Tools::parse_json("\"\xF4\x90\x80\x80\"").isError()); // above U+10FFFF
+    EXPECT_TRUE(Tools::parse_json("\"\xC0\xAF\"").isError());          // overlong '/'
+    EXPECT_TRUE(Tools::parse_json("\"\xE0\x80\xAF\"").isError());      // overlong
+    EXPECT_TRUE(Tools::parse_json("\"\xED\xA0\x80\"").isError());      // UTF-16 surrogate
+    EXPECT_TRUE(Tools::parse_json("\"\xF4\x90\x80\x80\"").isError());  // above U+10FFFF
     EXPECT_TRUE(Tools::parse_json("\"\xFF\"").isError());
     auto json = Tools::parse_json("\"a\xC3(\"");
     ASSERT_TRUE(json.isError());
@@ -134,7 +136,8 @@ TEST(JsonWriter, RoundTrip) {
         {"a", Tools::Json(0.1)},
         {"b", Tools::Json(1e-300)},
         {"c", Tools::Json(-3.0)},
-        {"arr", Tools::Json(Tools::Json::Array {Tools::Json(1.5), Tools::Json(std::string("x")), Tools::Json()})},
+        {"arr", Tools::Json(Tools::Json::Array {Tools::Json(1.5), Tools::Json(std::string("x")),
+                                                Tools::Json()})},
         {"t", Tools::Json(true)},
         {"n", Tools::Json()},
         {"o", Tools::Json(Tools::Json::Object {})},
@@ -166,7 +169,6 @@ TEST(JsonWriter, RoundTrip) {
 TEST(JsonWriter, NegativeIndentIsError) {
     EXPECT_TRUE(Tools::to_json_text(Tools::Json(), -1).isError());
 }
-
 
 TEST(Json, ProblemCarriesPosition) {
     auto const json = Tools::parse_json("[1,\n  2,");

@@ -46,14 +46,22 @@ namespace {
 
 using namespace std::chrono_literals;
 
-std::filesystem::path const calf = std::filesystem::path(INDICATOR_SAMPLES_DIR) / "leather" / "calf_black.jpg";
+std::filesystem::path const calf =
+    std::filesystem::path(INDICATOR_SAMPLES_DIR) / "leather" / "calf_black.jpg";
 
-bool model_available() { return Vision::ai_available() && std::filesystem::exists(INDICATOR_DEFAULT_MODEL); }
+bool model_available() {
+    return Vision::ai_available() && std::filesystem::exists(INDICATOR_DEFAULT_MODEL);
+}
 
-bool contains(std::string const& text, std::string const& part) { return text.find(part) != std::string::npos; }
-bool starts_with(std::string const& text, std::string const& start) { return text.rfind(start, 0) == 0; }
+bool contains(std::string const& text, std::string const& part) {
+    return text.find(part) != std::string::npos;
+}
+bool starts_with(std::string const& text, std::string const& start) {
+    return text.rfind(start, 0) == 0;
+}
 bool ends_with(std::string const& text, std::string const& end) {
-    return text.size() >= end.size() && text.compare(text.size() - end.size(), end.size(), end) == 0;
+    return text.size() >= end.size() &&
+           text.compare(text.size() - end.size(), end.size(), end) == 0;
 }
 
 /// Back to English and the dark theme when a test ends, whatever it did.
@@ -64,12 +72,13 @@ struct Restore {
     }
 };
 
-/// A main window with settings of its own (a file in a fresh folder, never the user's), destroyed when the
-/// test ends. The window is not shown unless the test shows it.
+/// A main window with settings of its own (a file in a fresh folder, never the user's), destroyed
+/// when the test ends. The window is not shown unless the test shows it.
 struct Window {
     Restore restore;
     TempDir dir;
-    std::shared_ptr<WxConfigStore> store = std::make_shared<WxConfigStore>(dir.path / "indicator.ini");
+    std::shared_ptr<WxConfigStore> store =
+        std::make_shared<WxConfigStore>(dir.path / "indicator.ini");
     MainWindow* window = new MainWindow(store);
 
     Window() = default;
@@ -87,7 +96,8 @@ struct Window {
     void show(wxSize size) {
         window->SetClientSize(size);
         window->Show();
-        pump_until([&] { return window->IsShownOnScreen() && window->GetClientSize() == size; }, 3s);
+        pump_until([&] { return window->IsShownOnScreen() && window->GetClientSize() == size; },
+                   3s);
         window->Layout();
         pump_until([] { return false; }, 100ms);
     }
@@ -115,25 +125,31 @@ bool wait_analysed(MainWindow& window, std::chrono::milliseconds timeout = 300s)
 }
 
 /// The panel's mask box as an image.
-wxImage mask_box(MainWindow& window) { return window.panel().mask().render_image(); }
+wxImage mask_box(MainWindow& window) {
+    return window.panel().mask().render_image();
+}
 
 /// The photo boxes above the panel: the original and the processed photo.
 std::vector<PhotoView*> photo_boxes(MainWindow& window) {
     std::vector<PhotoView*> all, boxes;
     collect_descendants(&window, all);
     for (auto* box : all) {
-        if (box != &window.panel().mask()) boxes.push_back(box);
+        if (box != &window.panel().mask())
+            boxes.push_back(box);
     }
     return boxes;
 }
 
 /// The mask box shows an object: some opaque black pixel (the rest is transparent).
 bool has_object(wxImage const& image) {
-    if (!image.IsOk()) return false;
+    if (!image.IsOk())
+        return false;
     for (int y = 0; y < image.GetHeight(); ++y) {
         for (int x = 0; x < image.GetWidth(); ++x) {
             bool const opaque = !image.HasAlpha() || image.GetAlpha(x, y) == 255;
-            if (opaque && image.GetRed(x, y) == 0 && image.GetGreen(x, y) == 0 && image.GetBlue(x, y) == 0) return true;
+            if (opaque && image.GetRed(x, y) == 0 && image.GetGreen(x, y) == 0 &&
+                image.GetBlue(x, y) == 0)
+                return true;
         }
     }
     return false;
@@ -142,17 +158,21 @@ bool has_object(wxImage const& image) {
 /// The four keys in the order Import, Open, Save, Set up.
 std::vector<Key*> keys_of(ControlPanel& panel) {
     std::vector<Key*> keys;
-    for (wxWindowID id : {ID_IMPORT, ID_OPEN, ID_SAVE, ID_SETUP}) keys.push_back(dynamic_cast<Key*>(panel.FindWindow(id)));
+    for (wxWindowID id : {ID_IMPORT, ID_OPEN, ID_SAVE, ID_SETUP})
+        keys.push_back(dynamic_cast<Key*>(panel.FindWindow(id)));
     return keys;
 }
 
 /// The Set up key pressed: the dialog opens (driven by drive_modal) and closes before this returns.
-void press_set_up(MainWindow& window) { keys_of(window.panel())[3]->Click(); }
+void press_set_up(MainWindow& window) {
+    keys_of(window.panel())[3]->Click();
+}
 
 /// `child`'s rectangle in `top`'s coordinates, from the positions of the windows between them.
 wxRect rect_in(wxWindow* top, wxWindow* child) {
     wxPoint at;
-    for (wxWindow* w = child; w && w != top; w = w->GetParent()) at += w->GetPosition();
+    for (wxWindow* w = child; w && w != top; w = w->GetParent())
+        at += w->GetPosition();
     return wxRect(at, child->GetSize());
 }
 
@@ -162,7 +182,9 @@ T* named(wxWindow& dialog, wxString const& name) {
 }
 
 /// The OK (`ok`) or Cancel key of a dialog pressed.
-void answer(wxDialog& dialog, bool ok) { dynamic_cast<Key*>(dialog.FindWindow(ok ? wxID_OK : wxID_CANCEL))->Click(); }
+void answer(wxDialog& dialog, bool ok) {
+    dynamic_cast<Key*>(dialog.FindWindow(ok ? wxID_OK : wxID_CANCEL))->Click();
+}
 
 /// A `w` x `h` JPEG in one brown, as written by wx (no EXIF), as bytes.
 std::string jpeg_bytes(int w, int h) {
@@ -170,21 +192,25 @@ std::string jpeg_bytes(int w, int h) {
     wxImage image(w, h);
     image.SetRGB(wxRect(0, 0, w, h), 120, 90, 60);
     wxMemoryOutputStream out;
-    if (!image.SaveFile(out, wxBITMAP_TYPE_JPEG)) return {};
+    if (!image.SaveFile(out, wxBITMAP_TYPE_JPEG))
+        return {};
     std::string jpeg(out.GetLength(), '\0');
     out.CopyTo(jpeg.data(), jpeg.size());
     return jpeg;
 }
 
 /// A `w` x `h` JPEG with an APP1 Exif segment holding `tags`. False when it cannot be written.
-bool write_jpeg_with_exif(std::filesystem::path const& path, int w, int h, std::vector<ExifTag> const& tags) {
+bool write_jpeg_with_exif(std::filesystem::path const& path, int w, int h,
+                          std::vector<ExifTag> const& tags) {
     std::string const jpeg = jpeg_bytes(w, h);
     return !jpeg.empty() && write_bytes(path, jpeg_with_exif(jpeg, tags));
 }
 
-/// The inspection zip `folder`/`name` of `photo` with the saved result `saved`, the lens and the minimum area.
+/// The inspection zip `folder`/`name` of `photo` with the saved result `saved`, the lens and the
+/// minimum area.
 std::filesystem::path saved_inspection(std::filesystem::path const& folder, char const* name,
-                                       std::filesystem::path const& photo, Vision::ObjectsAnalysis const& saved,
+                                       std::filesystem::path const& photo,
+                                       Vision::ObjectsAnalysis const& saved,
                                        Vision::LensCamera lens = {}, double min_area_mm2 = 100) {
     InspectionFiles files;
     files.photo_path = photo;
@@ -192,7 +218,8 @@ std::filesystem::path saved_inspection(std::filesystem::path const& folder, char
     files.min_area_mm2 = min_area_mm2;
     auto entries = inspection_entries(files, saved);
     EXPECT_FALSE(entries.isError()) << entries.error().english();
-    if (entries.isError()) return {};
+    if (entries.isError())
+        return {};
     auto const zip = folder / name;
     EXPECT_FALSE(Tools::write_zip(utf8(zip), entries()).isError());
     return zip;
@@ -204,24 +231,29 @@ Vision::ObjectsAnalysis calf_rectangle(double sx, double sy) {
     saved.frame = {1334, 1602, sx, sy};  // the calf photo's size
     saved.mask = {1334, 1602, std::vector<std::uint8_t>(1334 * 1602, 0)};
     for (int row = 100; row < 200; ++row) {
-        for (int col = 100; col < 300; ++col) saved.mask.data[static_cast<std::size_t>(row * 1334 + col)] = 255;
+        for (int col = 100; col < 300; ++col)
+            saved.mask.data[static_cast<std::size_t>(row * 1334 + col)] = 255;
     }
     saved.area_mm2 = 200 * 100 * sx * sy;
     auto const mm = [](double v) { return static_cast<std::int64_t>(v * Pot::units_per_mm); };
     // the Qt tests' outlines: the same rectangle at 0.5 mm/px, a taller one at 0.5 x 0.6
     if (sx == sy) {
-        saved.objects = {Pot::Polygon64 {{{mm(50), mm(75)}, {mm(150), mm(75)}, {mm(150), mm(125)}, {mm(50), mm(125)}}, {}}};
+        saved.objects = {Pot::Polygon64 {
+            {{mm(50), mm(75)}, {mm(150), mm(75)}, {mm(150), mm(125)}, {mm(50), mm(125)}}, {}}};
     } else {
-        saved.objects = {Pot::Polygon64 {{{mm(50), mm(60)}, {mm(150), mm(60)}, {mm(150), mm(120)}, {mm(50), mm(120)}}, {}}};
+        saved.objects = {Pot::Polygon64 {
+            {{mm(50), mm(60)}, {mm(150), mm(60)}, {mm(150), mm(120)}, {mm(50), mm(120)}}, {}}};
     }
     return saved;
 }
 
 /// Whether the adapter's raw fallback appears at any level of the message.
 bool has_raw(Message const& message) {
-    if (message.key() == "common.raw") return true;
+    if (message.key() == "common.raw")
+        return true;
     for (auto const& inner : message.nested()) {
-        if (has_raw(inner)) return true;
+        if (has_raw(inner))
+            return true;
     }
     return false;
 }
@@ -260,15 +292,19 @@ TEST(WxWindow, TwoSquareImageBoxes) {
     ASSERT_GT(row_width, 1000);
     for (int i = 0; i < 2; ++i) {
         EXPECT_EQ(boxes[i]->GetSize().x, boxes[i]->GetSize().y) << i;
-        EXPECT_NEAR(boxes[i]->GetSize().x, (row_width - 3 * 8) / 2, 1) << i;  // half of the row, less three gaps
+        EXPECT_NEAR(boxes[i]->GetSize().x, (row_width - 3 * 8) / 2, 1)
+            << i;  // half of the row, less three gaps
         EXPECT_EQ(boxes[i]->GetPosition().y, boxes[0]->GetPosition().y) << i;  // side by side
         if (i > 0) {
-            EXPECT_GT(boxes[i]->GetPosition().x, boxes[i - 1]->GetPosition().x + boxes[i - 1]->GetSize().x - 1) << i;
+            EXPECT_GT(boxes[i]->GetPosition().x,
+                      boxes[i - 1]->GetPosition().x + boxes[i - 1]->GetSize().x - 1)
+                << i;
         }
     }
     // centred: the gaps before, between and after the boxes are equal
     int const before = boxes[0]->GetPosition().x;
-    int const between = boxes[1]->GetPosition().x - (boxes[0]->GetPosition().x + boxes[0]->GetSize().x);
+    int const between =
+        boxes[1]->GetPosition().x - (boxes[0]->GetPosition().x + boxes[0]->GetSize().x);
     int const after = row_width - (boxes[1]->GetPosition().x + boxes[1]->GetSize().x);
     EXPECT_NEAR(before, between, 1);
     EXPECT_NEAR(after, between, 1);
@@ -281,7 +317,8 @@ TEST(WxWindow, TwoSquareImageBoxes) {
     window.resize(wxSize(1500, 500));
     EXPECT_EQ(boxes[0]->GetSize().x, boxes[0]->GetSize().y);
     EXPECT_LE(boxes[0]->GetSize().y, row->GetSize().y);
-    EXPECT_LT(boxes[0]->GetSize().x, (row->GetSize().x - 3 * 8) / 2 - 1);  // smaller than half the row
+    EXPECT_LT(boxes[0]->GetSize().x,
+              (row->GetSize().x - 3 * 8) / 2 - 1);  // smaller than half the row
 }
 
 TEST(WxWindow, LogInThePanelProgressFillsStatusBar) {
@@ -296,13 +333,15 @@ TEST(WxWindow, LogInThePanelProgressFillsStatusBar) {
     EXPECT_FALSE(window->import_photo("/nonexistent/photo.jpg"));
     EXPECT_EQ(log->line_count(), lines + 1);
     EXPECT_TRUE(ends_with(utf8(log->line_text(log->line_count() - 1)), window->message()));
-    EXPECT_TRUE(starts_with(window->message(), "Cannot read /nonexistent/photo.jpg")) << window->message();
+    EXPECT_TRUE(starts_with(window->message(), "Cannot read /nonexistent/photo.jpg"))
+        << window->message();
     window->Show();
     int row = 0;
     log->GetTextExtent("Ag", nullptr, &row, nullptr, nullptr, &log->text_font());
     EXPECT_GE(log->GetSize().y, 3 * row);  // several lines shown
     // the newest line glides into view: at the bottom once the scroll ends
-    for (int i = 0; i < 12; ++i) window->panel().log().add(Message("common.raw").with("text", "line " + std::to_string(i)));
+    for (int i = 0; i < 12; ++i)
+        window->panel().log().add(Message("common.raw").with("text", "line " + std::to_string(i)));
     pump_until([] { return false; }, 1000ms);
     EXPECT_GT(log->scroll_range(), 0);
     EXPECT_NEAR(log->scroll_position(), log->scroll_range(), 0.5);
@@ -310,12 +349,15 @@ TEST(WxWindow, LogInThePanelProgressFillsStatusBar) {
     // left of the readout, right of the mask
     auto& mask = window->panel().mask();
     EXPECT_GT(log->GetPosition().x, mask.GetPosition().x + mask.GetSize().x - 1);
-    EXPECT_LT(log->GetPosition().x + log->GetSize().x, window->panel().display().GetPosition().x + 1);
+    EXPECT_LT(log->GetPosition().x + log->GetSize().x,
+              window->panel().display().GetPosition().x + 1);
     auto* bar = find_descendant<ProgressBar>(window.window);
     ASSERT_NE(bar, nullptr);
     EXPECT_GT(bar->GetSize().x, bar->GetParent()->GetSize().x - 40);
-    EXPECT_GT(bar->GetParent()->GetSize().x, window->GetClientSize().x - 2);  // the strip is the window's width
-    EXPECT_GT(bar->GetPosition().y + bar->GetParent()->GetPosition().y, window->panel().GetPosition().y);  // under the panel
+    EXPECT_GT(bar->GetParent()->GetSize().x,
+              window->GetClientSize().x - 2);  // the strip is the window's width
+    EXPECT_GT(bar->GetPosition().y + bar->GetParent()->GetPosition().y,
+              window->panel().GetPosition().y);  // under the panel
 }
 
 TEST(WxWindow, FullBarFadesToBlackAfterASecond) {
@@ -327,19 +369,23 @@ TEST(WxWindow, FullBarFadesToBlackAfterASecond) {
     // no model: the analysis stops at once, the bar full. Its clock starts inside the import.
     ASSERT_TRUE(window->import_photo(calf));
     EXPECT_TRUE(bar->full());
-    auto const start = std::chrono::steady_clock::now();  // already full: samples follow the bar from here
+    auto const start =
+        std::chrono::steady_clock::now();  // already full: samples follow the bar from here
     bar->SetSize(400, 20);
     auto lit = [&] { return bar->render(1).ConvertToImage().GetGreen(200, 10); };
     int const full = lit();
     EXPECT_GT(full, 200);
     auto elapsed = [&] { return std::chrono::steady_clock::now() - start; };
-    auto wait_until = [&](int ms) { pump_until([&] { return elapsed() >= std::chrono::milliseconds(ms); }, 5s); };
+    auto wait_until = [&](int ms) {
+        pump_until([&] { return elapsed() >= std::chrono::milliseconds(ms); }, 5s);
+    };
     wait_until(800);
     bool const full_now = bar->full();
     bool const empty_now = bar->empty();
     double const level_now = bar->level();
     int const lit_now = lit();
-    // still fully lit within the second; checked only when the loop came back in time (a busy machine may oversleep)
+    // still fully lit within the second; checked only when the loop came back in time (a busy
+    // machine may oversleep)
     if (elapsed() < std::chrono::milliseconds(ProgressBar::full_ms)) {
         EXPECT_TRUE(full_now);
         EXPECT_FALSE(empty_now);
@@ -358,8 +404,10 @@ TEST(WxWindow, FullBarFadesToBlackAfterASecond) {
         EXPECT_LT(dim_level, 1.0);
         EXPECT_GT(dim_level, 0.0);
         EXPECT_LT(dimmed, full - 30);
-        // mid-fade green, with the same 200 ms slack as the lit sample; later in the fade it is simply darker
-        if (elapsed() < std::chrono::milliseconds(ProgressBar::full_ms + ProgressBar::fade_ms / 2 + 200)) {
+        // mid-fade green, with the same 200 ms slack as the lit sample; later in the fade it is
+        // simply darker
+        if (elapsed() <
+            std::chrono::milliseconds(ProgressBar::full_ms + ProgressBar::fade_ms / 2 + 200)) {
             EXPECT_GT(dimmed, 20);
         }
     }
@@ -374,7 +422,8 @@ TEST(WxWindow, NoCaptions) {
     std::vector<wxStaticText*> labels;
     collect_descendants(window.window, labels);
     for (auto const* label : labels) {
-        for (char const* caption : {"Raw photo", "Mask", "Processed photo"}) EXPECT_NE(label->GetLabel(), caption);
+        for (char const* caption : {"Raw photo", "Mask", "Processed photo"})
+            EXPECT_NE(label->GetLabel(), caption);
     }
 }
 
@@ -385,9 +434,11 @@ TEST(WxWindow, PanelControls) {
     // four square keys: Import over Open, Save over "Set up"
     auto const keys = keys_of(panel);
     std::vector<std::string> labels;
-    for (Key* key : keys) labels.push_back(utf8(key->GetLabelText()));
+    for (Key* key : keys)
+        labels.push_back(utf8(key->GetLabelText()));
     ASSERT_EQ(labels, (std::vector<std::string> {"Import", "Open", "Save", "Set up"}));
-    for (Key const* key : keys) EXPECT_EQ(key->GetSize().x, key->GetSize().y) << utf8(key->GetLabelText());
+    for (Key const* key : keys)
+        EXPECT_EQ(key->GetSize().x, key->GetSize().y) << utf8(key->GetLabelText());
     Key* const import = keys[0];
     Key* const open = keys[1];
     Key* const save = keys[2];
@@ -416,16 +467,19 @@ TEST(WxWindow, PanelControls) {
     std::vector<wxStaticBitmap*> bitmaps;
     collect_descendants(&panel, bitmaps);
     for (auto* b : bitmaps) {
-        if (b->GetBitmap().IsOk()) logo = b->GetBitmap().ConvertToImage();
+        if (b->GetBitmap().IsOk())
+            logo = b->GetBitmap().ConvertToImage();
     }
     ASSERT_TRUE(logo.IsOk());
     int white = 0;
     for (int y = 0; y < logo.GetHeight(); ++y) {
         for (int x = 0; x < logo.GetWidth(); ++x) {
-            if (logo.HasAlpha() && logo.GetAlpha(x, y) < 128) continue;
+            if (logo.HasAlpha() && logo.GetAlpha(x, y) < 128)
+                continue;
             int const grey = (logo.GetRed(x, y) + logo.GetGreen(x, y) + logo.GetBlue(x, y)) / 3;
             EXPECT_GT(grey, 200) << x << ", " << y;
-            if (grey <= 200) return;  // one report is enough
+            if (grey <= 200)
+                return;  // one report is enough
             ++white;
         }
     }
@@ -442,13 +496,15 @@ TEST(WxWindow, UnavailableSaysWhy) {
     if (Vision::ai_available()) {
         EXPECT_TRUE(contains(window->message(), "/nonexistent/configured.pt"));
         EXPECT_TRUE(contains(window->message(), "/nonexistent/default.pt"));
-        EXPECT_TRUE(ends_with(window->message(), " — build the isnet_model target.")) << window->message();
+        EXPECT_TRUE(ends_with(window->message(), " — build the isnet_model target."))
+            << window->message();
     }
 }
 
 // with the model: the readout shows the area of the outline drawn on the right
 TEST(WxWindow, ResultShowsArea) {
-    if (!model_available()) GTEST_SKIP();
+    if (!model_available())
+        GTEST_SKIP();
     Window window;
     ASSERT_TRUE(window->import_photo(calf));
     EXPECT_TRUE(window->busy());
@@ -468,11 +524,14 @@ TEST(WxWindow, ResultShowsArea) {
     EXPECT_EQ(window->panel().mask().polygon_layers(), 1u);
 }
 
-// when the object found from the background replaced the model's region, a line after the result says so
+// when the object found from the background replaced the model's region, a line after the result
+// says so
 TEST(WxWindow, OutlineFromTheBackgroundIsReported) {
-    if (!model_available()) GTEST_SKIP();
+    if (!model_available())
+        GTEST_SKIP();
     Window window;
-    ASSERT_TRUE(window->import_photo(std::filesystem::path(INDICATOR_SAMPLES_DIR) / "leather" / "calf_spotted.jpg"));
+    ASSERT_TRUE(window->import_photo(std::filesystem::path(INDICATOR_SAMPLES_DIR) / "leather" /
+                                     "calf_spotted.jpg"));
     ASSERT_TRUE(wait_analysed(*window));
     ASSERT_TRUE(window->analysis()) << window->last_error();
     ASSERT_TRUE(window->analysis()->from_background);
@@ -482,7 +541,8 @@ TEST(WxWindow, OutlineFromTheBackgroundIsReported) {
 
 // a new photo: the readout keeps the area shown, dimmed, and counts from it to the new one
 TEST(WxWindow, ImportCountsFromTheAreaShown) {
-    if (!model_available()) GTEST_SKIP();
+    if (!model_available())
+        GTEST_SKIP();
     Window window;
     ASSERT_TRUE(window->import_photo(calf));
     ASSERT_TRUE(wait_analysed(*window));
@@ -490,7 +550,8 @@ TEST(WxWindow, ImportCountsFromTheAreaShown) {
     auto& display = window->panel().display();
     wxString const before = display.text();
 
-    ASSERT_TRUE(window->import_photo(std::filesystem::path(INDICATOR_SAMPLES_DIR) / "leather" / "indian_lamb.jpg"));
+    ASSERT_TRUE(window->import_photo(std::filesystem::path(INDICATOR_SAMPLES_DIR) / "leather" /
+                                     "indian_lamb.jpg"));
     EXPECT_EQ(display.text(), before);  // not dashes: the count starts there
     EXPECT_TRUE(display.dimmed());
     ASSERT_TRUE(wait_analysed(*window));
@@ -521,7 +582,8 @@ TEST(WxWindow, MaskImageIsGrey) {
 
 // the mask box and the readout always come from the same result: empty and dashes without one
 TEST(WxWindow, ErrorShowsBlackMask) {
-    if (!model_available()) GTEST_SKIP();
+    if (!model_available())
+        GTEST_SKIP();
     Window window;
     ASSERT_TRUE(window->import_photo(calf));
     ASSERT_TRUE(wait_analysed(*window));
@@ -557,7 +619,8 @@ TEST(WxWindow, ErrorShowsBlackMask) {
 TEST(WxWindow, ImportUsesPhotoMetadata) {
     TempDir dir;
     auto const photo = dir.path / "exif.jpg";
-    ASSERT_TRUE(write_jpeg_with_exif(photo, 400, 300, {{0x920A, 5, 42, 10}, {0xA20E, 5, 1000000, 1400}, {0xA210, 3, 4}}));
+    ASSERT_TRUE(write_jpeg_with_exif(
+        photo, 400, 300, {{0x920A, 5, 42, 10}, {0xA20E, 5, 1000000, 1400}, {0xA210, 3, 4}}));
     Window window;
     window->set_model_candidates_for_test("", "");
     ASSERT_TRUE(window->import_photo(photo));
@@ -578,7 +641,8 @@ TEST(WxWindow, ImportWithoutMetadataUsesSettings) {
     ASSERT_TRUE(window->import_photo(photo));
     EXPECT_EQ(window->camera().focal_source, Vision::CameraSource::settings);
     EXPECT_EQ(window->camera().pixel_source, Vision::CameraSource::settings);
-    EXPECT_TRUE(contains(utf8(window->panel().log().text()), "no camera data in the photo")) << utf8(window->panel().log().text());
+    EXPECT_TRUE(contains(utf8(window->panel().log().text()), "no camera data in the photo"))
+        << utf8(window->panel().log().text());
 }
 
 namespace {
@@ -654,7 +718,8 @@ TEST(WxWindow, OpenedInspectionKeepsSavedCamera) {
     saved.frame = {400, 300, 0.5, 0.5};
     saved.mask = {400, 300, std::vector<std::uint8_t>(400 * 300, 0)};
     saved.area_mm2 = 0;
-    auto const zip = saved_inspection(dir.path, "kept.zip", photo, saved, Vision::LensCamera {3000, 13.02, 3.76});
+    auto const zip = saved_inspection(dir.path, "kept.zip", photo, saved,
+                                      Vision::LensCamera {3000, 13.02, 3.76});
     Window window;
     window->set_model_candidates_for_test("", "");
     ASSERT_TRUE(window->open_inspection(zip)) << window->last_error();
@@ -678,7 +743,8 @@ TEST(WxWindow, FailedImportKeepsState) {
         ASSERT_TRUE(wait_analysed(*window));
     }
     double const scale = Vision::lens_scale(window->camera().lens).x;
-    auto const legacy_scale = Vision::mm_per_px(old_camera, shown_size(calf)->width);  // scaled by the photo's width
+    auto const legacy_scale =
+        Vision::mm_per_px(old_camera, shown_size(calf)->width);  // scaled by the photo's width
     ASSERT_FALSE(legacy_scale.isError());
     EXPECT_NEAR(scale, legacy_scale(), 1e-9);
     wxString const readout = window->panel().display().text();
@@ -715,7 +781,8 @@ TEST(WxWindow, OpenShowsSavedResult) {
     EXPECT_EQ(Vision::lens_scale(window->camera().lens).x, Vision::lens_scale(lens).x);
     EXPECT_TRUE(has_object(mask_box(*window)));
     EXPECT_FALSE(starts_with(window->message(), "AI outline unavailable")) << window->message();
-    EXPECT_EQ(utf8(window->GetTitle()), Message("window.title_file").with("file", "objects.zip").render());
+    EXPECT_EQ(utf8(window->GetTitle()),
+              Message("window.title_file").with("file", "objects.zip").render());
 
     // and exported again as it was opened
     auto const again = dir.path / "again.zip";
@@ -738,7 +805,8 @@ TEST(WxWindow, ResultMessageShowsBothScales) {
 // an inspection opened while the analysis of the photo before still runs:
 // that analysis is obsolete, so nothing shown is busy and export works
 TEST(WxWindow, OpenWhileAnalysingIsNotBusy) {
-    if (!model_available()) GTEST_SKIP();
+    if (!model_available())
+        GTEST_SKIP();
     TempDir dir;
     auto const zip = saved_inspection(dir.path, "objects.zip", calf, calf_rectangle(0.5, 0.5));
 
@@ -767,11 +835,13 @@ TEST(WxWindow, OpenRotatedPhoto) {
     saved.frame = {20, 40, 1, 1};
     saved.mask = {20, 40, std::vector<std::uint8_t>(20 * 40, 0)};
     for (int row = 10; row < 30; ++row) {
-        for (int col = 5; col < 15; ++col) saved.mask.data[static_cast<std::size_t>(row * 20 + col)] = 255;
+        for (int col = 5; col < 15; ++col)
+            saved.mask.data[static_cast<std::size_t>(row * 20 + col)] = 255;
     }
     saved.area_mm2 = 200;
     auto const mm = [](double v) { return static_cast<std::int64_t>(v * Pot::units_per_mm); };
-    saved.objects = {Pot::Polygon64 {{{mm(5), mm(10)}, {mm(15), mm(10)}, {mm(15), mm(30)}, {mm(5), mm(30)}}, {}}};
+    saved.objects = {Pot::Polygon64 {
+        {{mm(5), mm(10)}, {mm(15), mm(10)}, {mm(15), mm(30)}, {mm(5), mm(30)}}, {}}};
     auto const zip = saved_inspection(dir.path, "rotated.zip", photo, saved);
 
     Window window;
@@ -813,7 +883,8 @@ TEST(WxWindow, OldLinesFollowTheLanguage) {
     ASSERT_TRUE(window->import_photo(calf));  // the camera line is logged without a model
     auto text = [&] { return utf8(window->panel().log().text()); };
     std::string const photo_size = "1334 x 1602 px";
-    Message const imported = Message("message.imported").with("name", "calf_black.jpg").with("size", photo_size);
+    Message const imported =
+        Message("message.imported").with("name", "calf_black.jpg").with("size", photo_size);
     Message const camera = camera_message(window->camera(), false);
     ASSERT_TRUE(contains(text(), imported.english())) << text();
     ASSERT_TRUE(contains(text(), camera.english())) << text();
@@ -848,11 +919,14 @@ TEST(WxWindow, ArabicKeepsTheWindowInPlace) {
         std::vector<wxRect> out;
         std::vector<PhotoView*> views;
         collect_descendants(window.window, views);
-        for (auto* view : views) out.push_back(rect_in(window.window, view));
+        for (auto* view : views)
+            out.push_back(rect_in(window.window, view));
         std::vector<wxStaticBitmap*> labels;
         collect_descendants(&window->panel(), labels);
-        for (auto* label : labels) out.push_back(rect_in(window.window, label));
-        for (auto* key : keys_of(window->panel())) out.push_back(rect_in(window.window, key));
+        for (auto* label : labels)
+            out.push_back(rect_in(window.window, label));
+        for (auto* key : keys_of(window->panel()))
+            out.push_back(rect_in(window.window, key));
         out.push_back(rect_in(window.window, &window->panel().log()));
         out.push_back(rect_in(window.window, &window->panel().display()));
         out.push_back(rect_in(window.window, find_descendant<ProgressBar>(window.window)));
@@ -866,9 +940,14 @@ TEST(WxWindow, ArabicKeepsTheWindowInPlace) {
     EXPECT_EQ(window->GetLayoutDirection(), wxLayout_LeftToRight);
     EXPECT_EQ(window->panel().GetLayoutDirection(), wxLayout_LeftToRight);
     std::vector<wxWindow*> containers;
-    for (wxWindow* w = find_descendant<ProgressBar>(window.window); w && w != window.window; w = w->GetParent()) containers.push_back(w);
-    for (wxWindow* w = photo_boxes(*window)[0]; w && w != window.window; w = w->GetParent()) containers.push_back(w);
-    for (wxWindow* w : containers) EXPECT_EQ(w->GetLayoutDirection(), wxLayout_LeftToRight) << w->GetClassInfo()->GetClassName();
+    for (wxWindow* w = find_descendant<ProgressBar>(window.window); w && w != window.window;
+         w = w->GetParent())
+        containers.push_back(w);
+    for (wxWindow* w = photo_boxes(*window)[0]; w && w != window.window; w = w->GetParent())
+        containers.push_back(w);
+    for (wxWindow* w : containers)
+        EXPECT_EQ(w->GetLayoutDirection(), wxLayout_LeftToRight)
+            << w->GetClassInfo()->GetClassName();
     auto const keys = keys_of(window->panel());
     char const* names[] = {"panel.import", "panel.open", "panel.save", "panel.setup"};
     for (int i = 0; i < 4; ++i) {
@@ -911,10 +990,12 @@ TEST(WxWindow, SetUpOkAppliesLanguage) {
     EXPECT_EQ(window.settings().language, "de");
     EXPECT_EQ(current_language(), "de");
     // "Import" is the same word in German; the Open key (second) is not
-    EXPECT_EQ(utf8(keys_of(window->panel())[1]->GetLabelText()), Message("panel.open").render("de"));
+    EXPECT_EQ(utf8(keys_of(window->panel())[1]->GetLabelText()),
+              Message("panel.open").render("de"));
     EXPECT_NE(Message("panel.open").render("de"), Message("panel.open").render("en"));
     // the language alone: the old lines in it, no new line and no new analysis
-    EXPECT_TRUE(contains(utf8(window->panel().log().text()), Message("message.import_first_photo").render("de")))
+    EXPECT_TRUE(contains(utf8(window->panel().log().text()),
+                         Message("message.import_first_photo").render("de")))
         << utf8(window->panel().log().text());
     EXPECT_EQ(window->panel().log().line_count(), 1u);
 }
@@ -926,7 +1007,8 @@ TEST(WxWindow, SetUpCancelLeavesNoTrace) {
     press_set_up(*window);
     EXPECT_EQ(current_language(), "en");
     EXPECT_EQ(wxTheApp->GetLayoutDirection(), wxLayout_LeftToRight);
-    EXPECT_EQ(utf8(keys_of(window->panel())[0]->GetLabelText()), Message("panel.import").render("en"));
+    EXPECT_EQ(utf8(keys_of(window->panel())[0]->GetLabelText()),
+              Message("panel.import").render("en"));
     EXPECT_EQ(window.settings().language, "en");
     bool checked = false;
     drive_modal(
@@ -951,19 +1033,24 @@ void toggle_theme_later(bool ok) {
         },
         5000ms, "contorno-setup");
 }
-/// The colour behind the photos, the panel and the busy indicator: each window between them and the frame.
+/// The colour behind the photos, the panel and the busy indicator: each window between them and the
+/// frame.
 std::vector<wxColour> panel_colours(MainWindow& window) {
     std::vector<wxColour> out {window.panel().GetBackgroundColour()};
-    for (wxWindow* w = window.panel().GetParent(); w; w = w->GetParent()) out.push_back(w->GetBackgroundColour());
-    for (wxWindow* w = find_descendant<ProgressBar>(&window)->GetParent(); w != &window; w = w->GetParent()) {
+    for (wxWindow* w = window.panel().GetParent(); w; w = w->GetParent())
+        out.push_back(w->GetBackgroundColour());
+    for (wxWindow* w = find_descendant<ProgressBar>(&window)->GetParent(); w != &window;
+         w = w->GetParent()) {
         out.push_back(w->GetBackgroundColour());
     }
-    for (wxWindow* w = photo_boxes(window)[0]->GetParent(); w != &window; w = w->GetParent()) out.push_back(w->GetBackgroundColour());
+    for (wxWindow* w = photo_boxes(window)[0]->GetParent(); w != &window; w = w->GetParent())
+        out.push_back(w->GetBackgroundColour());
     return out;
 }
 bool all_are(std::vector<wxColour> const& colours, wxColour const& colour) {
     for (auto const& c : colours) {
-        if (c != colour) return false;
+        if (c != colour)
+            return false;
     }
     return true;
 }
@@ -990,7 +1077,8 @@ TEST(WxWindow, ThemeLightensOnlyThePanels) {
     EXPECT_TRUE(window.settings().light);
     auto const light = panel_colours(*window);
     EXPECT_TRUE(all_are(light, light[0]));
-    EXPECT_GT(light[0].GetLuminance(), 200 / 255.0) << utf8(light[0].GetAsString(wxC2S_HTML_SYNTAX));
+    EXPECT_GT(light[0].GetLuminance(), 200 / 255.0)
+        << utf8(light[0].GetAsString(wxC2S_HTML_SYNTAX));
     EXPECT_EQ(wordmark_colour(*window), *wxBLACK);
     // the photo boxes keep their colour
     EXPECT_EQ(box_colour(), box);
@@ -1009,7 +1097,8 @@ namespace {
 wxString import_dialog_folder(MainWindow& window) {
     wxString folder;
     drive_modal([&](wxDialog& dialog) {
-        if (auto* files = find_descendant<wxGenericFileCtrl>(&dialog)) folder = files->GetShownDirectory();
+        if (auto* files = find_descendant<wxGenericFileCtrl>(&dialog))
+            folder = files->GetShownDirectory();
         dialog.EndModal(wxID_CANCEL);
     });
     keys_of(window.panel())[0]->Click();
@@ -1018,7 +1107,8 @@ wxString import_dialog_folder(MainWindow& window) {
 /// A window over `store`, destroyed when the scope ends.
 struct Over {
     MainWindow* window;
-    explicit Over(std::shared_ptr<SettingsStore> store) : window(new MainWindow(std::move(store))) {}
+    explicit Over(std::shared_ptr<SettingsStore> store)
+        : window(new MainWindow(std::move(store))) {}
     ~Over() {
         MainWindow* const gone = window;
         gone->Destroy();
@@ -1027,14 +1117,16 @@ struct Over {
 };
 }  // namespace
 
-// Ruling 8: a remembered folder that is gone starts the file dialogs in the samples (built from the sources)
+// Ruling 8: a remembered folder that is gone starts the file dialogs in the samples (built from the
+// sources)
 TEST(WxWindow, MissingLastFolderStartsInTheSamples) {
     TempDir dir;
     auto store = std::make_shared<MemorySettingsStore>();
     store->set_value("dialogs/last_folder", utf8(dir.path / "gone"));
     {
         Over gone(store);
-        EXPECT_EQ(path_from_utf8(utf8(import_dialog_folder(*gone.window))), std::filesystem::path(INDICATOR_SAMPLES_DIR));
+        EXPECT_EQ(path_from_utf8(utf8(import_dialog_folder(*gone.window))),
+                  std::filesystem::path(INDICATOR_SAMPLES_DIR));
     }
     // a folder that exists is kept, and none stored starts in the samples too
     store->set_value("dialogs/last_folder", utf8(dir.path));
@@ -1043,18 +1135,22 @@ TEST(WxWindow, MissingLastFolderStartsInTheSamples) {
         EXPECT_EQ(path_from_utf8(utf8(import_dialog_folder(*kept.window))), dir.path);
     }
     Over fresh(std::make_shared<MemorySettingsStore>());
-    EXPECT_EQ(path_from_utf8(utf8(import_dialog_folder(*fresh.window))), std::filesystem::path(INDICATOR_SAMPLES_DIR));
+    EXPECT_EQ(path_from_utf8(utf8(import_dialog_folder(*fresh.window))),
+              std::filesystem::path(INDICATOR_SAMPLES_DIR));
 }
 
-// a photo and an inspection named in German and Arabic letters: imported, analysed, saved and opened again
+// a photo and an inspection named in German and Arabic letters: imported, analysed, saved and
+// opened again
 TEST(WxWindow, NonAsciiPhotoImportsAndSaves) {
-    if (!model_available()) GTEST_SKIP();
+    if (!model_available())
+        GTEST_SKIP();
     TempDir dir;
     auto const photo = dir.path / path_from_utf8("Kälber_جلد.jpg");
     std::filesystem::copy_file(calf, photo);
     Window window;
     ASSERT_TRUE(window->import_photo(photo)) << window->last_error();
-    EXPECT_EQ(utf8(window->GetTitle()), Message("window.title_file").with("file", "Kälber_جلد.jpg").render());
+    EXPECT_EQ(utf8(window->GetTitle()),
+              Message("window.title_file").with("file", "Kälber_جلد.jpg").render());
     ASSERT_TRUE(wait_analysed(*window));
     ASSERT_TRUE(window->analysis()) << window->last_error();
     double const area = window->analysis()->area_mm2;
@@ -1071,9 +1167,11 @@ TEST(WxWindow, NonAsciiPhotoImportsAndSaves) {
     EXPECT_FALSE(window->busy());
 }
 
-// the window destroyed while find_objects runs: the destructor waits for the run, its result goes nowhere
+// the window destroyed while find_objects runs: the destructor waits for the run, its result goes
+// nowhere
 TEST(WxWindow, CloseWhileAnalysingIsClean) {
-    if (!model_available()) GTEST_SKIP();
+    if (!model_available())
+        GTEST_SKIP();
     Restore restore;
     TempDir dir;
     auto store = std::make_shared<WxConfigStore>(dir.path / "indicator.ini");

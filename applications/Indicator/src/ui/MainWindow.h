@@ -35,7 +35,8 @@ public:
     /// file, WxConfigStore(default_settings_file()). `style` is the frame's
     /// (wxMAXIMIZE: the app opens on the whole screen, and the constructor
     /// does not pin a client size that would leave it restored).
-    explicit MainWindow(std::shared_ptr<SettingsStore> store = nullptr, long style = wxDEFAULT_FRAME_STYLE);
+    explicit MainWindow(std::shared_ptr<SettingsStore> store = nullptr,
+                        long style = wxDEFAULT_FRAME_STYLE);
     ~MainWindow() override;
 
     /// Shows the photo and starts its analysis with the remembered camera.
@@ -66,7 +67,8 @@ public:
 
     /// Tests: the configured and compiled-in model paths tried instead of
     /// the settings' and INDICATOR_DEFAULT_MODEL.
-    void set_model_candidates_for_test(std::filesystem::path configured, std::filesystem::path compiled_default);
+    void set_model_candidates_for_test(std::filesystem::path configured,
+                                       std::filesystem::path compiled_default);
 
 private:
     void choose_photo();
@@ -95,14 +97,16 @@ private:
     /// The panels (the window behind the photos, the control panel and the
     /// busy indicator's strip) light grey with a black wordmark, or black with a white one.
     void apply_theme(bool light);
-    /// The window title with the shown file's name (none: the title alone), in the current language.
+    /// The window title with the shown file's name (none: the title alone), in the current
+    /// language.
     void set_title(std::string const& file);
     void set_message(Message const& message);
     /// Logs `message` as the failure; with `dialog` (and a visible window) a
     /// warning shows it as rendered at that moment.
     void fail(Message const& message, bool dialog);
     void emit_analysed(bool ok);
-    /// A new folder for an opened inspection's files, kept for the session; empty when it cannot be made.
+    /// A new folder for an opened inspection's files, kept for the session; empty when it cannot be
+    /// made.
     std::filesystem::path new_inspection_dir(std::string& reason);
 
     std::shared_ptr<SettingsStore> store_;
@@ -114,7 +118,7 @@ private:
     std::filesystem::path model_configured_;
     std::filesystem::path model_default_;
     std::filesystem::path photo_path_;
-    std::string title_file_;  ///< the file named in the title ("" before any)
+    std::string title_file_;             ///< the file named in the title ("" before any)
     std::filesystem::path export_stem_;  ///< suggested export path without ".zip"
     std::optional<Message> note_;  ///< ends the next result's message (e.g. an older inspection)
     /// Folders of the opened inspections, kept for the session (a running
@@ -126,9 +130,9 @@ private:
     PhotoView* raw_;
     PhotoView* processed_;  ///< the photo, the object's outline green
     ControlPanel* panel_;
-    PhotoView* mask_;  ///< the panel's: the object black, the rest transparent, its outline green
-    MessageLog* log_;  ///< the panel's
-    wxWindow* status_;       ///< the strip under the panels
+    PhotoView* mask_;   ///< the panel's: the object black, the rest transparent, its outline green
+    MessageLog* log_;   ///< the panel's
+    wxWindow* status_;  ///< the strip under the panels
     ProgressBar* progress_;
     std::uint64_t expected_id_ {0};  ///< the request whose result is shown next (0: none coming)
     /// The minimum area of the analyses: the settings', or that of an opened

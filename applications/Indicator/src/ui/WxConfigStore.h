@@ -21,8 +21,8 @@ private:
     std::unique_ptr<wxFileConfig> config_;
 };
 
-/// `<wxStandardPaths::GetUserConfigDir()>/Contorno/Indicator/indicator.ini`; on Linux in the XDG layout,
-/// which this sets: `$XDG_CONFIG_HOME` or `~/.config`.
+/// `<wxStandardPaths::GetUserConfigDir()>/Contorno/Indicator/indicator.ini`; on Linux in the XDG
+/// layout, which this sets: `$XDG_CONFIG_HOME` or `~/.config`.
 std::filesystem::path default_settings_file();
 
 #endif  // INDICATOR_WXCONFIGSTORE_H

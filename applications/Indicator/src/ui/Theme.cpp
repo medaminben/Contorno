@@ -32,34 +32,54 @@
 namespace {
 bool light_ = false;
 
-std::string text_of(char const* key) { return lookup(current_language(), key); }
+std::string text_of(char const* key) {
+    return lookup(current_language(), key);
+}
 }  // namespace
 
-bool light_theme() { return light_; }
-void set_light_theme(bool light) { light_ = light; }
+bool light_theme() {
+    return light_;
+}
+void set_light_theme(bool light) {
+    light_ = light;
+}
 
 Palette palette(bool light) {
     // the Qt stylesheet's values; the keys' text is the same on both panels
     wxColour const green(0x47, 0xFF, 0x86);
     if (light) {
-        return {wxColour("#E4E7E3"), wxColour("#000000"), wxColour("#F7F8F6"), wxColour("#000000"),
-                wxColour("#B5BDB6"), wxColour("#000000"), wxColour("#000000"), green,
-                wxColour("#127A36"), green,                wxColour("#FFFFFF")};
+        return {wxColour("#E4E7E3"), wxColour("#000000"),
+                wxColour("#F7F8F6"), wxColour("#000000"),
+                wxColour("#B5BDB6"), wxColour("#000000"),
+                wxColour("#000000"), green,
+                wxColour("#127A36"), green,
+                wxColour("#FFFFFF")};
     }
-    return {wxColour("#000000"), wxColour("#FFFFFF"), wxColour("#050805"), wxColour("#FFFFFF"),
-            wxColour("#1B2A1F"), green,               green,               wxColour("#000000"),
-            green,               green,               wxColour("#FFFFFF")};
+    return {wxColour("#000000"),
+            wxColour("#FFFFFF"),
+            wxColour("#050805"),
+            wxColour("#FFFFFF"),
+            wxColour("#1B2A1F"),
+            green,
+            green,
+            wxColour("#000000"),
+            green,
+            green,
+            wxColour("#FFFFFF")};
 }
 
-wxString result_colour(bool light) { return light ? "#127A36" : "#47FF86"; }
+wxString result_colour(bool light) {
+    return light ? "#127A36" : "#47FF86";
+}
 
 // ---------------------------------------------------------------- apply_theme
 
 namespace {
 
 bool is_field(wxWindow* window) {
-    return dynamic_cast<wxTextCtrl*>(window) || dynamic_cast<wxChoice*>(window) || dynamic_cast<wxComboBox*>(window) ||
-           dynamic_cast<wxListBox*>(window) || dynamic_cast<wxListCtrl*>(window) || dynamic_cast<wxSpinCtrl*>(window) ||
+    return dynamic_cast<wxTextCtrl*>(window) || dynamic_cast<wxChoice*>(window) ||
+           dynamic_cast<wxComboBox*>(window) || dynamic_cast<wxListBox*>(window) ||
+           dynamic_cast<wxListCtrl*>(window) || dynamic_cast<wxSpinCtrl*>(window) ||
            dynamic_cast<wxSpinCtrlDouble*>(window) || dynamic_cast<wxTreeCtrl*>(window);
 }
 
@@ -70,18 +90,22 @@ bool is_field(wxWindow* window) {
 /// of its own window's theme, so a window keeps its colours when another is themed.
 void load_gtk_style() {
     static GtkCssProvider* provider = nullptr;
-    if (provider) return;
+    if (provider)
+        return;
     provider = gtk_css_provider_new();
-    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), GTK_STYLE_PROVIDER(provider),
+    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
+                                              GTK_STYLE_PROVIDER(provider),
                                               GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-    auto const css = [](wxColour const& c) { return c.GetAsString(wxC2S_HTML_SYNTAX).utf8_string(); };
+    auto const css = [](wxColour const& c) {
+        return c.GetAsString(wxC2S_HTML_SYNTAX).utf8_string();
+    };
     std::string rules;
     for (bool light : {false, true}) {
         Palette const p = palette(light);
         std::string const c = light ? ".contorno-light" : ".contorno-dark";
-        rules += c + " { border: 2px solid " + css(p.frame) + "; border-radius: 6px; }\n" +
-                 c + ":focus, " + c + " *:focus { border-color: " + css(p.focus) + "; }\n" +
-                 c + " selection, " + c + " *:selected { background-color: " + css(p.selection) +
+        rules += c + " { border: 2px solid " + css(p.frame) + "; border-radius: 6px; }\n" + c +
+                 ":focus, " + c + " *:focus { border-color: " + css(p.focus) + "; }\n" + c +
+                 " selection, " + c + " *:selected { background-color: " + css(p.selection) +
                  "; color: " + css(p.selection_text) + "; }\n";
     }
     gtk_css_provider_load_from_data(provider, rules.c_str(), -1, nullptr);
@@ -89,7 +113,8 @@ void load_gtk_style() {
 
 void apply_gtk_class(wxWindow* field, bool light) {
     GtkWidget* widget = field->GetHandle();
-    if (!widget) return;
+    if (!widget)
+        return;
     load_gtk_style();
     GtkStyleContext* context = gtk_widget_get_style_context(widget);
     gtk_style_context_remove_class(context, light ? "contorno-dark" : "contorno-light");
@@ -107,15 +132,19 @@ void apply(wxWindow* window, Palette const& p, bool light) {
     } else {
         window->SetBackgroundColour(p.panel);
         // a key paints its own text
-        if (!dynamic_cast<Key*>(window)) window->SetForegroundColour(p.text);
+        if (!dynamic_cast<Key*>(window))
+            window->SetForegroundColour(p.text);
     }
-    for (wxWindow* child : window->GetChildren()) apply(child, p, light);
+    for (wxWindow* child : window->GetChildren())
+        apply(child, p, light);
     window->Refresh();
 }
 
 }  // namespace
 
-void apply_theme(wxWindow* top, bool light) { apply(top, palette(light), light); }
+void apply_theme(wxWindow* top, bool light) {
+    apply(top, palette(light), light);
+}
 
 // ---------------------------------------------------------------- tinted icons
 
@@ -129,8 +158,11 @@ void draw_tool_icon(wxGraphicsContext& gc, wxString const& name, wxColour const&
     gc.SetPen(pen);
     gc.SetBrush(*wxTRANSPARENT_BRUSH);
     auto line = [&](double x1, double y1, double x2, double y2) { gc.StrokeLine(x1, y1, x2, y2); };
-    auto polyline = [&](std::vector<wxPoint2DDouble> const& points) { gc.StrokeLines(points.size(), points.data()); };
-    auto arrow = [&](wxPoint2DDouble tip, wxPoint2DDouble tail, wxPoint2DDouble wing1, wxPoint2DDouble wing2) {
+    auto polyline = [&](std::vector<wxPoint2DDouble> const& points) {
+        gc.StrokeLines(points.size(), points.data());
+    };
+    auto arrow = [&](wxPoint2DDouble tip, wxPoint2DDouble tail, wxPoint2DDouble wing1,
+                     wxPoint2DDouble wing2) {
         line(tail.m_x, tail.m_y, tip.m_x, tip.m_y);
         polyline({wing1, tip, wing2});
     };
@@ -161,7 +193,8 @@ void draw_tool_icon(wxGraphicsContext& gc, wxString const& name, wxColour const&
         gc.SetBrush(wxBrush(colour));
         gc.DrawEllipse(6.5, 6.5, 7, 7);
         for (int i = 0; i < 8; ++i) {
-            double const dx = std::cos(i * std::numbers::pi / 4), dy = std::sin(i * std::numbers::pi / 4);
+            double const dx = std::cos(i * std::numbers::pi / 4),
+                         dy = std::sin(i * std::numbers::pi / 4);
             line(10 + 6.5 * dx, 10 + 6.5 * dy, 10 + 8.5 * dx, 10 + 8.5 * dy);
         }
     } else if (name == "help") {
@@ -177,7 +210,8 @@ void draw_tool_icon(wxGraphicsContext& gc, wxString const& name, wxColour const&
         line(5.2, 5.2, 14.8, 14.8);
     } else if (name == "list") {
         for (double x : {3.0, 11.0}) {
-            for (double y : {5.0, 10.0, 15.0}) line(x, y, x + 6, y);
+            for (double y : {5.0, 10.0, 15.0})
+                line(x, y, x + 6, y);
         }
     } else if (name == "details") {
         for (double y : {5.0, 10.0, 15.0}) {
@@ -209,18 +243,21 @@ wxBitmap tool_icon(wxString const& name, wxColour const& colour, int px) {
 
 wxBitmapBundle tinted_icon(wxString const& name, wxColour const& colour, int size) {
     wxVector<wxBitmap> bitmaps;
-    for (int px : {size, size * 3 / 2, size * 2}) bitmaps.push_back(tool_icon(name, colour, px));
+    for (int px : {size, size * 3 / 2, size * 2})
+        bitmaps.push_back(tool_icon(name, colour, px));
     return wxBitmapBundle::FromBitmaps(bitmaps);
 }
 // --------------------------------------------------------------------- dialogs
 
 wxLayoutDirection layout_direction() {
-    return text_direction() == TextDirection::right_to_left ? wxLayout_RightToLeft : wxLayout_LeftToRight;
+    return text_direction() == TextDirection::right_to_left ? wxLayout_RightToLeft
+                                                            : wxLayout_LeftToRight;
 }
 
 namespace {
 
-/// A themed message dialog named `name` with one key per (id, label); Escape and Enter answer `escape`.
+/// A themed message dialog named `name` with one key per (id, label); Escape and Enter answer
+/// `escape`.
 int ask(wxWindow* parent, wxString const& title, wxString const& message, char const* name,
         std::vector<std::pair<wxWindowID, wxString>> const& answers, wxWindowID escape) {
     wxDialog dialog(parent, wxID_ANY, title);
@@ -233,7 +270,8 @@ int ask(wxWindow* parent, wxString const& title, wxString const& message, char c
     for (auto const& [id, text] : answers) {
         auto* key = new Key(&dialog, id, text, {}, 6, 18);
         keys->Add(key, 0, wxLEFT | wxRIGHT, 6);
-        if (!first) first = key;
+        if (!first)
+            first = key;
     }
     auto* column = new wxBoxSizer(wxVERTICAL);
     column->Add(label, 1, wxEXPAND | wxALL, 20);
@@ -255,5 +293,6 @@ void warn(wxWindow* parent, wxString const& title, wxString const& message) {
 
 bool confirm(wxWindow* parent, wxString const& title, wxString const& message) {
     return ask(parent, title, message, "contorno-confirm",
-               {{wxID_YES, wxGetTranslation("Yes")}, {wxID_NO, wxGetTranslation("No")}}, wxID_NO) == wxID_YES;
+               {{wxID_YES, wxGetTranslation("Yes")}, {wxID_NO, wxGetTranslation("No")}},
+               wxID_NO) == wxID_YES;
 }

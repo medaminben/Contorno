@@ -14,20 +14,24 @@
 
 namespace {
 
-wxColour const edge_top("#9aa29c"), edge_left("#5e6660"), edge_right("#101310"), edge_dark("#000000");
+wxColour const edge_top("#9aa29c"), edge_left("#5e6660"), edge_right("#101310"),
+    edge_dark("#000000");
 wxColour const key_disabled("#5a6b5f");
 constexpr int gap_icon_text = 6;
 
-void fill_rounded(wxGraphicsContext& gc, wxColour const& colour, double x, double y, double w, double h, double r) {
+void fill_rounded(wxGraphicsContext& gc, wxColour const& colour, double x, double y, double w,
+                  double h, double r) {
     gc.SetPen(*wxTRANSPARENT_PEN);
     gc.SetBrush(wxBrush(colour));
     gc.DrawRoundedRectangle(x, y, w, h, r);
 }
 
-/// `icon` redrawn in the disabled colour (#3a4a3f, as the Qt Indicator's tinted icons), keeping its alpha.
+/// `icon` redrawn in the disabled colour (#3a4a3f, as the Qt Indicator's tinted icons), keeping its
+/// alpha.
 wxBitmap dimmed(wxBitmap const& icon) {
     wxImage image = icon.ConvertToImage();
-    if (!image.HasAlpha()) image.InitAlpha();
+    if (!image.HasAlpha())
+        image.InitAlpha();
     unsigned char* rgb = image.GetData();
     int const pixels = image.GetWidth() * image.GetHeight();
     for (int i = 0; i < pixels; ++i) {
@@ -40,7 +44,8 @@ wxBitmap dimmed(wxBitmap const& icon) {
 
 }  // namespace
 
-Key::Key(wxWindow* parent, wxWindowID id, wxString const& label, wxBitmapBundle const& icon, int pad_y, int pad_x)
+Key::Key(wxWindow* parent, wxWindowID id, wxString const& label, wxBitmapBundle const& icon,
+         int pad_y, int pad_x)
     : icon_(icon), pad_y_(pad_y), pad_x_(pad_x) {
     wxControl::Create(parent, id, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE);
     SetBackgroundStyle(wxBG_STYLE_PAINT);
@@ -48,14 +53,22 @@ Key::Key(wxWindow* parent, wxWindowID id, wxString const& label, wxBitmapBundle 
     SetBackgroundColour(palette(light_theme()).panel);
     SetCursor(wxCursor(wxCURSOR_HAND));
     Bind(wxEVT_PAINT, &Key::on_paint, this);
-    Bind(wxEVT_ENTER_WINDOW, [this](wxMouseEvent& e) { set_hover(true); e.Skip(); });
-    Bind(wxEVT_LEAVE_WINDOW, [this](wxMouseEvent& e) { set_hover(false); e.Skip(); });
+    Bind(wxEVT_ENTER_WINDOW, [this](wxMouseEvent& e) {
+        set_hover(true);
+        e.Skip();
+    });
+    Bind(wxEVT_LEAVE_WINDOW, [this](wxMouseEvent& e) {
+        set_hover(false);
+        e.Skip();
+    });
     // a second quick press arrives as a double click, not as another LEFT_DOWN
     auto press = [this](wxMouseEvent&) {
-        if (!IsEnabled()) return;
+        if (!IsEnabled())
+            return;
         SetFocus();
         pressed_ = true;
-        if (!HasCapture()) CaptureMouse();
+        if (!HasCapture())
+            CaptureMouse();
         Refresh();
     };
     Bind(wxEVT_LEFT_DOWN, press);
@@ -63,11 +76,16 @@ Key::Key(wxWindow* parent, wxWindowID id, wxString const& label, wxBitmapBundle 
     Bind(wxEVT_LEFT_UP, [this](wxMouseEvent& e) {
         bool const was_pressed = pressed_;
         pressed_ = false;
-        if (HasCapture()) ReleaseMouse();
+        if (HasCapture())
+            ReleaseMouse();
         Refresh();
-        if (was_pressed && GetClientRect().Contains(e.GetPosition())) Click();
+        if (was_pressed && GetClientRect().Contains(e.GetPosition()))
+            Click();
     });
-    Bind(wxEVT_MOUSE_CAPTURE_LOST, [this](wxMouseCaptureLostEvent&) { pressed_ = false; Refresh(); });
+    Bind(wxEVT_MOUSE_CAPTURE_LOST, [this](wxMouseCaptureLostEvent&) {
+        pressed_ = false;
+        Refresh();
+    });
     // Enter on a focused key presses that key; the dialog's hook would press its default key
     Bind(wxEVT_CHAR_HOOK, [this](wxKeyEvent& e) {
         if ((e.GetKeyCode() == WXK_RETURN || e.GetKeyCode() == WXK_NUMPAD_ENTER) && IsEnabled()) {
@@ -92,13 +110,21 @@ Key::Key(wxWindow* parent, wxWindowID id, wxString const& label, wxBitmapBundle 
             e.Skip();
         }
     });
-    Bind(wxEVT_SET_FOCUS, [this](wxFocusEvent& e) { Refresh(); e.Skip(); });
-    Bind(wxEVT_KILL_FOCUS, [this](wxFocusEvent& e) { pressed_ = false; Refresh(); e.Skip(); });
+    Bind(wxEVT_SET_FOCUS, [this](wxFocusEvent& e) {
+        Refresh();
+        e.Skip();
+    });
+    Bind(wxEVT_KILL_FOCUS, [this](wxFocusEvent& e) {
+        pressed_ = false;
+        Refresh();
+        e.Skip();
+    });
 }
 
 void Key::SetCheckable(bool checkable) {
     checkable_ = checkable;
-    if (!checkable_) checked_ = false;
+    if (!checkable_)
+        checked_ = false;
     Refresh();
 }
 
@@ -127,7 +153,8 @@ bool Key::SetFont(wxFont const& font) {
 
 bool Key::Enable(bool enable) {
     bool const changed = wxControl::Enable(enable);
-    if (!enable) pressed_ = hover_ = false;
+    if (!enable)
+        pressed_ = hover_ = false;
     Refresh();
     return changed;
 }
@@ -144,7 +171,8 @@ void Key::set_hover(bool hover) {
 }
 
 void Key::Click() {
-    if (!IsEnabled()) return;
+    if (!IsEnabled())
+        return;
     wxEventType type = wxEVT_BUTTON;
     if (checkable_) {
         checked_ = !checked_;
@@ -225,14 +253,19 @@ void Key::draw(wxGraphicsContext& gc, wxSize size, double scale) const {
     wxBitmap icon;
     if (icon_.IsOk()) {
         icon_size = icon_.GetDefaultSize();
-        icon = icon_.GetBitmap(wxSize(std::lround(icon_size.x * scale), std::lround(icon_size.y * scale)));
-        if (!IsEnabled()) icon = dimmed(icon);
+        icon = icon_.GetBitmap(
+            wxSize(std::lround(icon_size.x * scale), std::lround(icon_size.y * scale)));
+        if (!IsEnabled())
+            icon = dimmed(icon);
     }
-    wxColour colour = IsEnabled() ? ((hover_ || pressed_) ? p.key_hover : p.key_text) : key_disabled;
+    wxColour colour =
+        IsEnabled() ? ((hover_ || pressed_) ? p.key_hover : p.key_text) : key_disabled;
     gc.SetFont(GetFont(), colour);
     double text_w = 0, text_h = 0;
-    if (!label.empty()) gc.GetTextExtent(label, &text_w, &text_h);
-    double const total = text_w + (icon.IsOk() ? icon_size.x + (text_w > 0 ? gap_icon_text : 0) : 0);
+    if (!label.empty())
+        gc.GetTextExtent(label, &text_w, &text_h);
+    double const total =
+        text_w + (icon.IsOk() ? icon_size.x + (text_w > 0 ? gap_icon_text : 0) : 0);
     double x = std::floor(face_x + (face_w - total) / 2);
     double const middle = face_top + face_height / 2;
     bool const icon_last = GetLayoutDirection() == wxLayout_RightToLeft;
@@ -240,18 +273,21 @@ void Key::draw(wxGraphicsContext& gc, wxSize size, double scale) const {
         gc.DrawBitmap(icon, x, std::floor(middle - icon_size.y / 2.0), icon_size.x, icon_size.y);
         x += icon_size.x + (text_w > 0 ? gap_icon_text : 0);
     };
-    if (icon.IsOk() && !icon_last) draw_icon();
+    if (icon.IsOk() && !icon_last)
+        draw_icon();
     if (!label.empty()) {
         gc.DrawText(label, x, std::floor(middle - text_h / 2));
         x += text_w + gap_icon_text;
     }
-    if (icon.IsOk() && icon_last) draw_icon();
+    if (icon.IsOk() && icon_last)
+        draw_icon();
 }
 
 void Key::on_paint(wxPaintEvent&) {
     wxAutoBufferedPaintDC dc(this);
     std::unique_ptr<wxGraphicsContext> gc = paint_context(dc, *this);
-    if (!gc) return;
+    if (!gc)
+        return;
     draw(*gc, GetClientSize(), GetContentScaleFactor());
     if (HasFocus() && !pressed_) {
         gc->SetPen(wxPen(palette(false).key_text, 1, wxPENSTYLE_DOT));
@@ -266,7 +302,8 @@ wxBitmap Key::Render(double scale) const {
     bitmap.CreateWithDIPSize(size, scale);
     wxMemoryDC dc(bitmap);
     std::unique_ptr<wxGraphicsContext> gc(wxGraphicsContext::Create(dc));
-    if (gc) draw(*gc, size, scale);
+    if (gc)
+        draw(*gc, size, scale);
     gc.reset();
     dc.SelectObject(wxNullBitmap);
     return bitmap;

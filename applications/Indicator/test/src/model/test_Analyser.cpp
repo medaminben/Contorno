@@ -17,7 +17,8 @@
 
 namespace {
 
-std::filesystem::path const calf = std::filesystem::path(INDICATOR_SAMPLES_DIR) / "leather" / "calf_black.jpg";
+std::filesystem::path const calf =
+    std::filesystem::path(INDICATOR_SAMPLES_DIR) / "leather" / "calf_black.jpg";
 
 /// Stands in for the GUI thread: the analyser's tasks are queued here from the
 /// worker thread and run by whoever drains the queue (the test thread).
@@ -39,7 +40,8 @@ public:
             std::function<void()> task;
             {
                 std::unique_lock lock(mutex_);
-                if (!ready_.wait_until(lock, end, [this] { return !tasks_.empty(); })) return until();
+                if (!ready_.wait_until(lock, end, [this] { return !tasks_.empty(); }))
+                    return until();
                 task = std::move(tasks_.front());
                 tasks_.pop_front();
             }
@@ -130,7 +132,8 @@ TEST(WxAnalyser, ScaleAspectFollowsRotation) {
 }
 
 TEST(WxAnalyser, FindsTheCalf) {
-    if (!Vision::ai_available() || !std::filesystem::exists(INDICATOR_DEFAULT_MODEL)) GTEST_SKIP();
+    if (!Vision::ai_available() || !std::filesystem::exists(INDICATOR_DEFAULT_MODEL))
+        GTEST_SKIP();
     TaskQueue queue;
     Done spy;
     Analyser analyser(queue.post(), spy.sink());

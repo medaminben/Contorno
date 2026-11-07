@@ -42,6 +42,7 @@ Rect manual_window_rect(Rect const& available);
 /// empty program. A valid `window` adds `--window-position` and `--window-size`.
 ManualBrowserCommand manual_browser_launch(std::vector<std::string> const& browsers,
                                            std::filesystem::path const& index_path,
-                                           std::filesystem::path const& profile_dir, Rect const& window = {});
+                                           std::filesystem::path const& profile_dir,
+                                           Rect const& window = {});
 
 #endif  // INDICATOR_MANUALLOCATION_H

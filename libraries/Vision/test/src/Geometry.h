@@ -27,7 +27,8 @@ inline double signed_area(Pot::Path64 const& ring) {
 /// Area of a polygon in grid units²: the outer ring less the holes.
 inline double area(Pot::Polygon64 const& polygon) {
     double result = std::abs(signed_area(polygon.outer));
-    for (auto const& hole : polygon.holes) result -= std::abs(signed_area(hole));
+    for (auto const& hole : polygon.holes)
+        result -= std::abs(signed_area(hole));
     return result;
 }
 
@@ -42,7 +43,8 @@ inline bool inside(Pot::Point64 const& p, Pot::Path64 const& ring) {
             double const x = static_cast<double>(b.x - a.x) * static_cast<double>(p.y - a.y) /
                                  static_cast<double>(b.y - a.y) +
                              static_cast<double>(a.x);
-            if (static_cast<double>(p.x) < x) result = !result;
+            if (static_cast<double>(p.x) < x)
+                result = !result;
         }
     }
     return result;

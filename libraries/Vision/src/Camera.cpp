@@ -10,7 +10,8 @@ Result<double> mm_per_px(CameraConfig const& camera, int image_width) noexcept {
     try {
         return mm_per_px_impl(camera, image_width);
     } catch (std::exception const& e) {
-        return Core::error_result<double>([&] { return camera_problem(Core::Problem::raw(e.what())); });
+        return Core::error_result<double>(
+            [&] { return camera_problem(Core::Problem::raw(e.what())); });
     } catch (...) {
         return Core::error_result<double>(
             [] { return camera_problem(Core::Problem("unknown_error", "unknown error")); });

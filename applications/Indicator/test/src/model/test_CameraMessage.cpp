@@ -16,12 +16,18 @@ using Vision::CameraSettings;
 using Vision::PhotoMetadata;
 
 namespace {
-bool contains(std::string const& text, std::string const& part) { return text.find(part) != std::string::npos; }
-bool has_prefix(std::string const& text, std::string const& prefix) { return text.compare(0, prefix.size(), prefix) == 0; }
-bool has_suffix(std::string const& text, std::string const& suffix) {
-    return text.size() >= suffix.size() && text.compare(text.size() - suffix.size(), suffix.size(), suffix) == 0;
+bool contains(std::string const& text, std::string const& part) {
+    return text.find(part) != std::string::npos;
 }
-Vision::PhotoCamera resolve(CameraSettings const& s, PhotoMetadata const& m, int w = 4000, int h = 3000) {
+bool has_prefix(std::string const& text, std::string const& prefix) {
+    return text.compare(0, prefix.size(), prefix) == 0;
+}
+bool has_suffix(std::string const& text, std::string const& suffix) {
+    return text.size() >= suffix.size() &&
+           text.compare(text.size() - suffix.size(), suffix.size(), suffix) == 0;
+}
+Vision::PhotoCamera resolve(CameraSettings const& s, PhotoMetadata const& m, int w = 4000,
+                            int h = 3000) {
     return Vision::resolve_camera(s, m, w, h);
 }
 CameraSettings pixel_mode(double width_um = 3.76, double height_um = 3.76) {
@@ -90,8 +96,10 @@ TEST(WxCameraMessage, ScaleFollowsRotation) {
     std::string const plain = scale_text(sc);
     std::string const swapped = scale_text({sc.y, sc.x});
     ASSERT_NE(plain, swapped);
-    EXPECT_TRUE(contains(camera_message(c, true).english(), swapped + " mm/px")) << camera_message(c, true).english();
-    EXPECT_TRUE(contains(camera_message(c).english(), plain + " mm/px")) << camera_message(c).english();
+    EXPECT_TRUE(contains(camera_message(c, true).english(), swapped + " mm/px"))
+        << camera_message(c, true).english();
+    EXPECT_TRUE(contains(camera_message(c).english(), plain + " mm/px"))
+        << camera_message(c).english();
     EXPECT_TRUE(contains(camera_message(c, true).english(), "3.76 × 4.20"));
 }
 TEST(WxCameraMessage, ThirtyFiveEquivalent) {
@@ -125,7 +133,8 @@ TEST(WxCameraMessage, Translatable) {
     // "35 mm" is a value, not words: the same in every language
     EXPECT_TRUE(contains(english, "(35 mm equivalent)"));
     for (std::string const code : {"de", "ar", "fr", "it", "nl"}) {
-        EXPECT_TRUE(contains(message.render(code), "35 mm")) << code << ": " << message.render(code);
+        EXPECT_TRUE(contains(message.render(code), "35 mm"))
+            << code << ": " << message.render(code);
     }
 }
 

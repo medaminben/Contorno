@@ -12,18 +12,21 @@ namespace fs = std::filesystem;
 
 std::string all_bytes() {
     std::string s;
-    for (int i = 0; i < 256; ++i) s.push_back(static_cast<char>(i));
+    for (int i = 0; i < 256; ++i)
+        s.push_back(static_cast<char>(i));
     return s;
 }
 
 std::string random_bytes(std::size_t n) {
     std::mt19937 rng(7);
     std::string s(n, '\0');
-    for (auto& c : s) c = static_cast<char>(rng() & 0xFF);
+    for (auto& c : s)
+        c = static_cast<char>(rng() & 0xFF);
     return s;
 }
 
-void expect_same(std::vector<Tools::ZipEntry> const& got, std::vector<Tools::ZipEntry> const& want) {
+void expect_same(std::vector<Tools::ZipEntry> const& got,
+                 std::vector<Tools::ZipEntry> const& want) {
     ASSERT_EQ(got.size(), want.size());
     for (std::size_t i = 0; i < want.size(); ++i) {
         EXPECT_EQ(got[i].name, want[i].name);
@@ -69,7 +72,8 @@ TEST(Zip, RejectsUnsafeNames) {
     auto bytes = Tools::to_zip({{"zz/x", "data"}});
     ASSERT_FALSE(bytes.isError()) << bytes.error();
     std::string patched = bytes();
-    for (std::size_t at = patched.find("zz/x"); at != std::string::npos; at = patched.find("zz/x", at)) {
+    for (std::size_t at = patched.find("zz/x"); at != std::string::npos;
+         at = patched.find("zz/x", at)) {
         patched.replace(at, 4, "../x");
     }
     auto parsed = Tools::parse_zip(patched);
@@ -113,7 +117,6 @@ TEST(Zip, MissingFile) {
     ASSERT_TRUE(read.isError());
     EXPECT_NE(read.error().text().find("no_such_file.zip"), std::string::npos) << read.error();
 }
-
 
 // the error names its sentence by code and carries its values, so an application can word it
 TEST(Zip, ProblemCarriesCodeAndValues) {

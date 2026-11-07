@@ -46,8 +46,10 @@ Vision::ObjectsAnalysis square_with_hole() {
     a.area_mm2 = pixels * 0.25;
     auto const mm = [](double v) { return static_cast<std::int64_t>(v * Pot::units_per_mm); };
     Pot::Polygon64 polygon;
-    polygon.outer = {{mm(10), mm(10)}, {mm(40), mm(10)}, {mm(40), mm(40)}, {mm(10), mm(40)}};    // CCW
-    polygon.holes = {{{mm(20), mm(20)}, {mm(20), mm(30)}, {mm(30), mm(30)}, {mm(30), mm(20)}}};  // CW
+    polygon.outer = {
+        {mm(10), mm(10)}, {mm(40), mm(10)}, {mm(40), mm(40)}, {mm(10), mm(40)}};  // CCW
+    polygon.holes = {
+        {{mm(20), mm(20)}, {mm(20), mm(30)}, {mm(30), mm(30)}, {mm(30), mm(20)}}};  // CW
     a.objects = {polygon};
     return a;
 }
@@ -62,7 +64,8 @@ InspectionFiles files_for_calf() {
 
 std::vector<std::string> names(std::vector<Tools::ZipEntry> const& entries) {
     std::vector<std::string> out;
-    for (auto const& e : entries) out.push_back(e.name);
+    for (auto const& e : entries)
+        out.push_back(e.name);
     return out;
 }
 
@@ -70,35 +73,39 @@ TEST(WxInspection, EntryNames) {
     auto const a = square_with_hole();
     auto entries = inspection_entries(files_for_calf(), a);
     ASSERT_FALSE(entries.isError()) << entries.error().english();
-    EXPECT_EQ(names(entries()), (std::vector<std::string> {"original.jpg", "mask.png", "camera.json", "parameters.json",
-                                              "objects.dxf", "result.json"}));
+    EXPECT_EQ(names(entries()),
+              (std::vector<std::string> {"original.jpg", "mask.png", "camera.json",
+                                         "parameters.json", "objects.dxf", "result.json"}));
     auto const& e = entries();
     auto const mask = Vision::decode_mask_png(e[1].data);
     ASSERT_TRUE(mask);
     EXPECT_EQ(mask->width, 200);
     EXPECT_EQ(mask->height, 100);
     EXPECT_EQ(mask->data, a.mask.data);  // 8-bit grey
-    for (char const* key : {"\"contorno-camera\"", "\"version\": 4", "\"distance_mm\"", "\"focal_length_mm\"",
-                            "\"pixel_width_um\"", "\"pixel_height_um\"", "\"focal_length_source\": \"settings\"",
-                            "\"pixel_size_source\": \"settings\"", "\"fov_deg\"", "\"image_width_px\""}) {
+    for (char const* key :
+         {"\"contorno-camera\"", "\"version\": 4", "\"distance_mm\"", "\"focal_length_mm\"",
+          "\"pixel_width_um\"", "\"pixel_height_um\"", "\"focal_length_source\": \"settings\"",
+          "\"pixel_size_source\": \"settings\"", "\"fov_deg\"", "\"image_width_px\""}) {
         EXPECT_NE(e[2].data.find(key), std::string::npos) << key;
     }
-    for (char const* key : {"\"contorno-objects-parameters\"", "\"min_area_mm2\": 500", "\"outline_tolerance_mm\": 0.5"}) {
+    for (char const* key : {"\"contorno-objects-parameters\"", "\"min_area_mm2\": 500",
+                            "\"outline_tolerance_mm\": 0.5"}) {
         EXPECT_NE(e[3].data.find(key), std::string::npos) << key;
     }
     auto rings = Tools::parse_dxf(e[4].data);
     ASSERT_FALSE(rings.isError()) << rings.error();
-    ASSERT_EQ(rings().size(), 2u);  // the outer ring and the hole
+    ASSERT_EQ(rings().size(), 2u);                       // the outer ring and the hole
     EXPECT_EQ(rings()[0].vertices, a.objects[0].outer);  // in the image mm frame, not shifted
     EXPECT_NE(e[4].data.find("OBJECT"), std::string::npos);
-    for (char const* key : {"\"contorno-objects-result\"", "\"version\": 2", "\"image\"", "\"mm_per_px_x\"", "\"mm_per_px_y\"", "\"area_mm2\"", "\"objects\""}) {
+    for (char const* key : {"\"contorno-objects-result\"", "\"version\": 2", "\"image\"",
+                            "\"mm_per_px_x\"", "\"mm_per_px_y\"", "\"area_mm2\"", "\"objects\""}) {
         EXPECT_NE(e[5].data.find(key), std::string::npos) << key;
     }
 }
 
 TEST(WxInspection, RoundTrip) {
     TempDir dir;
-        auto const a = square_with_hole();
+    auto const a = square_with_hole();
     auto const files = files_for_calf();
     auto entries = inspection_entries(files, a);
     ASSERT_FALSE(entries.isError()) << entries.error().english();
@@ -151,8 +158,9 @@ TEST(WxInspection, NoObjectsHasNoDxf) {
     a.mask = {200, 100, std::vector<std::uint8_t>(200 * 100, 0)};
     auto entries = inspection_entries(files_for_calf(), a);
     ASSERT_FALSE(entries.isError()) << entries.error().english();
-    EXPECT_EQ(names(entries()), (std::vector<std::string> {"original.jpg", "mask.png", "camera.json", "parameters.json",
-                                              "result.json"}));
+    EXPECT_EQ(names(entries()),
+              (std::vector<std::string> {"original.jpg", "mask.png", "camera.json",
+                                         "parameters.json", "result.json"}));
 
     // and it opens again with no objects
     TempDir dir;
@@ -167,7 +175,7 @@ TEST(WxInspection, NoObjectsHasNoDxf) {
 
 TEST(WxInspection, LegacyHideZipOpens) {
     TempDir dir;
-        Vision::CameraConfig const old {1500, 60, 4000};
+    Vision::CameraConfig const old {1500, 60, 4000};
     auto const entries = legacy_inspection_entries(calf, old);
     ASSERT_FALSE(entries.empty());
     fs::path const zip = dir.path / "hide.zip";
@@ -180,7 +188,8 @@ TEST(WxInspection, LegacyHideZipOpens) {
     EXPECT_TRUE(f.legacy);
     EXPECT_FALSE(f.result);
     EXPECT_TRUE(fs::exists(f.photo_path));
-    auto const scale = Vision::mm_per_px(old, shown_size(f.photo_path)->width);  // as Vision scaled it: by the photo's width
+    auto const scale = Vision::mm_per_px(
+        old, shown_size(f.photo_path)->width);  // as Vision scaled it: by the photo's width
     ASSERT_FALSE(scale.isError());
     EXPECT_NEAR(Vision::lens_scale(f.camera.lens).x, scale(), 1e-9);
 }
@@ -189,7 +198,8 @@ TEST(WxInspection, LegacyHideZipOpens) {
 TEST(WxInspection, SampleZipsOpen) {
     int found = 0;
     for (auto const& entry : fs::recursive_directory_iterator(INDICATOR_SAMPLES_DIR)) {
-        if (!entry.is_regular_file() || entry.path().extension() != ".zip") continue;
+        if (!entry.is_regular_file() || entry.path().extension() != ".zip")
+            continue;
         TempDir into;
         auto const read = unpack_inspection(entry.path(), into.path);
         EXPECT_FALSE(read.isError()) << utf8(entry.path());
@@ -204,7 +214,8 @@ TEST(WxInspection, MissingMaskIsAnError) {
     auto entries = inspection_entries(files_for_calf(), a);
     ASSERT_FALSE(entries.isError()) << entries.error().english();
     auto without = entries();
-    without.erase(std::remove_if(without.begin(), without.end(), [](auto const& e) { return e.name == "mask.png"; }),
+    without.erase(std::remove_if(without.begin(), without.end(),
+                                 [](auto const& e) { return e.name == "mask.png"; }),
                   without.end());
     fs::path const zip = dir.path / "no_mask.zip";
     ASSERT_FALSE(Tools::write_zip(utf8(zip), without).isError());
@@ -216,7 +227,8 @@ TEST(WxInspection, MissingMaskIsAnError) {
     auto other = entries();
     Vision::Mask small {20, 10, std::vector<std::uint8_t>(200, 0)};
     for (auto& e : other) {
-        if (e.name != "mask.png") continue;
+        if (e.name != "mask.png")
+            continue;
         auto const png = Vision::encode_mask_png(small);
         ASSERT_TRUE(png);
         e.data = *png;
@@ -225,7 +237,8 @@ TEST(WxInspection, MissingMaskIsAnError) {
     ASSERT_FALSE(Tools::write_zip(utf8(zip2), other).isError());
     auto read2 = unpack_inspection(zip2, dir.path);
     ASSERT_TRUE(read2.isError());
-    EXPECT_NE(read2.error().english().find("mask.png"), std::string::npos) << read2.error().english();
+    EXPECT_NE(read2.error().english().find("mask.png"), std::string::npos)
+        << read2.error().english();
 }
 
 // each change of a valid zip is an error naming its entry
@@ -239,10 +252,12 @@ TEST(WxInspection, InvalidValuesAreErrors) {
     auto replaced = [&](std::string const& entry, std::string const& from, std::string const& to) {
         auto out = entries();
         for (auto& e : out) {
-            if (e.name != entry) continue;
+            if (e.name != entry)
+                continue;
             auto const at = e.data.find(from);
             EXPECT_NE(at, std::string::npos) << from;
-            if (at != std::string::npos) e.data.replace(at, from.size(), to);
+            if (at != std::string::npos)
+                e.data.replace(at, from.size(), to);
         }
         return out;
     };
@@ -256,11 +271,13 @@ TEST(WxInspection, InvalidValuesAreErrors) {
     }
     auto grey_mask = entries();
     for (auto& e : grey_mask) {
-        if (e.name == "mask.png") e.data = grey_png;
+        if (e.name == "mask.png")
+            e.data = grey_png;
     }
     auto renamed_mask = entries();
     for (auto& e : renamed_mask) {
-        if (e.name == "mask.png") e.name = "mask.png.old";
+        if (e.name == "mask.png")
+            e.name = "mask.png.old";
     }
 
     struct Case {
@@ -269,24 +286,35 @@ TEST(WxInspection, InvalidValuesAreErrors) {
         char const* named;
     };
     std::vector<Case> const cases {
-        {"negative area", replaced("result.json", "\"area_mm2\": 800", "\"area_mm2\": -1"), "result.json"},
-        {"fractional width", replaced("result.json", "\"width\": 200", "\"width\": 200.5"), "result.json"},
-        {"huge height", replaced("result.json", "\"height\": 100", "\"height\": 1e12"), "result.json"},
+        {"negative area", replaced("result.json", "\"area_mm2\": 800", "\"area_mm2\": -1"),
+         "result.json"},
+        {"fractional width", replaced("result.json", "\"width\": 200", "\"width\": 200.5"),
+         "result.json"},
+        {"huge height", replaced("result.json", "\"height\": 100", "\"height\": 1e12"),
+         "result.json"},
         {"grey mask", grey_mask, "mask.png"},
         // the camera dialog's ranges
-        {"distance under 1 mm", replaced("camera.json", "\"distance_mm\": 1200", "\"distance_mm\": 0.5"),
+        {"distance under 1 mm",
+         replaced("camera.json", "\"distance_mm\": 1200", "\"distance_mm\": 0.5"), "camera.json"},
+        {"distance over 100000 mm",
+         replaced("camera.json", "\"distance_mm\": 1200", "\"distance_mm\": 100001"),
          "camera.json"},
-        {"distance over 100000 mm", replaced("camera.json", "\"distance_mm\": 1200", "\"distance_mm\": 100001"),
+        {"focal length under 0.1 mm",
+         replaced("camera.json", "\"focal_length_mm\": 16", "\"focal_length_mm\": 0.05"),
          "camera.json"},
-        {"focal length under 0.1 mm", replaced("camera.json", "\"focal_length_mm\": 16", "\"focal_length_mm\": 0.05"),
+        {"focal length over 2000 mm",
+         replaced("camera.json", "\"focal_length_mm\": 16", "\"focal_length_mm\": 2001"),
          "camera.json"},
-        {"focal length over 2000 mm", replaced("camera.json", "\"focal_length_mm\": 16", "\"focal_length_mm\": 2001"),
+        {"pixel size zero",
+         replaced("camera.json", "\"pixel_width_um\": 3.45", "\"pixel_width_um\": 0"),
          "camera.json"},
-        {"pixel size zero", replaced("camera.json", "\"pixel_width_um\": 3.45", "\"pixel_width_um\": 0"),
-         "camera.json"},
-        {"unknown pixel size source", replaced("camera.json", "\"pixel_size_source\": \"settings\"", "\"pixel_size_source\": \"camera\""),
+        {"unknown pixel size source",
+         replaced("camera.json", "\"pixel_size_source\": \"settings\"",
+                  "\"pixel_size_source\": \"camera\""),
          "pixel_size_source"},
-        {"unknown focal length source", replaced("camera.json", "\"focal_length_source\": \"settings\"", "\"focal_length_source\": \"exif\""),
+        {"unknown focal length source",
+         replaced("camera.json", "\"focal_length_source\": \"settings\"",
+                  "\"focal_length_source\": \"exif\""),
          "focal_length_source"},
         {"mask.png only by prefix", renamed_mask, "mask.png"},
     };
@@ -296,14 +324,16 @@ TEST(WxInspection, InvalidValuesAreErrors) {
         ASSERT_FALSE(Tools::write_zip(utf8(zip), c.entries).isError()) << c.what;
         auto read = unpack_inspection(zip, dir.path);
         ASSERT_TRUE(read.isError()) << c.what;
-        EXPECT_NE(read.error().english().find(c.named), std::string::npos) << c.what << ": " << read.error().english();
+        EXPECT_NE(read.error().english().find(c.named), std::string::npos)
+            << c.what << ": " << read.error().english();
     }
 }
 
 TEST(WxInspection, V3RoundTripKeepsSources) {
     TempDir dir;
     auto files = files_for_calf();
-    files.camera = Vision::PhotoCamera {{1500, 4.2, 1.4}, Vision::CameraSource::photo, Vision::CameraSource::photo_35mm};
+    files.camera = Vision::PhotoCamera {
+        {1500, 4.2, 1.4}, Vision::CameraSource::photo, Vision::CameraSource::photo_35mm};
     auto entries = inspection_entries(files, square_with_hole());
     ASSERT_FALSE(entries.isError()) << entries.error().english();
     fs::path const zip = dir.path / "v3.zip";
@@ -331,17 +361,21 @@ TEST(WxInspection, V2StillOpens) {
 }
 
 /// Writes `entries` as a zip and reads it back.
-InspectionResult<InspectionFiles> through_zip(std::vector<Tools::ZipEntry> const& entries, TempDir const& dir) {
+InspectionResult<InspectionFiles> through_zip(std::vector<Tools::ZipEntry> const& entries,
+                                              TempDir const& dir) {
     fs::path const zip = dir.path / "through.zip";
     auto written = Tools::write_zip(utf8(zip), entries);
-    if (written.isError()) return InspectionResult<InspectionFiles>(Core::Error<Message>(from_library(written.error())));
+    if (written.isError())
+        return InspectionResult<InspectionFiles>(
+            Core::Error<Message>(from_library(written.error())));
     return unpack_inspection(zip, dir.path);
 }
 
 TEST(WxInspection, NonSquareRoundTrip) {
     TempDir dir;
     auto files = files_for_calf();
-    files.camera = Vision::PhotoCamera {{1500, 4.2, 3.76, 4.20}, Vision::CameraSource::photo, Vision::CameraSource::photo};
+    files.camera = Vision::PhotoCamera {
+        {1500, 4.2, 3.76, 4.20}, Vision::CameraSource::photo, Vision::CameraSource::photo};
     auto a = square_with_hole();
     a.frame = {200, 100, 0.5, 0.6};
     auto entries = inspection_entries(files, a);
@@ -360,7 +394,8 @@ TEST(WxInspection, ResultV1ReadsSquare) {
     auto entries = inspection_entries(files_for_calf(), square_with_hole());
     ASSERT_FALSE(entries.isError()) << entries.error().english();
     for (auto& e : entries()) {
-        if (e.name != "result.json") continue;
+        if (e.name != "result.json")
+            continue;
         auto replace = [&](std::string const& from, std::string const& to) {
             auto const at = e.data.find(from);
             ASSERT_NE(at, std::string::npos) << from;
@@ -384,10 +419,13 @@ TEST(WxInspection, V3CameraReadsSquare) {
     auto entries = inspection_entries(files_for_calf(), square_with_hole());
     ASSERT_FALSE(entries.isError()) << entries.error().english();
     for (auto& e : entries()) {
-        if (e.name != "camera.json") continue;
+        if (e.name != "camera.json")
+            continue;
         e.data =
-            "{\"format\": \"contorno-camera\", \"version\": 3, \"distance_mm\": 1200, \"focal_length_mm\": 16,"
-            " \"pixel_size_um\": 2.5, \"focal_length_source\": \"settings\", \"pixel_size_source\": \"settings\","
+            "{\"format\": \"contorno-camera\", \"version\": 3, \"distance_mm\": 1200, "
+            "\"focal_length_mm\": 16,"
+            " \"pixel_size_um\": 2.5, \"focal_length_source\": \"settings\", "
+            "\"pixel_size_source\": \"settings\","
             " \"image_width_px\": 584, \"fov_deg\": 10}\n";
     }
     auto read = through_zip(entries(), dir);
@@ -410,7 +448,8 @@ TEST(WxInspection, LargeDerivedPixelSizeReopens) {
     EXPECT_EQ(read().camera.lens.pixel_width_um, 150);
 }
 
-// a saved inspection shows the area it was saved with: version 2 scaled by sensor width / photo width
+// a saved inspection shows the area it was saved with: version 2 scaled by sensor width / photo
+// width
 TEST(WxInspection, V2KeepsSavedScale) {
     fs::path const zip = bad_result_zip;
     TempDir dir;
@@ -424,7 +463,8 @@ TEST(WxInspection, V2KeepsSavedScale) {
 TEST(WxInspection, V1KeepsLegacyScale) {
     TempDir dir;
     fs::path const zip = dir.path / "legacy.zip";
-    ASSERT_FALSE(Tools::write_zip(utf8(zip), legacy_inspection_entries(calf, {1500, 60, 4000})).isError());
+    ASSERT_FALSE(
+        Tools::write_zip(utf8(zip), legacy_inspection_entries(calf, {1500, 60, 4000})).isError());
     auto read = unpack_inspection(zip, dir.path);
     ASSERT_FALSE(read.isError()) << read.error().english();
     ASSERT_TRUE(read().legacy);
@@ -449,8 +489,10 @@ TEST(WxInspection, ReopenedV2ExportsConsistentCamera) {
     auto second = unpack_inspection(again, dir2.path);
     ASSERT_FALSE(second.isError()) << second.error().english();
     ASSERT_TRUE(second().result);
-    EXPECT_NEAR(Vision::lens_scale(second().camera.lens).x, second().result->frame.mm_per_px_x, 1e-6);
-    EXPECT_NEAR(Vision::lens_scale(second().camera.lens).x, first().result->frame.mm_per_px_x, 1e-6);
+    EXPECT_NEAR(Vision::lens_scale(second().camera.lens).x, second().result->frame.mm_per_px_x,
+                1e-6);
+    EXPECT_NEAR(Vision::lens_scale(second().camera.lens).x, first().result->frame.mm_per_px_x,
+                1e-6);
 }
 
 // an older export's processed.png is ignored: the outlines come from result.json

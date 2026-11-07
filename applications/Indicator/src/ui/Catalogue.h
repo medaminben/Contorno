@@ -7,8 +7,8 @@
 /// the application object exists; `select_wx_catalogue` then follows the language.
 void install_wx_catalogues();
 
-/// Switches wx's own texts to `code` (a language of the application; one with no embedded catalogue: English).
-/// Does nothing before `install_wx_catalogues`.
+/// Switches wx's own texts to `code` (a language of the application; one with no embedded
+/// catalogue: English). Does nothing before `install_wx_catalogues`.
 void select_wx_catalogue(std::string const& code);
 
 /// True when the build embedded at least one catalogue.

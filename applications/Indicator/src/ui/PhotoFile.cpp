@@ -22,14 +22,22 @@ namespace {
 /// `image` turned as EXIF `orientation` (1-8) says it is shown.
 wxImage oriented(wxImage const& image, int orientation) {
     switch (orientation) {
-    case 2: return image.Mirror(true);
-    case 3: return image.Rotate180();
-    case 4: return image.Mirror(false);
-    case 5: return image.Rotate90(true).Mirror(true);   // transposed
-    case 6: return image.Rotate90(true);
-    case 7: return image.Rotate90(false).Mirror(true);  // transversed
-    case 8: return image.Rotate90(false);
-    default: return image;
+        case 2:
+            return image.Mirror(true);
+        case 3:
+            return image.Rotate180();
+        case 4:
+            return image.Mirror(false);
+        case 5:
+            return image.Rotate90(true).Mirror(true);  // transposed
+        case 6:
+            return image.Rotate90(true);
+        case 7:
+            return image.Rotate90(false).Mirror(true);  // transversed
+        case 8:
+            return image.Rotate90(false);
+        default:
+            return image;
     }
 }
 
@@ -42,7 +50,8 @@ PhotoFile read_photo(std::filesystem::path const& path) {
         photo.error = std::strerror(errno);
         return photo;
     }
-    std::string const bytes((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    std::string const bytes((std::istreambuf_iterator<char>(file)),
+                            std::istreambuf_iterator<char>());
     ensure_image_handlers();
     wxMemoryInputStream stream(bytes.data(), bytes.size());
     wxImage image;

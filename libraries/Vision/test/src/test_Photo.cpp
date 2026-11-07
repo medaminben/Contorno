@@ -22,7 +22,8 @@ PhotoMetadata parse(std::vector<ExifTag> const& tags, bool big = false) {
 }
 std::optional<double> px_per_mm(uint32_t res, std::optional<uint32_t> unit) {
     std::vector<ExifTag> tags {{0xA20E, 5, res, 1}};
-    if (unit) tags.push_back({0xA210, 3, *unit});
+    if (unit)
+        tags.push_back({0xA210, 3, *unit});
     return parse(tags).focal_plane_px_per_mm;
 }
 /// Writes `bytes` to a file in the temporary directory and returns its path.
@@ -49,7 +50,8 @@ TEST(PhotoMetadata, ReadsOrientation) {
     auto const m = Vision::parse_photo_metadata(test_Exif::orientation_only_jpeg(6));
     ASSERT_TRUE(m.orientation);
     EXPECT_EQ(*m.orientation, 6);
-    EXPECT_FALSE(Vision::parse_photo_metadata(test_Exif::exif_jpeg({{0x920A, 5, 42, 10}})).orientation);
+    EXPECT_FALSE(
+        Vision::parse_photo_metadata(test_Exif::exif_jpeg({{0x920A, 5, 42, 10}})).orientation);
     EXPECT_FALSE(Vision::parse_photo_metadata(test_Exif::orientation_only_jpeg(9)).orientation);
     EXPECT_FALSE(Vision::parse_photo_metadata(test_Exif::orientation_only_jpeg(0)).orientation);
 }
@@ -61,7 +63,8 @@ TEST(PhotoMetadata, ReadsFocalLength) {
 // some writers type the Exif IFD pointer IFD (13) instead of LONG (4)
 TEST(PhotoMetadata, ExifPointerTypeIfd) {
     std::string tiff = test_Exif::exif_tiff({{0x920A, 5, 42, 10}});
-    ASSERT_EQ(static_cast<unsigned char>(tiff[12]), 4);  // IFD0's only entry: tag at 10, type at 12 (little endian)
+    ASSERT_EQ(static_cast<unsigned char>(tiff[12]),
+              4);  // IFD0's only entry: tag at 10, type at 12 (little endian)
     tiff[12] = 13;
     auto const m = Vision::parse_photo_metadata(tiff);
     ASSERT_TRUE(m.focal_length_mm);
@@ -87,15 +90,18 @@ TEST(PhotoMetadata, BigEndian) {
     EXPECT_NEAR(*m.focal_length_mm, 4.2, 1e-12);
 }
 TEST(PhotoMetadata, JpegFile) {
-    auto const path = temp_file("contorno_photo_exif.jpg", test_Exif::exif_jpeg({{0x920A, 5, 42, 10}}));
+    auto const path =
+        temp_file("contorno_photo_exif.jpg", test_Exif::exif_jpeg({{0x920A, 5, 42, 10}}));
     auto const m = Vision::read_photo_metadata(path);
     fs::remove(path);
     ASSERT_TRUE(m.focal_length_mm);
     EXPECT_NEAR(*m.focal_length_mm, 4.2, 1e-12);
 }
 TEST(PhotoMetadata, NoCameraTagsIsEmpty) {
-    auto const path = temp_file("contorno_photo_orientation.jpg", test_Exif::orientation_only_jpeg());
-    for (auto const& m : {Vision::read_photo_metadata(path), Vision::parse_photo_metadata(std::string_view("\x89PNG\r\n", 6))}) {
+    auto const path =
+        temp_file("contorno_photo_orientation.jpg", test_Exif::orientation_only_jpeg());
+    for (auto const& m : {Vision::read_photo_metadata(path),
+                          Vision::parse_photo_metadata(std::string_view("\x89PNG\r\n", 6))}) {
         EXPECT_FALSE(m.focal_length_mm);
         EXPECT_FALSE(m.focal_plane_px_per_mm);
         EXPECT_FALSE(m.focal_length_35mm);
@@ -110,10 +116,14 @@ TEST(PhotoMetadata, UnreadableFileIsEmpty) {
 TEST(PhotoMetadata, TruncatedExifIsEmpty) {
     std::string const full = test_Exif::exif_tiff({{0x920A, 5, 42, 10}});
     for (std::size_t n = 0; n < full.size(); ++n)
-        EXPECT_FALSE(Vision::parse_photo_metadata(std::string_view(full).substr(0, n)).focal_length_mm) << n;
+        EXPECT_FALSE(
+            Vision::parse_photo_metadata(std::string_view(full).substr(0, n)).focal_length_mm)
+            << n;
     std::string const jpeg = test_Exif::exif_jpeg({{0x920A, 5, 42, 10}});
     for (std::size_t n = 0; n + 2 < jpeg.size(); ++n)  // without the EOI the APP1 is still whole
-        EXPECT_FALSE(Vision::parse_photo_metadata(std::string_view(jpeg).substr(0, n)).focal_length_mm) << n;
+        EXPECT_FALSE(
+            Vision::parse_photo_metadata(std::string_view(jpeg).substr(0, n)).focal_length_mm)
+            << n;
 }
 TEST(PhotoMetadata, OffsetPastEndIsEmpty) {
     std::string tiff = test_Exif::exif_tiff({{0x920A, 5, 42, 10}});
@@ -182,7 +192,8 @@ TEST(PhotoCamera, PixelDimensionCorrectionUsesLongSide) {
     m.focal_plane_px_per_mm = 1000 / 1.4;
     m.pixel_x_dimension = 4000;
     m.pixel_y_dimension = 3000;
-    EXPECT_NEAR(Vision::resolve_camera(CameraSettings {}, m, 1500, 2000).lens.pixel_width_um, 2.8, 1e-9);
+    EXPECT_NEAR(Vision::resolve_camera(CameraSettings {}, m, 1500, 2000).lens.pixel_width_um, 2.8,
+                1e-9);
 }
 TEST(PhotoCamera, NonSquareFromMetadata) {
     PhotoMetadata m;

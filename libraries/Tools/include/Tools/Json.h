@@ -20,7 +20,7 @@ class TOOLS_API Json {
 public:
     using Array = std::vector<Json>;
     using Object = std::vector<std::pair<std::string, Json>>;  // keeps file order
-    Json() = default;  // null
+    Json() = default;                                          // null
     explicit Json(bool value);
     explicit Json(double value);
     explicit Json(std::string value);
@@ -36,9 +36,9 @@ public:
 
     std::optional<bool> as_bool() const noexcept;
     std::optional<double> as_number() const noexcept;
-    std::string const* as_string() const noexcept;  // nullptr when not a string
-    Array const* as_array() const noexcept;    // nullptr when not an array
-    Object const* as_object() const noexcept;  // nullptr when not an object
+    std::string const* as_string() const noexcept;          // nullptr when not a string
+    Array const* as_array() const noexcept;                 // nullptr when not an array
+    Object const* as_object() const noexcept;               // nullptr when not an object
     Json const* find(std::string_view key) const noexcept;  // nullptr when absent or not an object
 
 private:
@@ -56,9 +56,9 @@ private:
  */
 Result<Json> TOOLS_API parse_json(std::string_view text) noexcept;
 
-/// Serialize; numbers with up to 17 significant digits (round-trip exact), strings escaped per RFC 8259.
-/// indent is the number of spaces per level (0 = one line); arrays of numbers stay on one line.
-/// Non-finite numbers are written as null.
+/// Serialize; numbers with up to 17 significant digits (round-trip exact), strings escaped per RFC
+/// 8259. indent is the number of spaces per level (0 = one line); arrays of numbers stay on one
+/// line. Non-finite numbers are written as null.
 /// @return error if indent is negative or the text cannot be allocated
 Result<std::string> TOOLS_API to_json_text(Json const& value, int indent = 2) noexcept;
 

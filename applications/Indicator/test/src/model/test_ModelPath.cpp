@@ -46,7 +46,8 @@ TEST(WxModelPath, InstalledBeforeCompiledDefault) {
 TEST(WxModelPath, NothingFoundListsEveryCandidate) {
     TempDir dir;
     std::vector<fs::path> looked;
-    fs::path const result = find_model(dir.path / "a.pt", dir.path / "bin", dir.path / "c.pt", &looked);
+    fs::path const result =
+        find_model(dir.path / "a.pt", dir.path / "bin", dir.path / "c.pt", &looked);
     EXPECT_TRUE(result.empty());
     EXPECT_EQ(looked.size(), 3u);
 }

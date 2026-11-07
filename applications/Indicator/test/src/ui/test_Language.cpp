@@ -69,7 +69,7 @@ TEST(WxLanguage, NestedWidgetsGetLanguageChangeOncePerSend) {
     auto* middle = new Counter(top);
     auto* leaf = new Counter(middle);
     apply_language("de");
-    EXPECT_EQ(leaf->changes, 1);    // a nested widget is reached, and once, not once per ancestor
+    EXPECT_EQ(leaf->changes, 1);  // a nested widget is reached, and once, not once per ancestor
     EXPECT_EQ(middle->changes, 1);
     apply_language("en");
     top->Destroy();
@@ -127,11 +127,16 @@ TEST(WxLanguage, FlagsExistForEveryLanguageAndAreDiscs) {
         EXPECT_EQ(image.GetAlpha(12, 12), 255) << code;  // the middle is flag
     }
     // one characteristic pixel per flag, in the Qt flag's colour: swapped flags fail
-    struct Sample { char const* code; int x, y; unsigned char r, g, b; };
-    for (Sample const& s : {Sample{"en", 12, 12, 0xC8, 0x10, 0x2E}, Sample{"de", 12, 12, 0xDD, 0x00, 0x00},
-                            Sample{"es", 12, 12, 0xF1, 0xBF, 0x00}, Sample{"it", 6, 12, 0x00, 0x92, 0x46},
-                            Sample{"fr", 6, 12, 0x00, 0x26, 0x54}, Sample{"nl", 12, 5, 0xAE, 0x1C, 0x28},
-                            Sample{"ar", 12, 2, 0xE7, 0x00, 0x13}}) {
+    struct Sample {
+        char const* code;
+        int x, y;
+        unsigned char r, g, b;
+    };
+    for (Sample const& s :
+         {Sample {"en", 12, 12, 0xC8, 0x10, 0x2E}, Sample {"de", 12, 12, 0xDD, 0x00, 0x00},
+          Sample {"es", 12, 12, 0xF1, 0xBF, 0x00}, Sample {"it", 6, 12, 0x00, 0x92, 0x46},
+          Sample {"fr", 6, 12, 0x00, 0x26, 0x54}, Sample {"nl", 12, 5, 0xAE, 0x1C, 0x28},
+          Sample {"ar", 12, 2, 0xE7, 0x00, 0x13}}) {
         wxImage const image = flag_icon(s.code).GetBitmap(wxSize(24, 24)).ConvertToImage();
         EXPECT_NEAR(image.GetRed(s.x, s.y), s.r, 3) << s.code;
         EXPECT_NEAR(image.GetGreen(s.x, s.y), s.g, 3) << s.code;

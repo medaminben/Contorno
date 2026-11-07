@@ -46,7 +46,9 @@ namespace test_Theme {
 namespace {
 
 /// A colour a light theme could produce: a light fill or light text.
-bool is_light(wxColour const& c) { return c.Red() + c.Green() + c.Blue() > 3 * 160; }
+bool is_light(wxColour const& c) {
+    return c.Red() + c.Green() + c.Blue() > 3 * 160;
+}
 
 void collect_all(wxWindow* window, std::vector<wxWindow*>& out) {
     for (wxWindow* child : window->GetChildren()) {
@@ -80,7 +82,8 @@ TEST(WxTheme, EveryChildFollowsTheTheme) {
     Palette const dark = palette(false);
     for (wxWindow* window : all) {
         wxColour const background = window->GetBackgroundColour();
-        EXPECT_TRUE(background == dark.panel || background == dark.field) << window->GetClassInfo()->GetClassName();
+        EXPECT_TRUE(background == dark.panel || background == dark.field)
+            << window->GetClassInfo()->GetClassName();
         EXPECT_FALSE(is_light(background)) << window->GetClassInfo()->GetClassName();
     }
     EXPECT_TRUE(frame->GetBackgroundColour() == dark.panel);
@@ -147,7 +150,8 @@ TEST(WxKey, FastSecondClickCountsOnGtk) {
     frame->Bind(wxEVT_TOGGLEBUTTON, [&](wxCommandEvent&) { ++toggles; });
     // GTK: press, release, then the second press as a double click, release
     auto click_sequence = [&] {
-        for (wxEventType type : {wxEVT_LEFT_DOWN, wxEVT_LEFT_UP, wxEVT_LEFT_DCLICK, wxEVT_LEFT_UP}) {
+        for (wxEventType type :
+             {wxEVT_LEFT_DOWN, wxEVT_LEFT_UP, wxEVT_LEFT_DCLICK, wxEVT_LEFT_UP}) {
             wxMouseEvent e(type);
             e.SetEventObject(key);
             e.SetPosition(wxPoint(5, 5));
@@ -172,7 +176,8 @@ TEST(WxKey, KeyboardReachesAndPressesKeys) {
     sizer->Add(second);
     dialog->SetSizerAndFit(sizer);
     // Tab reaches a window that accepts focus from the keyboard, is shown and enabled; asked of the
-    // windows themselves, as the real focus belongs to the window manager (parallel tests share the display)
+    // windows themselves, as the real focus belongs to the window manager (parallel tests share the
+    // display)
     dialog->Show();
     for (Key* key : {first, second}) {
         EXPECT_TRUE(key->AcceptsFocusFromKeyboard());
@@ -209,8 +214,11 @@ TEST(WxKey, DisabledIconIsTheQtDimGreen) {
     bool dim = false, green = false;
     for (int y = 0; y < image.GetHeight(); ++y) {
         for (int x = 0; x < image.GetWidth(); ++x) {
-            if (image.GetRed(x, y) == 0x3a && image.GetGreen(x, y) == 0x4a && image.GetBlue(x, y) == 0x3f) dim = true;
-            if (image.GetGreen(x, y) > 200 && image.GetRed(x, y) < 120) green = true;
+            if (image.GetRed(x, y) == 0x3a && image.GetGreen(x, y) == 0x4a &&
+                image.GetBlue(x, y) == 0x3f)
+                dim = true;
+            if (image.GetGreen(x, y) > 200 && image.GetRed(x, y) < 120)
+                green = true;
         }
     }
     EXPECT_TRUE(dim);
@@ -221,7 +229,8 @@ TEST(WxKey, DisabledIconIsTheQtDimGreen) {
 #ifdef INDICATOR_GTK3
 namespace {
 
-/// `text` in `font`, in the keys' green on black, as a Pango layout draws it: shaped, in its own direction.
+/// `text` in `font`, in the keys' green on black, as a Pango layout draws it: shaped, in its own
+/// direction.
 wxImage pango_text(wxFont const& font, wxString const& text) {
     int const w = 400, h = 100;
     cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, w, h);
@@ -253,8 +262,9 @@ wxImage pango_text(wxFont const& font, wxString const& text) {
 
 }  // namespace
 
-// A key in an Arabic window is right to left; its label must still come out joined and in reading order, as Pango
-// lays it out, on the screen (GTK hands a right-to-left window a mirrored context to paint in).
+// A key in an Arabic window is right to left; its label must still come out joined and in reading
+// order, as Pango lays it out, on the screen (GTK hands a right-to-left window a mirrored context
+// to paint in).
 TEST(WxKey, ArabicLabelOnScreenIsShapedAsPangoLaysItOut) {
     wxString const label = wx(lookup("ar", "panel.import"));
     auto* frame = new wxFrame(nullptr, wxID_ANY, "Key");
@@ -264,9 +274,11 @@ TEST(WxKey, ArabicLabelOnScreenIsShapedAsPangoLaysItOut) {
     key->SetSize(key->GetBestSize());
     frame->SetClientSize(key->GetSize() + wxSize(20, 20));
     frame->Show();
-    wxRect const inside(6, 6, key->GetSize().x - 12, key->GetSize().y - 18);  // inside the focus ring
+    wxRect const inside(6, 6, key->GetSize().x - 12,
+                        key->GetSize().y - 18);  // inside the focus ring
     Ink const drawn = ink_on_screen(*key, inside);
-    if (!drawn.read) GTEST_SKIP() << "the screen cannot be read here";
+    if (!drawn.read)
+        GTEST_SKIP() << "the screen cannot be read here";
     ASSERT_GT(drawn.count, 0);
     wxImage const reference = pango_text(key->GetFont(), label);
     Ink const expected = ink_of(reference, wxRect(reference.GetSize()));
@@ -282,8 +294,10 @@ TEST(WxKey, ArabicLabelOnScreenIsShapedAsPangoLaysItOut) {
 TEST(WxTheme, FieldFrameAndSelectionReachGtk) {
     auto border_of = [](wxWindow* field, GtkStateFlags state) {
         GdkRGBA border;
-        gtk_style_context_get_border_color(gtk_widget_get_style_context(field->GetHandle()), state, &border);
-        return wxColour(std::lround(border.red * 255), std::lround(border.green * 255), std::lround(border.blue * 255));
+        gtk_style_context_get_border_color(gtk_widget_get_style_context(field->GetHandle()), state,
+                                           &border);
+        return wxColour(std::lround(border.red * 255), std::lround(border.green * 255),
+                        std::lround(border.blue * 255));
     };
     auto expect_theme = [&](wxWindow* field, bool light, char const* what) {
         EXPECT_EQ(border_of(field, GTK_STATE_FLAG_NORMAL), palette(light).frame) << what;
@@ -314,14 +328,16 @@ TEST(WxTheme, FieldFrameAndSelectionReachGtk) {
 #endif
 
 namespace {
-/// Counts what the wx log is asked to show; the default target would open a dialog from the idle handler.
+/// Counts what the wx log is asked to show; the default target would open a dialog from the idle
+/// handler.
 class CountingLog : public wxLog {
 public:
     int shown = 0;
 
 protected:
     void DoLogRecord(wxLogLevel level, wxString const&, wxLogRecordInfo const&) override {
-        if (level <= wxLOG_Warning) ++shown;
+        if (level <= wxLOG_Warning)
+            ++shown;
     }
 };
 }  // namespace
@@ -344,7 +360,8 @@ TEST(WxSettings, UnwritableConfigIsSilent) {
         // what a log dialog or a delayed message would do runs in the idle handler
         pump_until([] { return false; }, std::chrono::milliseconds(200));
         wxLog::FlushActive();
-        for (wxWindow* window : wxTopLevelWindows) dialog_shown = dialog_shown || window->IsShown();
+        for (wxWindow* window : wxTopLevelWindows)
+            dialog_shown = dialog_shown || window->IsShown();
     }
     wxLog::SetActiveTarget(previous);
     int const messages = log->shown;
@@ -353,7 +370,8 @@ TEST(WxSettings, UnwritableConfigIsSilent) {
     EXPECT_FALSE(dialog_shown);
     EXPECT_EQ(messages, 0) << "the failed write reached the log";
     EXPECT_EQ(read_back, std::optional<std::string>("1500"));  // kept in memory
-    if (writable) GTEST_SKIP() << "the directory is writable (running as root)";
+    if (writable)
+        GTEST_SKIP() << "the directory is writable (running as root)";
 }
 
 TEST(WxSettings, ValuesRoundTripThroughTheIniFile) {
@@ -373,15 +391,18 @@ TEST(WxSettings, ValuesRoundTripThroughTheIniFile) {
 }
 
 #if defined(__UNIX__) && !defined(__APPLE__)
-// Ruling 24: the settings live under $XDG_CONFIG_HOME (~/.config), not in a folder of the home folder itself
+// Ruling 24: the settings live under $XDG_CONFIG_HOME (~/.config), not in a folder of the home
+// folder itself
 TEST(WxSettings, FileIsInTheXdgConfigFolder) {
     TempDir config;
     char const* const before = std::getenv("XDG_CONFIG_HOME");
     std::string const saved = before ? before : "";
     setenv("XDG_CONFIG_HOME", utf8(config.path).c_str(), 1);
     std::filesystem::path const file = default_settings_file();
-    if (before) setenv("XDG_CONFIG_HOME", saved.c_str(), 1);
-    else unsetenv("XDG_CONFIG_HOME");
+    if (before)
+        setenv("XDG_CONFIG_HOME", saved.c_str(), 1);
+    else
+        unsetenv("XDG_CONFIG_HOME");
     EXPECT_EQ(file, config.path / "Contorno" / "Indicator" / "indicator.ini");
 }
 #endif

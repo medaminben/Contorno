@@ -58,7 +58,8 @@ TEST(Lens, SensorPixelUsesLongSides) {
 }
 
 TEST(MinArea, Pct) {
-    EXPECT_NEAR(Vision::min_area_pct(100, 1000, 500, {0.5, 0.5}), 100.0 * 100 / (1000 * 500 * 0.25), 1e-12);
+    EXPECT_NEAR(Vision::min_area_pct(100, 1000, 500, {0.5, 0.5}), 100.0 * 100 / (1000 * 500 * 0.25),
+                1e-12);
     EXPECT_EQ(Vision::min_area_pct(100, 0, 500, {0.5, 0.5}), 0);
     EXPECT_EQ(Vision::min_area_pct(100, 4000, 3000, {std::nan(""), 1}), 0);
     EXPECT_EQ(Vision::min_area_pct(100, 4000, 3000, {1, INFINITY}), 0);
@@ -69,7 +70,8 @@ TEST(MinArea, AtMost100) {
     EXPECT_EQ(Vision::min_area_pct(2500, 100, 100, {0.5, 0.5}), 100);  // exactly the photo
 }
 TEST(MinArea, NonSquare) {
-    EXPECT_NEAR(Vision::min_area_pct(100, 1000, 500, {0.5, 1.0}), 100.0 * 100 / (1000 * 500 * 0.5), 1e-12);
+    EXPECT_NEAR(Vision::min_area_pct(100, 1000, 500, {0.5, 1.0}), 100.0 * 100 / (1000 * 500 * 0.5),
+                1e-12);
 }
 
 TEST(MinArea, PresetsAscendFromZero) {

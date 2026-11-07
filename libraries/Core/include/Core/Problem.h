@@ -22,12 +22,13 @@ namespace Core {
 class Problem {
 public:
     struct Value {
-        Value(std::string name, std::string plain) : name(std::move(name)), plain(std::move(plain)) {}
+        Value(std::string name, std::string plain)
+            : name(std::move(name)), plain(std::move(plain)) {}
         Value(std::string name, Problem nested)
             : name(std::move(name)), nested(std::make_shared<Problem const>(std::move(nested))) {}
 
         std::string name;
-        std::string plain {};                    ///< empty for a nested problem
+        std::string plain {};                      ///< empty for a nested problem
         std::shared_ptr<Problem const> nested {};  ///< set for a nested problem
     };
 
@@ -38,7 +39,9 @@ public:
 
     /// Text from outside the libraries (another library's exception): code
     /// "raw", one value "text", the text as it is.
-    static Problem raw(std::string text) { return Problem("raw", "{text}", {Value("text", std::move(text))}); }
+    static Problem raw(std::string text) {
+        return Problem("raw", "{text}", {Value("text", std::move(text))});
+    }
 
     /// Code and text "out_of_memory" / "out of memory": short enough to need no allocation.
     static Problem out_of_memory() noexcept { return Problem(OutOfMemory {}); }
@@ -50,7 +53,8 @@ public:
     /// The value called `name`; nullptr when there is none.
     Value const* value(std::string_view name) const noexcept {
         for (auto const& v : _values) {
-            if (v.name == name) return &v;
+            if (v.name == name)
+                return &v;
         }
         return nullptr;
     }
@@ -64,8 +68,10 @@ private:
         std::size_t at = 0;
         while (at < english.size()) {
             std::size_t const open = english.find('{', at);
-            std::size_t const close = open == std::string_view::npos ? open : english.find('}', open);
-            if (close == std::string_view::npos) break;
+            std::size_t const close =
+                open == std::string_view::npos ? open : english.find('}', open);
+            if (close == std::string_view::npos)
+                break;
             out += english.substr(at, open - at);
             std::string_view const name = english.substr(open + 1, close - open - 1);
             Value const* found = nullptr;
@@ -75,8 +81,10 @@ private:
                     break;
                 }
             }
-            if (found == nullptr) out += english.substr(open, close - open + 1);
-            else out += found->nested ? found->nested->text() : found->plain;
+            if (found == nullptr)
+                out += english.substr(open, close - open + 1);
+            else
+                out += found->nested ? found->nested->text() : found->plain;
             at = close + 1;
         }
         out += english.substr(at);
@@ -89,7 +97,9 @@ private:
 };
 
 /// The English text (logs, test output).
-inline std::ostream& operator<<(std::ostream& out, Problem const& problem) { return out << problem.text(); }
+inline std::ostream& operator<<(std::ostream& out, Problem const& problem) {
+    return out << problem.text();
+}
 
 /// A problem thrown inside a library; its API catches it and returns it as an error.
 class ProblemError : public std::exception {

@@ -21,7 +21,8 @@ namespace Core {
 template <typename E = Problem>
 struct Error {
 public:
-    constexpr explicit Error(E error) noexcept(std::is_nothrow_move_constructible_v<E>) : _error(std::move(error)) {}
+    constexpr explicit Error(E error) noexcept(std::is_nothrow_move_constructible_v<E>)
+        : _error(std::move(error)) {}
 
     constexpr E& operator()() & noexcept { return _error; }
     constexpr const E& operator()() const& noexcept { return _error; }
@@ -45,9 +46,11 @@ namespace detail {
 template <typename ET>
 const char* error_text(const ET& error) noexcept {
     if constexpr (std::is_invocable_v<const ET&>) {
-        if constexpr (std::is_same_v<std::remove_cvref_t<std::invoke_result_t<const ET&>>, Problem>) {
+        if constexpr (std::is_same_v<std::remove_cvref_t<std::invoke_result_t<const ET&>>,
+                                     Problem>) {
             return error().text().c_str();
-        } else if constexpr (std::is_convertible_v<std::invoke_result_t<const ET&>, const std::string&>) {
+        } else if constexpr (std::is_convertible_v<std::invoke_result_t<const ET&>,
+                                                   const std::string&>) {
             return static_cast<const std::string&>(error()).c_str();
         } else {
             return nullptr;
@@ -72,13 +75,17 @@ const char* error_text(const ET& error) noexcept {
  */
 template <typename T = std::monostate, typename ET = Core::Error<>>
 struct [[nodiscard]] Result {
-    static_assert(!std::is_same_v<std::remove_cv_t<T>, ET>, "Result: value and error types must differ");
+    static_assert(!std::is_same_v<std::remove_cv_t<T>, ET>,
+                  "Result: value and error types must differ");
     static_assert(!std::is_reference_v<T>, "Result: the value type cannot be a reference");
-    static_assert(std::is_invocable_v<ET&>, "Result: the error type must be callable, like Error<E>");
+    static_assert(std::is_invocable_v<ET&>,
+                  "Result: the error type must be callable, like Error<E>");
 
 public:
-    constexpr Result(T value) noexcept(std::is_nothrow_move_constructible_v<T>) : result(std::move(value)) {}
-    constexpr Result(ET error) noexcept(std::is_nothrow_move_constructible_v<ET>) : result(std::move(error)) {}
+    constexpr Result(T value) noexcept(std::is_nothrow_move_constructible_v<T>)
+        : result(std::move(value)) {}
+    constexpr Result(ET error) noexcept(std::is_nothrow_move_constructible_v<ET>)
+        : result(std::move(error)) {}
 
     constexpr bool isValue() const noexcept { return result.index() == 0; }
     constexpr bool isError() const noexcept { return result.index() == 1; }
@@ -98,7 +105,8 @@ private:
         if (const T* value = std::get_if<0>(&result)) {
             return value;
         }
-        Core::detail::result_misuse("value read from an error", Core::detail::error_text(*std::get_if<1>(&result)));
+        Core::detail::result_misuse("value read from an error",
+                                    Core::detail::error_text(*std::get_if<1>(&result)));
     }
     constexpr ET* error_ptr() noexcept { return const_cast<ET*>(std::as_const(*this).error_ptr()); }
     constexpr const ET* error_ptr() const noexcept {

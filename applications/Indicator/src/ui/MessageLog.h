@@ -47,7 +47,8 @@ public:
     wxLayoutDirection line_direction(std::size_t i) const;
     /// All lines (not their wrapped rows), joined by "\n", oldest first.
     wxString text() const;
-    /// The last line without its time and without the invisible isolates around plain values ("" before the first).
+    /// The last line without its time and without the invisible isolates around plain values (""
+    /// before the first).
     wxString last_message() const;
     /// The last message ({} before the first).
     Message last_text() const { return lines_.empty() ? Message() : lines_.back().message; }
@@ -65,14 +66,17 @@ public:
     bool copy() const;
     /// The rows line `i` is wrapped into at the current width.
     int row_count(std::size_t i) const { return i < lines_.size() ? lines_[i].rows : 0; }
-    /// The height of line `i`'s block (px): its layout's own height, not rows times a nominal height.
+    /// The height of line `i`'s block (px): its layout's own height, not rows times a nominal
+    /// height.
     double block_height(std::size_t i) const { return i < lines_.size() ? lines_[i].height : 0; }
     /// The client point of the caret before character `offset` of line `line`, as the layout that
     /// paints places it (right to left in Arabic lines), at the middle of the row's height.
     wxPoint position_of(std::size_t line, std::size_t offset) const;
     /// The scroll bar's handle (client coordinates); empty when everything fits.
     wxRect handle_rect() const;
-    bool AcceptsFocusFromKeyboard() const override { return false; }  ///< focus by click only, as the Qt log
+    bool AcceptsFocusFromKeyboard() const override {
+        return false;
+    }  ///< focus by click only, as the Qt log
     /// The font the lines are laid out in.
     wxFont const& text_font() const { return font_; }
     /// The log as drawn, `scale` device pixels per logical one.
@@ -85,10 +89,10 @@ private:
     struct Line {
         wxString time;
         Message message;
-        wxString text;                 ///< time, two spaces, the message in its language
-        wxLayoutDirection direction;   ///< of the language it was rendered in
-        int rows = 1;                  ///< wrapped at the current width
-        double height = 0;             ///< of the wrapped block (px)
+        wxString text;                ///< time, two spaces, the message in its language
+        wxLayoutDirection direction;  ///< of the language it was rendered in
+        int rows = 1;                 ///< wrapped at the current width
+        double height = 0;            ///< of the wrapped block (px)
     };
     void render_line(Line& line) const;
     void wrap_all();
@@ -118,13 +122,13 @@ private:
 
     std::deque<Line> lines_;
     wxFont font_;
-    double row_h_ = 16;            ///< the height of a row (px), from the font
+    double row_h_ = 16;  ///< the height of a row (px), from the font
     double frame_width_ = 2, frame_radius_ = 6;
-    double scroll_ = 0;            ///< the offset shown, px
+    double scroll_ = 0;  ///< the offset shown, px
     double glide_from_ = 0, glide_to_ = 0;
     std::chrono::steady_clock::time_point glide_start_;
     int wrapped_width_ = -1;
-    Pos anchor_, caret_;           ///< the selection, from where the press was to where the mouse is
+    Pos anchor_, caret_;  ///< the selection, from where the press was to where the mouse is
     enum class Drag { none, text, handle } drag_ = Drag::none;
     double handle_grab_ = 0, handle_scroll_ = 0;
     wxTimer timer_;

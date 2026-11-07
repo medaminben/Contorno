@@ -20,10 +20,12 @@ double const min_zoom = 1e-3, max_zoom = 1e3;
 wxImage mask_image(Vision::Mask const& mask) {
     auto const w = static_cast<std::size_t>(std::max(mask.width, 0));
     auto const h = static_cast<std::size_t>(std::max(mask.height, 0));
-    if (w == 0 || h == 0 || mask.data.size() != w * h) return {};
+    if (w == 0 || h == 0 || mask.data.size() != w * h)
+        return {};
     wxImage image(mask.width, mask.height, false);
     unsigned char* rgb = image.GetData();
-    for (std::size_t i = 0; i < w * h; ++i) rgb[3 * i] = rgb[3 * i + 1] = rgb[3 * i + 2] = mask.data[i];
+    for (std::size_t i = 0; i < w * h; ++i)
+        rgb[3 * i] = rgb[3 * i + 1] = rgb[3 * i + 2] = mask.data[i];
     return image;
 }
 
@@ -38,11 +40,18 @@ PhotoView::PhotoView(wxWindow* parent, wxWindowID id) {
     Bind(wxEVT_MOTION, &PhotoView::on_move, this);
     Bind(wxEVT_LEFT_UP, &PhotoView::on_up, this);
     // the scroll bars moved by the user: the linked views follow once the position is final
-    Bind(wxEVT_SCROLLWIN_TOP, [this](wxScrollWinEvent& e) { e.Skip(); CallAfter([this] { sync_scroll(); }); });
-    for (wxEventType type : {wxEVT_SCROLLWIN_BOTTOM, wxEVT_SCROLLWIN_LINEUP, wxEVT_SCROLLWIN_LINEDOWN,
-                             wxEVT_SCROLLWIN_PAGEUP, wxEVT_SCROLLWIN_PAGEDOWN, wxEVT_SCROLLWIN_THUMBTRACK,
-                             wxEVT_SCROLLWIN_THUMBRELEASE}) {
-        Bind(wxEventTypeTag<wxScrollWinEvent>(type), [this](wxScrollWinEvent& e) { e.Skip(); CallAfter([this] { sync_scroll(); }); });
+    Bind(wxEVT_SCROLLWIN_TOP, [this](wxScrollWinEvent& e) {
+        e.Skip();
+        CallAfter([this] { sync_scroll(); });
+    });
+    for (wxEventType type :
+         {wxEVT_SCROLLWIN_BOTTOM, wxEVT_SCROLLWIN_LINEUP, wxEVT_SCROLLWIN_LINEDOWN,
+          wxEVT_SCROLLWIN_PAGEUP, wxEVT_SCROLLWIN_PAGEDOWN, wxEVT_SCROLLWIN_THUMBTRACK,
+          wxEVT_SCROLLWIN_THUMBRELEASE}) {
+        Bind(wxEventTypeTag<wxScrollWinEvent>(type), [this](wxScrollWinEvent& e) {
+            e.Skip();
+            CallAfter([this] { sync_scroll(); });
+        });
     }
     Bind(wxEVT_MOUSE_CAPTURE_LOST, [this](wxMouseCaptureLostEvent&) { dragging_ = false; });
 }
@@ -56,7 +65,8 @@ void PhotoView::clear() {
     zoomed_ = false;
     scale_ = 1;
     dragging_ = false;
-    if (HasCapture()) ReleaseMouse();
+    if (HasCapture())
+        ReleaseMouse();
     SetScrollbars(1, 1, 0, 0);
     Refresh();
 }
@@ -67,14 +77,16 @@ void PhotoView::set_backdrop(wxColour const& colour) {
 }
 
 void PhotoView::set_photo(wxImage const& photo, Vision::PixelFrame frame, bool keep_view) {
-    bool const keep = keep_view && image_.IsOk() && photo.IsOk() && photo.GetSize() == image_.GetSize();
+    bool const keep =
+        keep_view && image_.IsOk() && photo.IsOk() && photo.GetSize() == image_.GetSize();
     wxPoint const kept = view_origin();
     double const kept_scale = scale_;
     bool const kept_zoomed = zoomed_;
     clear();
     image_ = photo;
     frame_ = frame;
-    if (!image_.IsOk()) return;
+    if (!image_.IsOk())
+        return;
     bitmap_ = wxBitmap(image_);
     if (keep && kept_zoomed) {
         zoomed_ = true;
@@ -84,7 +96,8 @@ void PhotoView::set_photo(wxImage const& photo, Vision::PixelFrame frame, bool k
     Refresh();
 }
 
-void PhotoView::add_polygons(std::vector<Pot::Polygon64> const& mm_polygons, wxPen pen, wxBrush brush) {
+void PhotoView::add_polygons(std::vector<Pot::Polygon64> const& mm_polygons, wxPen pen,
+                             wxBrush brush) {
     Layer layer;
     layer.pen = pen;
     layer.brush = brush;
@@ -95,33 +108,41 @@ void PhotoView::add_polygons(std::vector<Pot::Polygon64> const& mm_polygons, wxP
             // Vision pixel coordinates index pixel centres; a pixel (i, j) spans [i, i + 1) here
             points.emplace_back(px.x + 0.5, px.y + 0.5);
         }
-        if (!points.empty()) layer.rings.push_back(std::move(points));
+        if (!points.empty())
+            layer.rings.push_back(std::move(points));
     };
     for (auto const& polygon : mm_polygons) {
         add_ring(polygon.outer);
-        for (auto const& hole : polygon.holes) add_ring(hole);
+        for (auto const& hole : polygon.holes)
+            add_ring(hole);
     }
     layers_.push_back(std::move(layer));
     Refresh();
 }
 
 void PhotoView::remove_polygons(std::size_t first_layer) {
-    if (first_layer < layers_.size()) layers_.erase(layers_.begin() + static_cast<std::ptrdiff_t>(first_layer), layers_.end());
+    if (first_layer < layers_.size())
+        layers_.erase(layers_.begin() + static_cast<std::ptrdiff_t>(first_layer), layers_.end());
     Refresh();
 }
 
 void PhotoView::set_layer_visible(std::size_t layer, bool visible) {
-    if (layer >= layers_.size()) return;
+    if (layer >= layers_.size())
+        return;
     layers_[layer].visible = visible;
     Refresh();
 }
 
 wxImage PhotoView::render_image() const {
-    if (!image_.IsOk()) return {};
+    if (!image_.IsOk())
+        return {};
     // on a transparent start: a photo with transparency (the mask's shape) keeps it
     wxImage blank(image_.GetWidth(), image_.GetHeight(), true);
     blank.SetAlpha();
-    std::fill_n(blank.GetAlpha(), static_cast<std::size_t>(image_.GetWidth()) * static_cast<std::size_t>(image_.GetHeight()), 0);
+    std::fill_n(
+        blank.GetAlpha(),
+        static_cast<std::size_t>(image_.GetWidth()) * static_cast<std::size_t>(image_.GetHeight()),
+        0);
     wxBitmap bitmap(blank, 32);
     wxMemoryDC dc(bitmap);
     std::unique_ptr<wxGraphicsContext> gc(wxGraphicsContext::Create(dc));
@@ -130,14 +151,17 @@ wxImage PhotoView::render_image() const {
         wxGraphicsBitmap const own = gc->CreateBitmap(bitmap_);
         gc->DrawBitmap(own, 0, 0, image_.GetWidth(), image_.GetHeight());
         for (auto const& layer : layers_) {
-            if (!layer.visible) continue;
+            if (!layer.visible)
+                continue;
             gc->SetPen(layer.pen);
             gc->SetBrush(layer.brush);
             wxGraphicsPath path = gc->CreatePath();
             for (auto const& ring : layer.rings) {
                 for (std::size_t i = 0; i < ring.size(); ++i) {
-                    if (i == 0) path.MoveToPoint(ring[i].m_x, ring[i].m_y);
-                    else path.AddLineToPoint(ring[i].m_x, ring[i].m_y);
+                    if (i == 0)
+                        path.MoveToPoint(ring[i].m_x, ring[i].m_y);
+                    else
+                        path.AddLineToPoint(ring[i].m_x, ring[i].m_y);
                 }
                 path.CloseSubpath();
             }
@@ -150,10 +174,13 @@ wxImage PhotoView::render_image() const {
 }
 
 double PhotoView::zoom() const {
-    if (!image_.IsOk()) return 1;
-    if (zoomed_) return scale_;
+    if (!image_.IsOk())
+        return 1;
+    if (zoomed_)
+        return scale_;
     wxSize const view = GetClientSize();
-    return std::min(static_cast<double>(view.x) / image_.GetWidth(), static_cast<double>(view.y) / image_.GetHeight());
+    return std::min(static_cast<double>(view.x) / image_.GetWidth(),
+                    static_cast<double>(view.y) / image_.GetHeight());
 }
 
 wxPoint PhotoView::view_origin() const {
@@ -163,7 +190,8 @@ wxPoint PhotoView::view_origin() const {
 }
 
 wxPoint2DDouble PhotoView::origin() const {
-    if (!image_.IsOk()) return {0, 0};
+    if (!image_.IsOk())
+        return {0, 0};
     wxSize const view = GetClientSize();
     double const s = zoom();
     wxPoint const scrolled = view_origin();
@@ -191,7 +219,8 @@ void PhotoView::update_scrollbars(wxPoint keep_origin) {
 }
 
 void PhotoView::zoom_at(wxPoint at, double factor) {
-    if (!image_.IsOk()) return;
+    if (!image_.IsOk())
+        return;
     wxPoint2DDouble const under = image_point_at(at);
     double const target = std::clamp(zoom() * factor, min_zoom, max_zoom);
     zoomed_ = true;
@@ -201,27 +230,34 @@ void PhotoView::zoom_at(wxPoint at, double factor) {
     wxPoint2DDouble const o = origin();
     wxPoint2DDouble const now = {o.m_x + under.m_x * target, o.m_y + under.m_y * target};
     wxPoint const view = view_origin();
-    Scroll(static_cast<int>(std::lround(view.x + now.m_x - at.x)), static_cast<int>(std::lround(view.y + now.m_y - at.y)));
+    Scroll(static_cast<int>(std::lround(view.x + now.m_x - at.x)),
+           static_cast<int>(std::lround(view.y + now.m_y - at.y)));
     Refresh();
-    if (following_) return;
-    for (PhotoView* other : linked_) other->follow_zoom(scale_, true);
+    if (following_)
+        return;
+    for (PhotoView* other : linked_)
+        other->follow_zoom(scale_, true);
     sync_scroll();
-    if (listener_) listener_(scale_, true);
+    if (listener_)
+        listener_(scale_, true);
 }
 
 void PhotoView::follow_zoom(double zoom, bool zoomed) {
-    if (!image_.IsOk() || (zoom == scale_ && zoomed == zoomed_)) return;
+    if (!image_.IsOk() || (zoom == scale_ && zoomed == zoomed_))
+        return;
     following_ = true;
     zoomed_ = zoomed;
     scale_ = zoom;
     update_scrollbars(view_origin());
     Refresh();
     following_ = false;
-    if (listener_) listener_(zoom, zoomed);
+    if (listener_)
+        listener_(zoom, zoomed);
 }
 
 void PhotoView::follow_scroll(wxPoint origin) {
-    if (view_origin() == origin) return;
+    if (view_origin() == origin)
+        return;
     following_ = true;
     Scroll(origin.x, origin.y);
     Refresh();
@@ -229,12 +265,15 @@ void PhotoView::follow_scroll(wxPoint origin) {
 }
 
 void PhotoView::sync_scroll() {
-    if (following_) return;
-    for (PhotoView* other : linked_) other->follow_scroll(view_origin());
+    if (following_)
+        return;
+    for (PhotoView* other : linked_)
+        other->follow_scroll(view_origin());
 }
 
 void PhotoView::link_to(PhotoView* other) {
-    if (other == this || std::find(linked_.begin(), linked_.end(), other) != linked_.end()) return;
+    if (other == this || std::find(linked_.begin(), linked_.end(), other) != linked_.end())
+        return;
     linked_.push_back(other);
     other->linked_.push_back(this);
 }
@@ -246,7 +285,8 @@ void PhotoView::on_wheel(wxMouseEvent& event) {
     }
     // about the view's centre, as the Qt view (its default transformation anchor)
     wxSize const view = GetClientSize();
-    zoom_at(wxPoint(view.x / 2, view.y / 2), event.GetWheelRotation() > 0 ? wheel_step : 1 / wheel_step);
+    zoom_at(wxPoint(view.x / 2, view.y / 2),
+            event.GetWheelRotation() > 0 ? wheel_step : 1 / wheel_step);
 }
 
 void PhotoView::on_down(wxMouseEvent& event) {
@@ -258,7 +298,8 @@ void PhotoView::on_down(wxMouseEvent& event) {
     drag_from_ = event.GetPosition();
     drag_origin_ = view_origin();
     // a window not on screen has nothing to grab the pointer with
-    if (!HasCapture() && IsShownOnScreen()) CaptureMouse();
+    if (!HasCapture() && IsShownOnScreen())
+        CaptureMouse();
 }
 
 void PhotoView::on_move(wxMouseEvent& event) {
@@ -268,7 +309,8 @@ void PhotoView::on_move(wxMouseEvent& event) {
     }
     if (!event.LeftIsDown()) {  // the release was missed
         dragging_ = false;
-        if (HasCapture()) ReleaseMouse();
+        if (HasCapture())
+            ReleaseMouse();
         return;
     }
     // the photo follows the hand
@@ -280,7 +322,8 @@ void PhotoView::on_move(wxMouseEvent& event) {
 
 void PhotoView::on_up(wxMouseEvent& event) {
     dragging_ = false;
-    if (HasCapture()) ReleaseMouse();
+    if (HasCapture())
+        ReleaseMouse();
     event.Skip();
 }
 
@@ -295,37 +338,44 @@ void PhotoView::on_size(wxSizeEvent& event) {
 
 void PhotoView::draw(wxGraphicsContext& gc, wxSize size) const {
     gc.SetAntialiasMode(wxANTIALIAS_DEFAULT);
-    wxColour const backdrop =
-        backdrop_.IsOk() ? backdrop_ : (GetParent() ? GetParent()->GetBackgroundColour() : GetBackgroundColour());
+    wxColour const backdrop = backdrop_.IsOk() ? backdrop_
+                                               : (GetParent() ? GetParent()->GetBackgroundColour()
+                                                              : GetBackgroundColour());
     gc.SetPen(*wxTRANSPARENT_PEN);
     gc.SetBrush(wxBrush(backdrop));
     gc.DrawRectangle(0, 0, size.x, size.y);
-    if (!image_.IsOk()) return;
+    if (!image_.IsOk())
+        return;
 
     draw_photo(gc, origin(), zoom());
 }
 
 void PhotoView::draw_photo(wxGraphicsContext& gc, wxPoint2DDouble o, double s) const {
     if (bitmap_.IsOk()) {
-        if (graphics_bitmap_.IsNull()) graphics_bitmap_ = gc.CreateBitmap(bitmap_);
+        if (graphics_bitmap_.IsNull())
+            graphics_bitmap_ = gc.CreateBitmap(bitmap_);
         gc.PushState();
         gc.Translate(o.m_x, o.m_y);
         gc.Scale(s, s);
-        gc.SetInterpolationQuality(wxINTERPOLATION_NONE);  // pixels stay square, as the Qt view draws them
+        gc.SetInterpolationQuality(
+            wxINTERPOLATION_NONE);  // pixels stay square, as the Qt view draws them
         gc.DrawBitmap(graphics_bitmap_, 0, 0, image_.GetWidth(), image_.GetHeight());
         gc.PopState();
     }
     // the layers at their pens' own width, whatever the zoom
     for (auto const& layer : layers_) {
-        if (!layer.visible) continue;
+        if (!layer.visible)
+            continue;
         gc.SetPen(layer.pen);
         gc.SetBrush(layer.brush);
         wxGraphicsPath path = gc.CreatePath();
         for (auto const& ring : layer.rings) {
             for (std::size_t i = 0; i < ring.size(); ++i) {
                 double const x = o.m_x + ring[i].m_x * s, y = o.m_y + ring[i].m_y * s;
-                if (i == 0) path.MoveToPoint(x, y);
-                else path.AddLineToPoint(x, y);
+                if (i == 0)
+                    path.MoveToPoint(x, y);
+                else
+                    path.AddLineToPoint(x, y);
             }
             path.CloseSubpath();
         }
@@ -336,7 +386,8 @@ void PhotoView::draw_photo(wxGraphicsContext& gc, wxPoint2DDouble o, double s) c
 void PhotoView::on_paint(wxPaintEvent&) {
     wxAutoBufferedPaintDC dc(this);
     std::unique_ptr<wxGraphicsContext> gc = paint_context(dc, *this);
-    if (gc) draw(*gc, GetClientSize());
+    if (gc)
+        draw(*gc, GetClientSize());
 }
 
 wxBitmap PhotoView::render(double scale) const {

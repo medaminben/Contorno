@@ -11,10 +11,12 @@
 
 WxConfigStore::WxConfigStore(std::filesystem::path ini) {
     std::error_code ignored;
-    if (ini.has_parent_path()) std::filesystem::create_directories(ini.parent_path(), ignored);
+    if (ini.has_parent_path())
+        std::filesystem::create_directories(ini.parent_path(), ignored);
     wxLogNull const quiet;
-    config_ = std::make_unique<wxFileConfig>(wxEmptyString, wxEmptyString, wx(utf8(ini)), wxEmptyString,
-                                             wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_NO_ESCAPE_CHARACTERS);
+    config_ =
+        std::make_unique<wxFileConfig>(wxEmptyString, wxEmptyString, wx(utf8(ini)), wxEmptyString,
+                                       wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_NO_ESCAPE_CHARACTERS);
 }
 
 WxConfigStore::~WxConfigStore() {
@@ -25,7 +27,8 @@ WxConfigStore::~WxConfigStore() {
 std::optional<std::string> WxConfigStore::value(std::string const& key) const {
     wxLogNull const quiet;
     wxString text;
-    if (!config_->Read(wx(key), &text)) return std::nullopt;
+    if (!config_->Read(wx(key), &text))
+        return std::nullopt;
     return utf8(text);
 }
 
@@ -40,5 +43,6 @@ std::filesystem::path default_settings_file() {
     // $XDG_CONFIG_HOME (~/.config), not a folder in the home folder itself
     wxStandardPaths::Get().SetFileLayout(wxStandardPaths::FileLayout_XDG);
 #endif
-    return path_from_utf8(utf8(wxStandardPaths::Get().GetUserConfigDir())) / "Contorno" / "Indicator" / "indicator.ini";
+    return path_from_utf8(utf8(wxStandardPaths::Get().GetUserConfigDir())) / "Contorno" /
+           "Indicator" / "indicator.ini";
 }

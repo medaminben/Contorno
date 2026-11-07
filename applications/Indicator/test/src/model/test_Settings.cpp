@@ -159,14 +159,16 @@ TEST(WxSettings, InvalidCameraFallsBack) {
     legacy.set_value("camera/distance_mm", "1500");
     legacy.set_value("camera/fov_deg", "200");
     legacy.set_value("camera/image_width_px", "4000");
-    EXPECT_NEAR(Vision::lens_scale(lens_of(load_indicator_settings(legacy).camera)).x, Vision::lens_scale(lens_of(d)).x, 1e-12);
+    EXPECT_NEAR(Vision::lens_scale(lens_of(load_indicator_settings(legacy).camera)).x,
+                Vision::lens_scale(lens_of(d)).x, 1e-12);
 }
 TEST(WxSettings, GarbageValuesGiveDefaults) {
     MemorySettingsStore store;
-    for (char const* key : {"camera/distance_mm", "camera/focal_length_mm", "camera/fov_deg", "camera/image_width_px", "camera/pixel_size_um",
-                            "camera/pixel_width_um", "camera/pixel_height_um", "camera/sensor_input", "camera/sensor_width_mm",
-                            "camera/sensor_height_mm", "camera/sensor_width_px", "objects/min_area_mm2", "ui/language",
-                            "ui/theme"}) {
+    for (char const* key :
+         {"camera/distance_mm", "camera/focal_length_mm", "camera/fov_deg", "camera/image_width_px",
+          "camera/pixel_size_um", "camera/pixel_width_um", "camera/pixel_height_um",
+          "camera/sensor_input", "camera/sensor_width_mm", "camera/sensor_height_mm",
+          "camera/sensor_width_px", "objects/min_area_mm2", "ui/language", "ui/theme"}) {
         store.set_value(key, "x");
     }
     // free text, kept as stored: no value can be garbage

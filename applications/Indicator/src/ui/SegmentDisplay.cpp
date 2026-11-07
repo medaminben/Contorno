@@ -22,8 +22,8 @@
 
 namespace {
 
-wxColour const face_colour(0x05, 0x08, 0x05), lit_colour(0x47, 0xFF, 0x86), unlit_colour(0x0D, 0x24, 0x14),
-    frame_colour(0x1B, 0x2A, 0x1F);
+wxColour const face_colour(0x05, 0x08, 0x05), lit_colour(0x47, 0xFF, 0x86),
+    unlit_colour(0x0D, 0x24, 0x14), frame_colour(0x1B, 0x2A, 0x1F);
 constexpr double dimmed_brightness = 0.4;
 constexpr int reference_height = 72;
 constexpr double slant = 0.1051;  // tan(6 degrees)
@@ -32,16 +32,20 @@ constexpr int tick_ms = 15;
 
 /// cm² per unit, 0 for a unit the count does not convert.
 double cm2_per(std::string const& unit) {
-    if (unit == "cm²") return 1;
-    if (unit == "m²") return 10000;
+    if (unit == "cm²")
+        return 1;
+    if (unit == "m²")
+        return 10000;
     return 0;
 }
 
 // The display is laid out in reference units (height 72) and scaled as a whole.
 constexpr double digit_top_ref = 20, digit_h_ref = 45;
 constexpr double digit_w_ref = digit_h_ref * 0.52;
-constexpr double pitch_ref = digit_w_ref + digit_h_ref * 0.26;  // room for the slant and the decimal point
-constexpr double digits_left_ref = 12 + digit_h_ref * 0.08;     // from the left edge of the digits block
+constexpr double pitch_ref =
+    digit_w_ref + digit_h_ref * 0.26;  // room for the slant and the decimal point
+constexpr double digits_left_ref =
+    12 + digit_h_ref * 0.08;  // from the left edge of the digits block
 constexpr double unit_width_ref = 36;
 constexpr double right_margin_ref = 8;
 constexpr double digits_block_ref =
@@ -51,11 +55,15 @@ constexpr double digits_block_ref =
 enum Segment : unsigned { a = 1, b = 2, c = 4, d = 8, e = 16, f = 32, g = 64 };
 
 unsigned segments_of(char ch) {
-    static constexpr std::array<unsigned, 10> digits{
-        a | b | c | d | e | f, b | c,         a | b | d | e | g,     a | b | c | d | g,     b | c | f | g,
-        a | c | d | f | g,     a | c | d | e | f | g, a | b | c,     a | b | c | d | e | f | g, a | b | c | d | f | g};
-    if (ch >= '0' && ch <= '9') return digits[static_cast<std::size_t>(ch - '0')];
-    if (ch == '-') return g;
+    static constexpr std::array<unsigned, 10> digits {
+        a | b | c | d | e | f, b | c,         a | b | d | e | g,
+        a | b | c | d | g,     b | c | f | g, a | c | d | f | g,
+        a | c | d | e | f | g, a | b | c,     a | b | c | d | e | f | g,
+        a | b | c | d | f | g};
+    if (ch >= '0' && ch <= '9')
+        return digits[static_cast<std::size_t>(ch - '0')];
+    if (ch == '-')
+        return g;
     return 0;
 }
 
@@ -70,14 +78,16 @@ std::vector<Cell> layout_cells(std::string const& text) {
     std::vector<Cell> digits;
     for (char const ch : text) {
         if (ch == '.') {
-            if (!digits.empty()) digits.back().point = true;
+            if (!digits.empty())
+                digits.back().point = true;
         } else {
             digits.push_back({segments_of(ch), false});
         }
     }
     std::vector<Cell> out(static_cast<std::size_t>(SegmentDisplay::cells));
     std::size_t const n = std::min(digits.size(), out.size());
-    for (std::size_t i = 0; i < n; ++i) out[out.size() - n + i] = digits[digits.size() - n + i];
+    for (std::size_t i = 0; i < n; ++i)
+        out[out.size() - n + i] = digits[digits.size() - n + i];
     return out;
 }
 
@@ -85,9 +95,12 @@ std::vector<Cell> layout_cells(std::string const& text) {
 bool fits(std::string const& text) {
     int digits = 0, points = 0;
     for (char const ch : text) {
-        if (ch == '.') ++points;
-        else if (ch >= '0' && ch <= '9') ++digits;
-        else return false;
+        if (ch == '.')
+            ++points;
+        else if (ch >= '0' && ch <= '9')
+            ++digits;
+        else
+            return false;
     }
     return digits >= 1 && digits <= SegmentDisplay::cells && points <= 1;
 }
@@ -101,16 +114,20 @@ double to_number(std::string const& text) {
 
 std::string fixed(double value, int decimals) {
     char buffer[64];
-    auto const result = std::to_chars(buffer, buffer + sizeof buffer, value, std::chars_format::fixed, decimals);
+    auto const result =
+        std::to_chars(buffer, buffer + sizeof buffer, value, std::chars_format::fixed, decimals);
     return std::string(buffer, result.ptr);
 }
 
 wxColour lit(bool dimmed) {
-    if (!dimmed) return lit_colour;
+    if (!dimmed)
+        return lit_colour;
     auto mix = [](int fg, int back) {
-        return static_cast<unsigned char>(std::lround(fg * dimmed_brightness + back * (1 - dimmed_brightness)));
+        return static_cast<unsigned char>(
+            std::lround(fg * dimmed_brightness + back * (1 - dimmed_brightness)));
     };
-    return wxColour(mix(lit_colour.Red(), face_colour.Red()), mix(lit_colour.Green(), face_colour.Green()),
+    return wxColour(mix(lit_colour.Red(), face_colour.Red()),
+                    mix(lit_colour.Green(), face_colour.Green()),
                     mix(lit_colour.Blue(), face_colour.Blue()));
 }
 
@@ -119,30 +136,36 @@ struct Point {
 };
 using Polygon = std::vector<Point>;
 
-/// Hexagonal segment centred on (cx, cy), `len` long and `t` thick along x (horizontal) or y (vertical).
+/// Hexagonal segment centred on (cx, cy), `len` long and `t` thick along x (horizontal) or y
+/// (vertical).
 Polygon segment_polygon(double cx, double cy, double len, double t, bool horizontal) {
     double const h = len / 2, r = t / 2;
     if (horizontal)
-        return {{cx - h, cy}, {cx - h + r, cy - r}, {cx + h - r, cy - r}, {cx + h, cy}, {cx + h - r, cy + r}, {cx - h + r, cy + r}};
-    return {{cx, cy - h}, {cx + r, cy - h + r}, {cx + r, cy + h - r}, {cx, cy + h}, {cx - r, cy + h - r}, {cx - r, cy - h + r}};
+        return {{cx - h, cy}, {cx - h + r, cy - r}, {cx + h - r, cy - r},
+                {cx + h, cy}, {cx + h - r, cy + r}, {cx - h + r, cy + r}};
+    return {{cx, cy - h}, {cx + r, cy - h + r}, {cx + r, cy + h - r},
+            {cx, cy + h}, {cx - r, cy + h - r}, {cx - r, cy - h + r}};
 }
 
 /// Shears `p` about the horizontal line y = `pivot_y` by the italic slant.
 Polygon slanted(Polygon p, double pivot_y) {
-    for (Point& pt : p) pt.x -= (pt.y - pivot_y) * slant;
+    for (Point& pt : p)
+        pt.x -= (pt.y - pivot_y) * slant;
     return p;
 }
 
 wxGraphicsPath path_of(wxGraphicsContext& gc, Polygon const& p) {
     wxGraphicsPath path = gc.CreatePath();
     path.MoveToPoint(p[0].x, p[0].y);
-    for (std::size_t i = 1; i < p.size(); ++i) path.AddLineToPoint(p[i].x, p[i].y);
+    for (std::size_t i = 1; i < p.size(); ++i)
+        path.AddLineToPoint(p[i].x, p[i].y);
     path.CloseSubpath();
     return path;
 }
 
 wxColour with_alpha(wxColour const& colour, double alpha) {
-    return wxColour(colour.Red(), colour.Green(), colour.Blue(), static_cast<unsigned char>(std::lround(alpha * 255)));
+    return wxColour(colour.Red(), colour.Green(), colour.Blue(),
+                    static_cast<unsigned char>(std::lround(alpha * 255)));
 }
 
 struct Rect {
@@ -152,11 +175,17 @@ struct Rect {
 };
 
 /// The whole display scales with the smaller of the height- and width-based factors.
-double scale_of(Rect const& outer) { return std::min(outer.h / reference_height, outer.w / digits_block_ref); }
+double scale_of(Rect const& outer) {
+    return std::min(outer.h / reference_height, outer.w / digits_block_ref);
+}
 
-Rect outer_of(wxSize size) { return Rect{0.5, 0.5, size.x - 1.0, size.y - 1.0}; }
+Rect outer_of(wxSize size) {
+    return Rect {0.5, 0.5, size.x - 1.0, size.y - 1.0};
+}
 
-bool right_to_left() { return text_direction() == TextDirection::right_to_left; }
+bool right_to_left() {
+    return text_direction() == TextDirection::right_to_left;
+}
 
 }  // namespace
 
@@ -175,7 +204,8 @@ SegmentDisplay::SegmentDisplay(wxWindow* parent, wxWindowID id) : timer_(this) {
 
 void SegmentDisplay::set_value(wxString const& digits, wxString const& unit) {
     std::string text = utf8(digits);
-    if (text.starts_with('.')) text = "0" + text;
+    if (text.starts_with('.'))
+        text = "0" + text;
     if (!fits(text)) {
         set_dashes();
         return;
@@ -217,7 +247,9 @@ void SegmentDisplay::show_count(double value) {
 
 void SegmentDisplay::on_tick(wxTimerEvent&) {
     double const t =
-        std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - count_start_).count() / count_ms;
+        std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - count_start_)
+            .count() /
+        count_ms;
     if (t >= 1) {
         timer_.Stop();
         shown_ = text_;
@@ -238,7 +270,8 @@ void SegmentDisplay::set_dashes() {
 }
 
 void SegmentDisplay::set_dimmed(bool dimmed) {
-    if (dimmed_ == dimmed) return;
+    if (dimmed_ == dimmed)
+        return;
     dimmed_ = dimmed;
     Refresh();
 }
@@ -247,16 +280,22 @@ wxSize SegmentDisplay::DoGetBestSize() const {
     return wxSize(static_cast<int>(std::ceil(digits_block_ref)), reference_height);
 }
 
-double SegmentDisplay::corner_radius() const { return 6 * scale_of(outer_of(GetClientSize())); }
+double SegmentDisplay::corner_radius() const {
+    return 6 * scale_of(outer_of(GetClientSize()));
+}
 
-double SegmentDisplay::frame_width() const { return std::max(1.0, 2 * scale_of(outer_of(GetClientSize()))); }
+double SegmentDisplay::frame_width() const {
+    return std::max(1.0, 2 * scale_of(outer_of(GetClientSize())));
+}
 
 wxFont SegmentDisplay::caption_font(double scale) const {
     wxFont caption = GetFont();
     return pixel_font(caption, std::max(7, static_cast<int>(std::lround(9 * scale))));
 }
 
-double SegmentDisplay::caption_spacing(double scale) const { return right_to_left() ? 0 : 1 * scale; }
+double SegmentDisplay::caption_spacing(double scale) const {
+    return right_to_left() ? 0 : 1 * scale;
+}
 
 void SegmentDisplay::draw(wxGraphicsContext& gc, wxSize size, double) const {
     gc.SetAntialiasMode(wxANTIALIAS_DEFAULT);
@@ -281,8 +320,8 @@ void SegmentDisplay::draw(wxGraphicsContext& gc, wxSize size, double) const {
 
     wxColour const green = lit(dimmed_);
 
-    // caption top-left, in the lit green; Arabic as Qt draws it: in the right half, right to left, where the
-    // alignment "right" of Qt's right-to-left text is the half's left edge
+    // caption top-left, in the lit green; Arabic as Qt draws it: in the right half, right to left,
+    // where the alignment "right" of Qt's right-to-left text is the half's left edge
     bool const rtl = right_to_left();
     gc.SetFont(caption_font(scale), green);
     wxString const caption = wx(Message("display.caption").render());
@@ -324,7 +363,7 @@ void SegmentDisplay::draw(wxGraphicsContext& gc, wxSize size, double) const {
         double const vl = digit_h / 2 - t / 2 - 2 * gap;  // vertical segment length
         double const top = digit_top + t / 2, bot = digit_top + digit_h - t / 2;
         double const left_x = x0 + t / 2, right_x = x0 + digit_w - t / 2;
-        std::array<Polygon, 7> const polys{
+        std::array<Polygon, 7> const polys {
             segment_polygon(cx, top, hl, t, true),
             segment_polygon(right_x, (top + mid_y) / 2, vl, t, false),
             segment_polygon(right_x, (mid_y + bot) / 2, vl, t, false),
@@ -336,17 +375,20 @@ void SegmentDisplay::draw(wxGraphicsContext& gc, wxSize size, double) const {
         // unlit segments always, so the cell never looks empty
         gc.SetPen(*wxTRANSPARENT_PEN);
         gc.SetBrush(wxBrush(unlit_colour));
-        for (Polygon const& poly : polys) gc.FillPath(path_of(gc, slanted(poly, mid_y)));
+        for (Polygon const& poly : polys)
+            gc.FillPath(path_of(gc, slanted(poly, mid_y)));
         double const dp_r = t * 0.62;
         double const dp_y = digit_top + digit_h - dp_r;
-        Point const dp{x0 + digit_w + t * 0.95 - (dp_y - mid_y) * slant, dp_y};
+        Point const dp {x0 + digit_w + t * 0.95 - (dp_y - mid_y) * slant, dp_y};
         gc.DrawEllipse(dp.x - dp_r, dp.y - dp_r, 2 * dp_r, 2 * dp_r);
 
         // lit segments: a wide translucent stroke for the glow, then the solid shape
         for (std::size_t s = 0; s < polys.size(); ++s) {
-            if (!(cell_list[i].mask & (1u << s))) continue;
+            if (!(cell_list[i].mask & (1u << s)))
+                continue;
             wxGraphicsPath const path = path_of(gc, slanted(polys[s], mid_y));
-            gc.SetPen(gc.CreatePen(wxGraphicsPenInfo(glow).Width(t * 1.1).Join(wxJOIN_ROUND).Cap(wxCAP_ROUND)));
+            gc.SetPen(gc.CreatePen(
+                wxGraphicsPenInfo(glow).Width(t * 1.1).Join(wxJOIN_ROUND).Cap(wxCAP_ROUND)));
             gc.SetBrush(wxBrush(glow));
             gc.DrawPath(path);
             gc.SetPen(*wxTRANSPARENT_PEN);
@@ -363,10 +405,12 @@ void SegmentDisplay::draw(wxGraphicsContext& gc, wxSize size, double) const {
     }
     gc.PopState();
 
-    // unit to the right of the digits, bottom-aligned with them (drawn unscaled so the font is exact)
+    // unit to the right of the digits, bottom-aligned with them (drawn unscaled so the font is
+    // exact)
     if (!unit_.empty()) {
         wxFont unit_font = GetFont();
-        unit_font = pixel_font(unit_font, std::max(7, static_cast<int>(std::lround(digit_h * 0.34 * scale))));
+        unit_font = pixel_font(unit_font,
+                               std::max(7, static_cast<int>(std::lround(digit_h * 0.34 * scale))));
         unit_font.MakeBold();
         gc.SetFont(unit_font, green);
         double unit_w = 0, unit_h = 0;
@@ -379,7 +423,8 @@ void SegmentDisplay::draw(wxGraphicsContext& gc, wxSize size, double) const {
 void SegmentDisplay::on_paint(wxPaintEvent&) {
     wxAutoBufferedPaintDC dc(this);
     std::unique_ptr<wxGraphicsContext> gc = paint_context(dc, *this);
-    if (gc) draw(*gc, GetClientSize(), GetContentScaleFactor());
+    if (gc)
+        draw(*gc, GetClientSize(), GetContentScaleFactor());
 }
 
 wxBitmap SegmentDisplay::render(double scale) const {
@@ -388,7 +433,8 @@ wxBitmap SegmentDisplay::render(double scale) const {
     bitmap.CreateWithDIPSize(size, scale);
     wxMemoryDC dc(bitmap);
     std::unique_ptr<wxGraphicsContext> gc(wxGraphicsContext::Create(dc));
-    if (gc) draw(*gc, size, scale);
+    if (gc)
+        draw(*gc, size, scale);
     gc.reset();
     dc.SelectObject(wxNullBitmap);
     return bitmap;

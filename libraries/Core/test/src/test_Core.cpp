@@ -10,7 +10,9 @@
 
 namespace {
 /// A problem whose code and text say only what the test needs.
-Core::Problem bad(std::string text) { return Core::Problem("test.bad", text); }
+Core::Problem bad(std::string text) {
+    return Core::Problem("test.bad", text);
+}
 }  // namespace
 
 TEST(test_Core_result, result_properties) {
@@ -57,7 +59,7 @@ TEST(test_Core_error_result, failing_message_becomes_out_of_memory) {
 }
 
 TEST(test_Core_result_access, value_can_be_read_twice) {
-    auto result = Result<std::vector<int>>(std::vector<int>{1, 2, 3});
+    auto result = Result<std::vector<int>>(std::vector<int> {1, 2, 3});
     auto first = result();
     auto second = result();
     EXPECT_EQ(first.size(), 3u);
@@ -82,7 +84,7 @@ TEST(test_Core_result_access, const_result_is_readable) {
 }
 
 TEST(test_Core_result_access, moving_takes_the_content) {
-    auto result = Result<std::vector<int>>(std::vector<int>{1, 2, 3});
+    auto result = Result<std::vector<int>>(std::vector<int> {1, 2, 3});
     auto taken = std::move(result)();
     EXPECT_EQ(taken.size(), 3u);
     auto error = Result<int>(Core::Error<>(bad("bad")));
@@ -91,13 +93,14 @@ TEST(test_Core_result_access, moving_takes_the_content) {
 }
 
 TEST(test_Core_result_access, lvalue_read_returns_a_reference) {
-    auto result = Result<std::vector<int>>(std::vector<int>{1, 2, 3});
+    auto result = Result<std::vector<int>>(std::vector<int> {1, 2, 3});
     result().push_back(4);
     EXPECT_EQ(result().size(), 4u);
 }
 
 static_assert(!std::is_convertible_v<std::string, Core::Error<>>, "Error must be built explicitly");
-static_assert(!std::is_constructible_v<Core::Error<>, std::string>, "a library error is a Problem, never bare text");
+static_assert(!std::is_constructible_v<Core::Error<>, std::string>,
+              "a library error is a Problem, never bare text");
 static_assert(!std::is_convertible_v<std::string, Result<int>>, "a string is not a Result");
 static_assert(!std::is_convertible_v<Result<int>, bool>, "operator bool is explicit");
 static_assert(std::is_constructible_v<bool, Result<int>>);
@@ -115,7 +118,8 @@ TEST(ResultDeathTest, reading_the_error_of_a_value_aborts) {
 }
 
 TEST(test_Core_problem, fills_the_placeholders) {
-    Core::Problem const p("zip.entry_crc", "entry \"{name}\": CRC-32 mismatch", {{"name", "a.txt"}});
+    Core::Problem const p("zip.entry_crc", "entry \"{name}\": CRC-32 mismatch",
+                          {{"name", "a.txt"}});
     EXPECT_EQ(p.code(), "zip.entry_crc");
     EXPECT_EQ(p.text(), "entry \"a.txt\": CRC-32 mismatch");
     ASSERT_NE(p.value("name"), nullptr);
@@ -124,7 +128,8 @@ TEST(test_Core_problem, fills_the_placeholders) {
 }
 
 TEST(test_Core_problem, nests_a_reason) {
-    auto const p = Core::wrapped("zip.failed", "zip: {reason}", Core::Problem("zip.not_a_zip", "not a zip"));
+    auto const p =
+        Core::wrapped("zip.failed", "zip: {reason}", Core::Problem("zip.not_a_zip", "not a zip"));
     EXPECT_EQ(p.text(), "zip: not a zip");
     ASSERT_NE(p.value("reason"), nullptr);
     ASSERT_TRUE(p.value("reason")->nested);

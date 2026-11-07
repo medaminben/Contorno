@@ -52,9 +52,11 @@ public:
     double frame_width() const;
     /// The caption's font at `scale`.
     wxFont caption_font(double scale) const;
-    /// The caption's extra space between letters at `scale` (px): none in Arabic, which joins its letters.
+    /// The caption's extra space between letters at `scale` (px): none in Arabic, which joins its
+    /// letters.
     double caption_spacing(double scale) const;
-    /// The display as drawn, `scale` device pixels per logical one (the window's own scale for the screen).
+    /// The display as drawn, `scale` device pixels per logical one (the window's own scale for the
+    /// screen).
     wxBitmap render(double scale) const;
 
 protected:

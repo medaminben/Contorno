@@ -47,7 +47,9 @@ public:
             }
         }
         return Core::Problem("json.at", "line {line}, column {column}: {reason}",
-                             {{"line", std::to_string(line)}, {"column", std::to_string(column)}, {"reason", error.problem}});
+                             {{"line", std::to_string(line)},
+                              {"column", std::to_string(column)},
+                              {"reason", error.problem}});
     }
 
 private:
@@ -58,7 +60,9 @@ private:
                                  std::vector<Core::Problem::Value> values = {}) {
         return Core::Problem(code, english, std::move(values));
     }
-    [[noreturn]] void fail(Core::Problem problem) const { throw ParseError {_pos, std::move(problem)}; }
+    [[noreturn]] void fail(Core::Problem problem) const {
+        throw ParseError {_pos, std::move(problem)};
+    }
     [[noreturn]] void fail_at(std::size_t offset, Core::Problem problem) const {
         throw ParseError {offset, std::move(problem)};
     }
@@ -77,13 +81,23 @@ private:
             fail(problem("json.end", "unexpected end of input"));
         }
         switch (peek()) {
-            case '{': return parse_object(depth + 1);
-            case '[': return parse_array(depth + 1);
-            case '"': return Json(parse_string());
-            case 't': parse_literal("true"); return Json(true);
-            case 'f': parse_literal("false"); return Json(false);
-            case 'n': parse_literal("null"); return Json();
-            default: break;
+            case '{':
+                return parse_object(depth + 1);
+            case '[':
+                return parse_array(depth + 1);
+            case '"':
+                return Json(parse_string());
+            case 't':
+                parse_literal("true");
+                return Json(true);
+            case 'f':
+                parse_literal("false");
+                return Json(false);
+            case 'n':
+                parse_literal("null");
+                return Json();
+            default:
+                break;
         }
         if (peek() == '-' || (peek() >= '0' && peek() <= '9')) {
             return parse_number();
@@ -93,14 +107,16 @@ private:
 
     void parse_literal(std::string_view literal) {
         if (_text.substr(_pos, literal.size()) != literal) {
-            fail(problem("json.literal", "invalid literal, expected '{literal}'", {{"literal", std::string(literal)}}));
+            fail(problem("json.literal", "invalid literal, expected '{literal}'",
+                         {{"literal", std::string(literal)}}));
         }
         _pos += literal.size();
     }
 
     Json parse_array(int depth) {
         if (depth > max_depth) {
-            fail(problem("json.depth", "nesting deeper than {depth}", {{"depth", std::to_string(max_depth)}}));
+            fail(problem("json.depth", "nesting deeper than {depth}",
+                         {{"depth", std::to_string(max_depth)}}));
         }
         ++_pos;  // '['
         Json::Array items;
@@ -129,7 +145,8 @@ private:
 
     Json parse_object(int depth) {
         if (depth > max_depth) {
-            fail(problem("json.depth", "nesting deeper than {depth}", {{"depth", std::to_string(max_depth)}}));
+            fail(problem("json.depth", "nesting deeper than {depth}",
+                         {{"depth", std::to_string(max_depth)}}));
         }
         ++_pos;  // '{'
         Json::Object members;
@@ -195,7 +212,8 @@ private:
         if (!at_end() && peek() == '.') {
             ++_pos;
             if (!is_digit()) {
-                fail_at(start, problem("json.number_fraction", "invalid number: digits expected after '.'"));
+                fail_at(start, problem("json.number_fraction",
+                                       "invalid number: digits expected after '.'"));
             }
             frac_start = _pos;
             while (is_digit()) {
@@ -212,7 +230,8 @@ private:
                 ++_pos;
             }
             if (!is_digit()) {
-                fail_at(start, problem("json.number_exponent", "invalid number: digits expected in exponent"));
+                fail_at(start, problem("json.number_exponent",
+                                       "invalid number: digits expected in exponent"));
             }
             while (is_digit()) {
                 // saturate: anything beyond this is far outside double's range
@@ -308,15 +327,15 @@ private:
             return continuation(1) ? 2 : 0;
         }
         if (b0 >= 0xE0 && b0 <= 0xEF) {
-            bool const second_ok = b0 == 0xE0 ? (b1 >= 0xA0 && b1 <= 0xBF)
-                                 : b0 == 0xED ? (b1 >= 0x80 && b1 <= 0x9F)
-                                              : continuation(1);
+            bool const second_ok = b0 == 0xE0   ? (b1 >= 0xA0 && b1 <= 0xBF)
+                                   : b0 == 0xED ? (b1 >= 0x80 && b1 <= 0x9F)
+                                                : continuation(1);
             return second_ok && continuation(2) ? 3 : 0;
         }
         if (b0 >= 0xF0 && b0 <= 0xF4) {
-            bool const second_ok = b0 == 0xF0 ? (b1 >= 0x90 && b1 <= 0xBF)
-                                 : b0 == 0xF4 ? (b1 >= 0x80 && b1 <= 0x8F)
-                                              : continuation(1);
+            bool const second_ok = b0 == 0xF0   ? (b1 >= 0x90 && b1 <= 0xBF)
+                                   : b0 == 0xF4 ? (b1 >= 0x80 && b1 <= 0x8F)
+                                                : continuation(1);
             return second_ok && continuation(2) && continuation(3) ? 4 : 0;
         }
         return 0;
@@ -360,33 +379,55 @@ private:
             char const e = peek();
             ++_pos;
             switch (e) {
-                case '"': out += '"'; break;
-                case '\\': out += '\\'; break;
-                case '/': out += '/'; break;
-                case 'b': out += '\b'; break;
-                case 'f': out += '\f'; break;
-                case 'n': out += '\n'; break;
-                case 'r': out += '\r'; break;
-                case 't': out += '\t'; break;
+                case '"':
+                    out += '"';
+                    break;
+                case '\\':
+                    out += '\\';
+                    break;
+                case '/':
+                    out += '/';
+                    break;
+                case 'b':
+                    out += '\b';
+                    break;
+                case 'f':
+                    out += '\f';
+                    break;
+                case 'n':
+                    out += '\n';
+                    break;
+                case 'r':
+                    out += '\r';
+                    break;
+                case 't':
+                    out += '\t';
+                    break;
                 case 'u': {
                     unsigned code = parse_hex4(escape_start);
                     if (code >= 0xD800 && code <= 0xDBFF) {
                         if (_text.substr(_pos, 2) != "\\u") {
-                            fail_at(escape_start, problem("json.high_surrogate", "high surrogate without a low surrogate"));
+                            fail_at(escape_start,
+                                    problem("json.high_surrogate",
+                                            "high surrogate without a low surrogate"));
                         }
                         _pos += 2;
                         unsigned const low = parse_hex4(escape_start);
                         if (low < 0xDC00 || low > 0xDFFF) {
-                            fail_at(escape_start, problem("json.high_surrogate", "high surrogate without a low surrogate"));
+                            fail_at(escape_start,
+                                    problem("json.high_surrogate",
+                                            "high surrogate without a low surrogate"));
                         }
                         code = 0x10000 + ((code - 0xD800) << 10) + (low - 0xDC00);
                     } else if (code >= 0xDC00 && code <= 0xDFFF) {
-                        fail_at(escape_start, problem("json.low_surrogate", "unpaired low surrogate"));
+                        fail_at(escape_start,
+                                problem("json.low_surrogate", "unpaired low surrogate"));
                     }
                     append_utf8(out, code);
                     break;
                 }
-                default: fail_at(escape_start, problem("json.escape", "invalid escape sequence"));
+                default:
+                    fail_at(escape_start, problem("json.escape", "invalid escape sequence"));
             }
         }
     }
@@ -403,7 +444,8 @@ Result<Json> parse_json_impl(std::string_view text) noexcept {
         }
     } catch (std::exception const& exception) {
         return Core::error_result<Json>([&] {
-            return Core::Problem("json.parse_failed", "json parse failed: {what}", {{"what", exception.what()}});
+            return Core::Problem("json.parse_failed", "json parse failed: {what}",
+                                 {{"what", exception.what()}});
         });
     } catch (...) {
         return Core::error_result<Json>(
@@ -416,13 +458,27 @@ void write_string(std::string& out, std::string const& text) {
     out += '"';
     for (unsigned char c : text) {
         switch (c) {
-            case '"': out += "\\\""; break;
-            case '\\': out += "\\\\"; break;
-            case '\n': out += "\\n"; break;
-            case '\r': out += "\\r"; break;
-            case '\t': out += "\\t"; break;
-            case '\b': out += "\\b"; break;
-            case '\f': out += "\\f"; break;
+            case '"':
+                out += "\\\"";
+                break;
+            case '\\':
+                out += "\\\\";
+                break;
+            case '\n':
+                out += "\\n";
+                break;
+            case '\r':
+                out += "\\r";
+                break;
+            case '\t':
+                out += "\\t";
+                break;
+            case '\b':
+                out += "\\b";
+                break;
+            case '\f':
+                out += "\\f";
+                break;
             default:
                 if (c < 0x20) {
                     char buffer[8];
@@ -442,7 +498,8 @@ void write_number(std::string& out, double value) {
         return;
     }
     char buffer[64];
-    auto const result = std::to_chars(buffer, buffer + sizeof buffer, value);  // shortest round-trip form
+    auto const result =
+        std::to_chars(buffer, buffer + sizeof buffer, value);  // shortest round-trip form
     out.append(buffer, result.ptr);
 }
 
@@ -515,8 +572,10 @@ Result<std::string> to_json_text_impl(Json const& value, int indent) noexcept {
         write_value(out, value, indent, 0);
         return Result<std::string>(std::move(out));
     } catch (std::exception const& exception) {
-        return Core::error_result<std::string>(
-            [&] { return Core::wrapped("json.failed", "json: {reason}", Core::Problem::raw(exception.what())); });
+        return Core::error_result<std::string>([&] {
+            return Core::wrapped("json.failed", "json: {reason}",
+                                 Core::Problem::raw(exception.what()));
+        });
     }
 }
 

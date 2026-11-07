@@ -54,9 +54,11 @@ T* named(wxWindow& dialog, wxString const& name) {
 
 /// The grid row of a child of the dialog (-1 when it is not in the grid).
 int grid_row(CameraDialog& dialog, wxString const& name) {
-    auto* grid = dynamic_cast<wxGridBagSizer*>(dialog.GetSizer()->GetItem(static_cast<size_t>(0))->GetSizer());
+    auto* grid = dynamic_cast<wxGridBagSizer*>(
+        dialog.GetSizer()->GetItem(static_cast<size_t>(0))->GetSizer());
     wxWindow* widget = wxWindow::FindWindowByName(name, &dialog);
-    if (!grid || !widget) return -1;
+    if (!grid || !widget)
+        return -1;
     wxGBPosition const at = grid->GetItemPosition(widget);
     return at.GetRow();
 }
@@ -65,7 +67,8 @@ wxRadioButton* radio(CameraDialog& dialog, wxString const& text) {
     std::vector<wxRadioButton*> all;
     collect_descendants<wxRadioButton>(&dialog, all);
     for (auto* r : all) {
-        if (r->GetLabel() == text) return r;
+        if (r->GetLabel() == text)
+            return r;
     }
     return nullptr;
 }
@@ -78,7 +81,8 @@ void choose(wxRadioButton* button) {
     button->GetEventHandler()->ProcessEvent(event);
 }
 
-/// The user's choice of entry `index` of a combo box: the selection and the event the toolkit sends.
+/// The user's choice of entry `index` of a combo box: the selection and the event the toolkit
+/// sends.
 void pick(wxComboBox* box, int index) {
     box->SetSelection(index);
     wxCommandEvent event(wxEVT_COMBOBOX, box->GetId());
@@ -88,13 +92,15 @@ void pick(wxComboBox* box, int index) {
     box->GetEventHandler()->ProcessEvent(event);
 }
 
-/// Ends `dialog`'s modal loop with wxID_ABORT after 4 s, so a key that does nothing fails a test instead of hanging it.
+/// Ends `dialog`'s modal loop with wxID_ABORT after 4 s, so a key that does nothing fails a test
+/// instead of hanging it.
 struct Watchdog : wxEvtHandler {
     wxDialog& dialog;
     wxTimer timer;
     explicit Watchdog(wxDialog& d) : dialog(d), timer(this) {
         Bind(wxEVT_TIMER, [this](wxTimerEvent&) {
-            if (dialog.IsModal()) dialog.EndModal(wxID_ABORT);
+            if (dialog.IsModal())
+                dialog.EndModal(wxID_ABORT);
         });
         timer.Start(4000, true);
     }
@@ -104,9 +110,13 @@ int show_modal(wxDialog& dialog) {
     return dialog.ShowModal();
 }
 
-Key* key(CameraDialog& dialog, wxString const& name) { return named<Key>(dialog, name); }
+Key* key(CameraDialog& dialog, wxString const& name) {
+    return named<Key>(dialog, name);
+}
 /// The OK or Cancel key.
-Key* button(CameraDialog& dialog, wxWindowID id) { return dynamic_cast<Key*>(dialog.FindWindow(id)); }
+Key* button(CameraDialog& dialog, wxWindowID id) {
+    return dynamic_cast<Key*>(dialog.FindWindow(id));
+}
 
 Vision::CameraSettings pixel_camera(double w, double h) {
     Vision::CameraSettings c {};
@@ -127,7 +137,9 @@ std::string label_of(CameraDialog& dialog, wxString const& name) {
     return label ? utf8(label->GetLabel()) : std::string("<missing>");
 }
 
-bool contains(std::string const& text, std::string const& part) { return text.find(part) != std::string::npos; }
+bool contains(std::string const& text, std::string const& part) {
+    return text.find(part) != std::string::npos;
+}
 
 /// The colour of a round key's border at the middle of its left side, as drawn.
 wxColour left_border(Key* key) {
@@ -135,7 +147,9 @@ wxColour left_border(Key* key) {
     int const y = image.GetHeight() / 2;
     return wxColour(image.GetRed(1, y), image.GetGreen(1, y), image.GetBlue(1, y));
 }
-bool is_green(wxColour const& c) { return c.Green() > 200 && c.Red() < 120 && c.Blue() < 180; }
+bool is_green(wxColour const& c) {
+    return c.Green() > 200 && c.Red() < 120 && c.Blue() < 180;
+}
 
 /// A key press as the toolkit sends it first: the hook event, to the window that has the focus.
 void send_key(wxWindow* target, int code, wxEventType type = wxEVT_CHAR_HOOK) {
@@ -162,10 +176,13 @@ void wheel(wxWindow* target, int rotation) {
 
 /// Types `text` into `box` one character at a time, as the keyboard would.
 void type(wxComboBox* box, std::string const& text) {
-    for (char c : text) box->SetValue(box->GetValue() + wxString(1, c));
+    for (char c : text)
+        box->SetValue(box->GetValue() + wxString(1, c));
 }
 
-std::string hex(wxColour const& c) { return utf8(c.GetAsString(wxC2S_HTML_SYNTAX)); }
+std::string hex(wxColour const& c) {
+    return utf8(c.GetAsString(wxC2S_HTML_SYNTAX));
+}
 
 void collect_all(wxWindow* window, std::vector<wxWindow*>& out) {
     for (wxWindow* child : window->GetChildren()) {
@@ -193,25 +210,32 @@ TEST(WxSetUpDialog, TitleAndGrid) {
     EXPECT_TRUE(key(dialog, "link")->icon().IsOk());
 }
 
-// Qt's dialog (Breeze): 10 px margins, 6 px between the rows, the columns and the parts, and the four columns
-// of labels and fields equally wide when there is room, as at the dialog's own size, in every language
+// Qt's dialog (Breeze): 10 px margins, 6 px between the rows, the columns and the parts, and the
+// four columns of labels and fields equally wide when there is room, as at the dialog's own size,
+// in every language
 TEST(WxSetUpDialog, SpacedAsQts) {
     Restore restore;
     for (std::string const& code : language_codes()) {
         apply_language(code);
         CameraDialog dialog(nullptr, Vision::CameraSettings {}, {}, false, code);
         int const margin = dialog.FromDIP(10), spacing = dialog.FromDIP(6);
-        auto* grid = dynamic_cast<wxGridBagSizer*>(dialog.GetSizer()->GetItem(static_cast<size_t>(0))->GetSizer());
+        auto* grid = dynamic_cast<wxGridBagSizer*>(
+            dialog.GetSizer()->GetItem(static_cast<size_t>(0))->GetSizer());
         ASSERT_NE(grid, nullptr);
-        auto at = [&](int row, int col) { return grid->FindItemAtPosition(wxGBPosition(row, col))->GetWindow(); };
+        auto at = [&](int row, int col) {
+            return grid->FindItemAtPosition(wxGBPosition(row, col))->GetWindow();
+        };
         // every label and field of the two columns pairs as wide as the others
         int const column = at(1, 1)->GetSize().x;
         for (int row : {1, 2}) {
-            for (int col : {0, 1, 3, 4}) EXPECT_EQ(at(row, col)->GetSize().x, column) << code << " " << row << "," << col;
+            for (int col : {0, 1, 3, 4})
+                EXPECT_EQ(at(row, col)->GetSize().x, column) << code << " " << row << "," << col;
         }
         EXPECT_EQ(at(0, 0)->GetSize().x, column) << code;
         // the sizer's own positions, left to right whatever the direction
-        auto left = [&](int row, int col) { return grid->FindItemAtPosition(wxGBPosition(row, col))->GetPosition().x; };
+        auto left = [&](int row, int col) {
+            return grid->FindItemAtPosition(wxGBPosition(row, col))->GetPosition().x;
+        };
         EXPECT_EQ(left(1, 0), margin) << code;
         EXPECT_EQ(left(1, 1), margin + column + spacing) << code;
         EXPECT_EQ(left(1, 2), margin + 2 * (column + spacing)) << code;
@@ -229,7 +253,8 @@ TEST(WxSetUpDialog, SpacedAsQts) {
 TEST(WxSetUpDialog, LanguageThemeAndHelpKeysAreLive) {
     CameraDialog dialog(nullptr, Vision::CameraSettings {}, {}, false, "en");
     std::vector<wxString> names;
-    for (char const* code : {"en", "de", "es", "it", "fr", "nl", "ar"}) names.push_back(wxString("language_") + code);
+    for (char const* code : {"en", "de", "es", "it", "fr", "nl", "ar"})
+        names.push_back(wxString("language_") + code);
     names.push_back("theme");
     names.push_back("help");
     // one row, in this order, right under the grid; the stretch keeps it there
@@ -240,13 +265,15 @@ TEST(WxSetUpDialog, LanguageThemeAndHelpKeysAreLive) {
     EXPECT_TRUE(column->GetItem(static_cast<size_t>(1))->IsSpacer());
     EXPECT_TRUE(column->GetItem(static_cast<size_t>(3))->IsSpacer());
     EXPECT_GT(column->GetItem(static_cast<size_t>(3))->GetProportion(), 0);
-    EXPECT_NE(dynamic_cast<wxGridBagSizer*>(column->GetItem(static_cast<size_t>(0))->GetSizer()), nullptr);
+    EXPECT_NE(dynamic_cast<wxGridBagSizer*>(column->GetItem(static_cast<size_t>(0))->GetSizer()),
+              nullptr);
     wxSizer* row = column->GetItem(static_cast<size_t>(2))->GetSizer();
     ASSERT_NE(row, nullptr);
     auto index_of = [&](wxWindow* window) {
         int at = 0;
         for (auto* item : row->GetChildren()) {
-            if (item->GetWindow() == window) return at;
+            if (item->GetWindow() == window)
+                return at;
             ++at;
         }
         return -1;
@@ -267,7 +294,8 @@ TEST(WxSetUpDialog, LanguageThemeAndHelpKeysAreLive) {
     }
 }
 
-// Qt's help key shows "?" in Arabic too; GTK's mirrored context for a right-to-left key drew it as "؟"
+// Qt's help key shows "?" in Arabic too; GTK's mirrored context for a right-to-left key drew it as
+// "؟"
 TEST(WxSetUpDialog, HelpKeyShowsAQuestionMarkInArabic) {
     Restore restore;
     apply_language("ar");
@@ -278,10 +306,12 @@ TEST(WxSetUpDialog, HelpKeyShowsAQuestionMarkInArabic) {
     dialog.Show();
     wxRect const face(wxPoint(0, 0), help->GetSize());
     Ink const shown = ink_on_screen(*help, face);
-    if (!shown.read) GTEST_SKIP() << "the screen cannot be read here";
+    if (!shown.read)
+        GTEST_SKIP() << "the screen cannot be read here";
     ASSERT_GT(shown.count, 0);
     wxImage const drawn = help->Render(help->GetContentScaleFactor()).ConvertToImage();
-    Ink const question = ink_of(drawn, wxRect(drawn.GetSize()));  // the icon's "?", as the key draws it
+    Ink const question =
+        ink_of(drawn, wxRect(drawn.GetSize()));  // the icon's "?", as the key draws it
     EXPECT_LT(ink_difference(shown, question), 0.15);
     dialog.Hide();
 }
@@ -304,8 +334,8 @@ TEST(WxSetUpDialog, HelpOpensTheManualInTheDialogsLanguage) {
     std::filesystem::path const browser = bin.path / "chromium";
     {
         std::ofstream script(browser);
-        script << "#!/bin/sh\nprintf '%s\\n' \"$@\" > '" << record.string() << ".part' && mv '" << record.string()
-               << ".part' '" << record.string() << "'\n";
+        script << "#!/bin/sh\nprintf '%s\\n' \"$@\" > '" << record.string() << ".part' && mv '"
+               << record.string() << ".part' '" << record.string() << "'\n";
     }
     std::filesystem::permissions(browser, std::filesystem::perms::owner_all);
     std::string const old_path = std::getenv("PATH") ? std::getenv("PATH") : "";
@@ -316,15 +346,20 @@ TEST(WxSetUpDialog, HelpOpensTheManualInTheDialogsLanguage) {
         key(dialog, "help")->Click();
     }
     setenv("PATH", old_path.c_str(), 1);
-    ASSERT_TRUE(pump_until([&] { return std::filesystem::exists(record); }, 10s)) << "the browser was not started";
+    ASSERT_TRUE(pump_until([&] { return std::filesystem::exists(record); }, 10s))
+        << "the browser was not started";
     std::ifstream in(record);
     std::vector<std::string> args;
     for (std::string line; std::getline(in, line);) {
-        if (!line.empty()) args.push_back(line);
+        if (!line.empty())
+            args.push_back(line);
     }
-    std::string const expected = std::string("--app=file://") + INDICATOR_MANUAL_DIR + "/fr/index.html";
+    std::string const expected =
+        std::string("--app=file://") + INDICATOR_MANUAL_DIR + "/fr/index.html";
     EXPECT_NE(std::find(args.begin(), args.end(), expected), args.end()) << expected;
-    EXPECT_TRUE(std::any_of(args.begin(), args.end(), [](std::string const& a) { return a.rfind("--user-data-dir=", 0) == 0; }));
+    EXPECT_TRUE(std::any_of(args.begin(), args.end(), [](std::string const& a) {
+        return a.rfind("--user-data-dir=", 0) == 0;
+    }));
 }
 #endif
 
@@ -381,7 +416,12 @@ TEST(WxSetUpDialog, ThemeKeyIsOnForLightPanels) {
     CameraDialog light(nullptr, Vision::CameraSettings {}, {}, false, "en", true);
     EXPECT_TRUE(light.light());
     EXPECT_TRUE(key(light, "theme")->IsChecked());
-    EXPECT_NE(std::string(reinterpret_cast<char const*>(key(light, "theme")->icon().GetBitmap(wxSize(20, 20)).ConvertToImage().GetAlpha()), 400), moon);
+    EXPECT_NE(
+        std::string(
+            reinterpret_cast<char const*>(
+                key(light, "theme")->icon().GetBitmap(wxSize(20, 20)).ConvertToImage().GetAlpha()),
+            400),
+        moon);
     // the flags stay exclusive among themselves: the theme key is not one of them
     EXPECT_TRUE(key(light, "language_en")->IsChecked());
 }
@@ -404,7 +444,8 @@ TEST(WxSetUpDialog, DialogPanelsFollowTheTheme) {
         EXPECT_EQ(hex(radio(dialog, "Pixel size")->GetForegroundColour()), hex(p.text));
         // the result lines keep their own green
         EXPECT_EQ(hex(covered->GetForegroundColour()), hex(wxColour(result_colour(is_light))));
-        EXPECT_EQ(hex(named<wxStaticText>(dialog, "scale")->GetForegroundColour()), hex(wxColour(result_colour(is_light))));
+        EXPECT_EQ(hex(named<wxStaticText>(dialog, "scale")->GetForegroundColour()),
+                  hex(wxColour(result_colour(is_light))));
     };
     expect_theme(light, true);
     // a window of its own, light: the preview in the dialog does not restyle it
@@ -453,11 +494,14 @@ TEST(WxSetUpDialog, NumbersStayAtTheLeftInArabic) {
         dialog.Show();
         for (wxString const name : {"width", "height", "distance", "focal"}) {
             wxWindow* field = named<wxWindow>(dialog, name);
-            if (auto* number = dynamic_cast<NumberField*>(field)) field = number->entry();
+            if (auto* number = dynamic_cast<NumberField*>(field))
+                field = number->entry();
             GtkWidget* entry = field->GetHandle();
-            if (!GTK_IS_ENTRY(entry)) entry = gtk_bin_get_child(GTK_BIN(entry));
+            if (!GTK_IS_ENTRY(entry))
+                entry = gtk_bin_get_child(GTK_BIN(entry));
             ASSERT_TRUE(GTK_IS_ENTRY(entry)) << utf8(name);
-            ASSERT_TRUE(pump_until([&] { return gtk_widget_get_allocated_width(entry) > 1; }, 3000ms));
+            ASSERT_TRUE(
+                pump_until([&] { return gtk_widget_get_allocated_width(entry) > 1; }, 3000ms));
             // where the entry draws its text: nearer its left edge than its right one
             gint x = 0, y = 0, text_w = 0;
             gtk_entry_get_layout_offsets(GTK_ENTRY(entry), &x, &y);
@@ -515,7 +559,8 @@ TEST(WxSetUpDialog, FlagPreviewsOnlyTheDialog) {
 
 TEST(WxSetUpDialog, SensorModeResults) {
     CameraDialog dialog(nullptr, sensor_camera(), wxSize(1600, 1200), false, "en");
-    EXPECT_TRUE(contains(label_of(dialog, "covered"), "1733 × 1300 mm")) << label_of(dialog, "covered");
+    EXPECT_TRUE(contains(label_of(dialog, "covered"), "1733 × 1300 mm"))
+        << label_of(dialog, "covered");
     EXPECT_TRUE(contains(label_of(dialog, "scale"), "1.083 mm/px")) << label_of(dialog, "scale");
     CameraDialog none(nullptr, sensor_camera(), {}, false, "en");
     EXPECT_TRUE(contains(label_of(none, "scale"), "needs a photo"));
@@ -527,8 +572,10 @@ TEST(WxSetUpDialog, PixelModeResults) {
     c.distance_mm = 2000;
     c.focal_length_mm = 16;
     CameraDialog dialog(nullptr, c, wxSize(1000, 600), false, "en");
-    EXPECT_TRUE(contains(label_of(dialog, "scale"), "0.470 × 0.525 mm/px")) << label_of(dialog, "scale");
-    EXPECT_TRUE(contains(label_of(dialog, "covered"), "470 × 315 mm")) << label_of(dialog, "covered");
+    EXPECT_TRUE(contains(label_of(dialog, "scale"), "0.470 × 0.525 mm/px"))
+        << label_of(dialog, "scale");
+    EXPECT_TRUE(contains(label_of(dialog, "covered"), "470 × 315 mm"))
+        << label_of(dialog, "covered");
     CameraDialog none(nullptr, c, {}, false, "en");
     EXPECT_TRUE(contains(label_of(none, "scale"), "0.470 × 0.525 mm/px"));
     EXPECT_TRUE(contains(label_of(none, "covered"), "needs a photo"));
@@ -600,8 +647,10 @@ TEST(WxSetUpDialog, RotatedPhotoSwapsPixelSides) {
     c.distance_mm = 2000;
     c.focal_length_mm = 16;
     CameraDialog dialog(nullptr, c, wxSize(600, 1000), true, "en");
-    EXPECT_TRUE(contains(label_of(dialog, "scale"), "0.525 × 0.470 mm/px")) << label_of(dialog, "scale");
-    EXPECT_TRUE(contains(label_of(dialog, "covered"), "315 × 470 mm")) << label_of(dialog, "covered");
+    EXPECT_TRUE(contains(label_of(dialog, "scale"), "0.525 × 0.470 mm/px"))
+        << label_of(dialog, "scale");
+    EXPECT_TRUE(contains(label_of(dialog, "covered"), "315 × 470 mm"))
+        << label_of(dialog, "covered");
 }
 
 TEST(WxSetUpDialog, SensorModeRotatedSwapsCovered) {
@@ -611,7 +660,8 @@ TEST(WxSetUpDialog, SensorModeRotatedSwapsCovered) {
     c.distance_mm = 1500;
     c.focal_length_mm = 13.02;
     CameraDialog dialog(nullptr, c, wxSize(1200, 1600), true, "en");
-    EXPECT_TRUE(contains(label_of(dialog, "covered"), "1300 × 1733 mm")) << label_of(dialog, "covered");
+    EXPECT_TRUE(contains(label_of(dialog, "covered"), "1300 × 1733 mm"))
+        << label_of(dialog, "covered");
 }
 
 TEST(WxSetUpDialog, ReChoosingTheNamedEntryFillsTheHeight) {
@@ -632,7 +682,8 @@ TEST(WxSetUpDialog, ReChoosingTheNamedEntryFillsTheHeight) {
 TEST(WxSetUpDialog, TypedOutOfRangeIsRestored) {
     CameraDialog dialog(nullptr, pixel_camera(3.76, 3.76), {}, false, "en");
     auto* width = named<wxComboBox>(dialog, "width");
-    for (char const* typed : {"1", "15", "150"}) width->SetValue(typed);  // one key at a time
+    for (char const* typed : {"1", "15", "150"})
+        width->SetValue(typed);  // one key at a time
     EXPECT_EQ(width->GetValue(), "150");
     EXPECT_EQ(dialog.camera().pixel_width_um, 15.0);
     send_focus_lost(width);  // the box is left: put back
@@ -676,7 +727,8 @@ TEST(WxSetUpDialog, EnterAnswersOkAndEscapeCancels) {
     Restore restore;
     CameraDialog dialog(nullptr, pixel_camera(3.76, 3.76), {}, false, "en");
     auto* width = named<wxComboBox>(dialog, "width");
-    wxWindow* targets[] = {named<NumberField>(dialog, "distance")->entry(), width, dialog.FindWindow(wxID_OK), &dialog};
+    wxWindow* targets[] = {named<NumberField>(dialog, "distance")->entry(), width,
+                           dialog.FindWindow(wxID_OK), &dialog};
     for (wxWindow* target : targets) {
         drive_modal([&](wxDialog&) { send_key(target, WXK_RETURN); });
         EXPECT_EQ(show_modal(dialog), wxID_OK) << target->GetClassInfo()->GetClassName();
@@ -684,7 +736,8 @@ TEST(WxSetUpDialog, EnterAnswersOkAndEscapeCancels) {
         EXPECT_EQ(show_modal(dialog), wxID_CANCEL) << target->GetClassInfo()->GetClassName();
     }
     // Enter is OK: a half-typed box is put right on the way out
-    for (char const* typed : {"1", "15", "150"}) width->SetValue(typed);
+    for (char const* typed : {"1", "15", "150"})
+        width->SetValue(typed);
     drive_modal([&](wxDialog&) { send_key(width, WXK_NUMPAD_ENTER); });
     EXPECT_EQ(show_modal(dialog), wxID_OK);
     EXPECT_TRUE(contains(utf8(width->GetValue()), "15.00")) << utf8(width->GetValue());
@@ -698,7 +751,8 @@ TEST(WxSetUpDialog, AFocusedKeyTakesEnterItself) {
     CameraDialog dialog(nullptr, Vision::CameraSettings {}, {}, false, "en");
     int oks = 0;
     dialog.Bind(wxEVT_BUTTON, [&](wxCommandEvent& event) {
-        if (event.GetId() == wxID_OK) ++oks;
+        if (event.GetId() == wxID_OK)
+            ++oks;
         event.Skip();
     });
     send_key(key(dialog, "language_fr"), WXK_RETURN);
@@ -711,7 +765,8 @@ TEST(WxSetUpDialog, AFocusedKeyTakesEnterItself) {
     EXPECT_EQ(show_modal(dialog), wxID_CANCEL);
     EXPECT_EQ(oks, 0);
     // a field still sends Enter to OK
-    drive_modal([&](wxDialog&) { send_key(named<NumberField>(dialog, "focal")->entry(), WXK_RETURN); });
+    drive_modal(
+        [&](wxDialog&) { send_key(named<NumberField>(dialog, "focal")->entry(), WXK_RETURN); });
     EXPECT_EQ(show_modal(dialog), wxID_OK);
     EXPECT_EQ(oks, 1);
 #ifdef __linux__
@@ -721,15 +776,16 @@ TEST(WxSetUpDialog, AFocusedKeyTakesEnterItself) {
     std::filesystem::path const browser = bin.path / "chromium";
     {
         std::ofstream script(browser);
-        script << "#!/bin/sh\nprintf '%s\\n' \"$@\" > '" << record.string() << ".part' && mv '" << record.string()
-               << ".part' '" << record.string() << "'\n";
+        script << "#!/bin/sh\nprintf '%s\\n' \"$@\" > '" << record.string() << ".part' && mv '"
+               << record.string() << ".part' '" << record.string() << "'\n";
     }
     std::filesystem::permissions(browser, std::filesystem::perms::owner_all);
     std::string const old_path = std::getenv("PATH") ? std::getenv("PATH") : "";
     setenv("PATH", (bin.path.string() + ":" + old_path).c_str(), 1);
     send_key(key(dialog, "help"), WXK_RETURN);
     setenv("PATH", old_path.c_str(), 1);
-    EXPECT_TRUE(pump_until([&] { return std::filesystem::exists(record); }, 10s)) << "the help key did not act";
+    EXPECT_TRUE(pump_until([&] { return std::filesystem::exists(record); }, 10s))
+        << "the help key did not act";
     EXPECT_EQ(oks, 1);
 #endif
 }
@@ -783,7 +839,8 @@ TEST(WxSetUpDialog, AListLeftOpenNeverLeavesEnterAndEscapeDead) {
 }
 
 TEST(WxSetUpDialog, LeavingTheBoxKeepsItsListOpen) {
-    // GTK may move the focus into an open list's popup: the list still takes Escape and Enter until it closes
+    // GTK may move the focus into an open list's popup: the list still takes Escape and Enter until
+    // it closes
     CameraDialog dialog(nullptr, pixel_camera(3.76, 3.76), {}, false, "en");
     auto* width = named<wxComboBox>(dialog, "width");
     auto list_event = [&](wxEventType type) {
@@ -818,12 +875,14 @@ TEST(WxSetUpDialog, LeavingTheBoxKeepsItsListOpen) {
 
 TEST(WxSetUpDialog, RoundKeyHoveredWhileOnLooksAsOn) {
     CameraDialog dialog(nullptr, Vision::CameraSettings {}, {}, false, "en");
-    // Qt: ":checked" is a 2 px green border and ":hover" only sets the border colour to that same green
+    // Qt: ":checked" is a 2 px green border and ":hover" only sets the border colour to that same
+    // green
     Key* en = key(dialog, "language_en");
     ASSERT_TRUE(en->IsChecked());
     auto pixels = [&] {
         wxImage image = en->Render(1.0).ConvertToImage();
-        return std::string(reinterpret_cast<char const*>(image.GetData()), static_cast<size_t>(image.GetWidth() * image.GetHeight() * 3));
+        return std::string(reinterpret_cast<char const*>(image.GetData()),
+                           static_cast<size_t>(image.GetWidth() * image.GetHeight() * 3));
     };
     std::string const on = pixels();
     wxMouseEvent enter(wxEVT_ENTER_WINDOW);
@@ -851,25 +910,31 @@ TEST(WxSetUpDialog, RoundKeyRingsOnHover) {
         return wxColour(shot.GetRed(0, y), shot.GetGreen(0, y), shot.GetBlue(0, y));
     };
     // the ring is one anti-aliased pixel wide: greenish, not the full green of a lit key
-    auto greenish = [&](Key* k) { wxColour const c = edge(k); return c.Green() > 120 && c.Green() > c.Red() + 60; };
+    auto greenish = [&](Key* k) {
+        wxColour const c = edge(k);
+        return c.Green() > 120 && c.Green() > c.Red() + 60;
+    };
     EXPECT_FALSE(greenish(fr));
     mouse(fr, wxEVT_ENTER_WINDOW);
     EXPECT_TRUE(greenish(fr)) << hex(edge(fr));
     // a ring, not a lit key: the face inside is still the raised key's
     wxImage const image = fr->Render(1.0).ConvertToImage();
-    EXPECT_FALSE(is_green(wxColour(image.GetRed(4, 10), image.GetGreen(4, 10), image.GetBlue(4, 10))));
+    EXPECT_FALSE(
+        is_green(wxColour(image.GetRed(4, 10), image.GetGreen(4, 10), image.GetBlue(4, 10))));
     mouse(fr, wxEVT_LEAVE_WINDOW);
     EXPECT_FALSE(greenish(fr));
     // the square keys do not ring
     Key* ok = button(dialog, wxID_OK);
     mouse(ok, wxEVT_ENTER_WINDOW);
     wxImage const square = ok->Render(1.0).ConvertToImage();
-    EXPECT_FALSE(is_green(wxColour(square.GetRed(0, square.GetHeight() / 2), square.GetGreen(0, square.GetHeight() / 2),
+    EXPECT_FALSE(is_green(wxColour(square.GetRed(0, square.GetHeight() / 2),
+                                   square.GetGreen(0, square.GetHeight() / 2),
                                    square.GetBlue(0, square.GetHeight() / 2))));
 }
 
-// Qt's OK and Cancel carry the desktop icon theme's dialog-ok check mark and dialog-cancel "no" sign, 16 px, in
-// the theme's dark grey (#232629, Breeze), before their text (after it in Arabic), in either panel theme
+// Qt's OK and Cancel carry the desktop icon theme's dialog-ok check mark and dialog-cancel "no"
+// sign, 16 px, in the theme's dark grey (#232629, Breeze), before their text (after it in Arabic),
+// in either panel theme
 TEST(WxSetUpDialog, OkAndCancelCarryTheirIcons) {
     Restore restore;
     for (std::string const code : {"en", "ar"}) {
@@ -883,7 +948,8 @@ TEST(WxSetUpDialog, OkAndCancelCarryTheirIcons) {
                 int drawn = 0;
                 for (int y = 0; y < 16; ++y) {
                     for (int x = 0; x < 16; ++x) {
-                        if (icon.HasAlpha() && icon.GetAlpha(x, y) < 200) continue;
+                        if (icon.HasAlpha() && icon.GetAlpha(x, y) < 200)
+                            continue;
                         ++drawn;
                         // within the rounding of the alpha the edges are drawn with
                         EXPECT_NEAR(icon.GetRed(x, y), 0x23, 2);
@@ -905,7 +971,8 @@ TEST(WxSetUpDialog, OkAndCancelCarryTheirIcons) {
                 }
                 int const text = k->GetTextExtent(k->GetLabelText()).x;
                 int const start = 1 + (k->GetSize().x - 2 - (16 + 6 + text)) / 2;
-                EXPECT_NEAR(first, code == "ar" ? start : start + 16 + 6, 2) << code << " " << utf8(k->GetLabelText());
+                EXPECT_NEAR(first, code == "ar" ? start : start + 16 + 6, 2)
+                    << code << " " << utf8(k->GetLabelText());
             }
         }
     }
@@ -945,11 +1012,13 @@ TEST(WxSetUpDialog, DialogStyle) {
     bool green = false;
     for (int y = 0; y < image.GetHeight() && !green; ++y) {
         for (int x = 0; x < image.GetWidth() && !green; ++x) {
-            green = image.GetRed(x, y) == 0x47 && image.GetGreen(x, y) == 0xFF && image.GetBlue(x, y) == 0x86;
+            green = image.GetRed(x, y) == 0x47 && image.GetGreen(x, y) == 0xFF &&
+                    image.GetBlue(x, y) == 0x86;
         }
     }
     EXPECT_TRUE(green) << "no key-green text pixel";
-    EXPECT_EQ(hex(dialog.GetBackgroundColour()), hex(palette(light_theme()).panel));  // the theme in use
+    EXPECT_EQ(hex(dialog.GetBackgroundColour()),
+              hex(palette(light_theme()).panel));  // the theme in use
 }
 
 TEST(WxSetUpDialog, EveryChildFollowsTheTheme) {
@@ -963,7 +1032,8 @@ TEST(WxSetUpDialog, EveryChildFollowsTheTheme) {
     Palette const light = palette(true);
     for (wxWindow* window : all) {
         wxColour const c = window->GetBackgroundColour();
-        EXPECT_TRUE(c == light.panel || c == light.field) << window->GetClassInfo()->GetClassName() << " " << hex(c);
+        EXPECT_TRUE(c == light.panel || c == light.field)
+            << window->GetClassInfo()->GetClassName() << " " << hex(c);
     }
     theme->Click();
     all.clear();
@@ -971,7 +1041,8 @@ TEST(WxSetUpDialog, EveryChildFollowsTheTheme) {
     Palette const dark = palette(false);
     for (wxWindow* window : all) {
         wxColour const c = window->GetBackgroundColour();
-        EXPECT_TRUE(c == dark.panel || c == dark.field) << window->GetClassInfo()->GetClassName() << " " << hex(c);
+        EXPECT_TRUE(c == dark.panel || c == dark.field)
+            << window->GetClassInfo()->GetClassName() << " " << hex(c);
     }
     EXPECT_TRUE(dialog.GetBackgroundColour() == dark.panel);
     EXPECT_FALSE(light_theme());

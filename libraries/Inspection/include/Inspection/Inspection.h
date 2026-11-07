@@ -48,9 +48,8 @@ std::string INSPECTION_API photo_name(std::string const& photo_path);
  * @return error "inspection.no_mask" for an analysis without a mask, or
  *         "inspection.entry" naming the entry that cannot be written
  */
-Result<std::vector<Tools::ZipEntry>> INSPECTION_API to_entries(Record const& record,
-                                                               Vision::ObjectsAnalysis const& analysis,
-                                                               bool rotated) noexcept;
+Result<std::vector<Tools::ZipEntry>> INSPECTION_API
+to_entries(Record const& record, Vision::ObjectsAnalysis const& analysis, bool rotated) noexcept;
 
 /**
  * @brief An inspection from the entries of its zip

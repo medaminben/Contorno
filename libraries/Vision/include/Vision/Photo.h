@@ -13,8 +13,10 @@ namespace Vision {
 /// The camera tags of a photo's EXIF, as stored; absent when missing,
 /// unreadable or (resolution) with an unknown unit.
 struct PhotoMetadata {
-    std::optional<double> focal_length_mm;          ///< FocalLength 0x920A
-    std::optional<double> focal_plane_px_per_mm;    ///< FocalPlaneXResolution 0xA20E in px/mm (unit 0xA210: 2 inch (also when absent), 3 cm, 4 mm, 5 µm)
+    std::optional<double> focal_length_mm;  ///< FocalLength 0x920A
+    std::optional<double>
+        focal_plane_px_per_mm;  ///< FocalPlaneXResolution 0xA20E in px/mm (unit 0xA210: 2 inch
+                                ///< (also when absent), 3 cm, 4 mm, 5 µm)
     std::optional<double> focal_plane_y_px_per_mm;  ///< FocalPlaneYResolution 0xA20F, same unit tag
     std::optional<double> focal_length_35mm;        ///< FocalLengthIn35mmFilm 0xA405
     std::optional<int> pixel_x_dimension;           ///< PixelXDimension 0xA002 (SHORT or LONG)
@@ -33,10 +35,10 @@ enum class CameraSource { settings, photo, photo_35mm };
 
 /// Why a photo value was not used, or a doubt about the result.
 enum class CameraNoteKind {
-    focal_length_invalid,      ///< value: the photo's focal length, mm
-    focal_plane_invalid,       ///< value: the rejected focal-plane pixel size, µm
-    equivalent_35mm_invalid,   ///< value: the pixel size from the 35 mm equivalent, µm
-    possibly_cropped,          ///< the photo's side ratio differs from the sensor's by over 2 %; no value
+    focal_length_invalid,     ///< value: the photo's focal length, mm
+    focal_plane_invalid,      ///< value: the rejected focal-plane pixel size, µm
+    equivalent_35mm_invalid,  ///< value: the pixel size from the 35 mm equivalent, µm
+    possibly_cropped,  ///< the photo's side ratio differs from the sensor's by over 2 %; no value
 };
 
 struct CameraNote {
@@ -67,8 +69,8 @@ struct PhotoCamera {
  * `shown_height` are the photo's size as shown (after EXIF rotation); 0 for
  * no photo.
  */
-PhotoCamera VISION_API resolve_camera(CameraSettings const& settings, PhotoMetadata const& metadata, int shown_width,
-                                      int shown_height) noexcept;
+PhotoCamera VISION_API resolve_camera(CameraSettings const& settings, PhotoMetadata const& metadata,
+                                      int shown_width, int shown_height) noexcept;
 
 }  // namespace Vision
 

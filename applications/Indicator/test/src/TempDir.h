@@ -21,7 +21,8 @@
 struct TempDir {
     std::filesystem::path path;
     explicit TempDir(std::filesystem::path const& name = {}) : path(root_for_new()), root_(path) {
-        if (!name.empty()) path /= name;
+        if (!name.empty())
+            path /= name;
         std::filesystem::create_directories(path);
     }
     TempDir(TempDir const&) = delete;
@@ -32,9 +33,10 @@ struct TempDir {
     }
 
 private:
-    /// A folder this call created itself: the name has the process id, a counter and 64 random bits, and
-    /// create_directory reports true only for the process that made it, so parallel test processes (each
-    /// test runs in its own, with the same seed and counter) never share or delete one another's folders.
+    /// A folder this call created itself: the name has the process id, a counter and 64 random
+    /// bits, and create_directory reports true only for the process that made it, so parallel test
+    /// processes (each test runs in its own, with the same seed and counter) never share or delete
+    /// one another's folders.
     static std::filesystem::path root_for_new() {
         static std::atomic<unsigned> counter {0};
         std::random_device random;
@@ -43,10 +45,11 @@ private:
             char hex[17];
             std::snprintf(hex, sizeof hex, "%016llx", static_cast<unsigned long long>(bits));
             auto candidate = std::filesystem::temp_directory_path() /
-                             ("indicator_test_" + std::to_string(process_id()) + "_" + std::to_string(counter++) +
-                              "_" + hex);
+                             ("indicator_test_" + std::to_string(process_id()) + "_" +
+                              std::to_string(counter++) + "_" + hex);
             std::error_code error;
-            if (std::filesystem::create_directory(candidate, error)) return candidate;
+            if (std::filesystem::create_directory(candidate, error))
+                return candidate;
         }
     }
     static long process_id() {

@@ -35,7 +35,8 @@ wxSize text_ink(wxFont const& font, wxString const& text) {
     int top = image.GetHeight(), bottom = -1, left = image.GetWidth(), right = -1;
     for (int y = 0; y < image.GetHeight(); ++y) {
         for (int x = 0; x < image.GetWidth(); ++x) {
-            if (image.GetRed(x, y) <= 100) continue;
+            if (image.GetRed(x, y) <= 100)
+                continue;
             top = std::min(top, y);
             bottom = std::max(bottom, y);
             left = std::min(left, x);
@@ -79,7 +80,8 @@ TEST(WxFonts, ReadoutCaptionIsAsLargeAsQts) {
     wxSize const at_one = text_ink(display->caption_font(1), "SURFACE AREA");  // Qt: 62 x 7 (9 px)
     EXPECT_NEAR(at_one.y, 7, 1);
     EXPECT_NEAR(at_one.x, 62, 2);
-    wxSize const panel = text_ink(display->caption_font(17 / 9.0), "SURFACE AREA");  // Qt: 117 x 12 (17 px)
+    wxSize const panel =
+        text_ink(display->caption_font(17 / 9.0), "SURFACE AREA");  // Qt: 117 x 12 (17 px)
     EXPECT_NEAR(panel.y, 12, 1);
     EXPECT_NEAR(panel.x, 117, 2);
 }
@@ -97,8 +99,10 @@ TEST(WxFonts, HelpQuestionMarkIsAsLargeAsQts) {
     int top = icon.GetHeight(), bottom = -1, left = icon.GetWidth(), right = -1;
     for (int y = 0; y < icon.GetHeight(); ++y) {
         for (int x = 0; x < icon.GetWidth(); ++x) {
-            if (icon.HasAlpha() && icon.GetAlpha(x, y) <= 100) continue;
-            if (!icon.HasAlpha() && icon.GetRed(x, y) <= 100) continue;
+            if (icon.HasAlpha() && icon.GetAlpha(x, y) <= 100)
+                continue;
+            if (!icon.HasAlpha() && icon.GetRed(x, y) <= 100)
+                continue;
             top = std::min(top, y);
             bottom = std::max(bottom, y);
             left = std::min(left, x);

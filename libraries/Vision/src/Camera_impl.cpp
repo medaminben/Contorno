@@ -14,7 +14,8 @@ Result<double> mm_per_px_impl(CameraConfig const& camera, int image_width) {
         return fail(Core::Problem("camera.distance", "distance must be positive and finite"));
     }
     if (!(camera.fov_deg > 0 && camera.fov_deg < 180)) {
-        return fail(Core::Problem("camera.fov", "field of view must be in {range} degrees", {{"range", "(0, 180)"}}));
+        return fail(Core::Problem("camera.fov", "field of view must be in {range} degrees",
+                                  {{"range", "(0, 180)"}}));
     }
     if (camera.image_width_px <= 0 || image_width <= 0) {
         return fail(Core::Problem("camera.width", "image width must be positive"));
@@ -23,7 +24,8 @@ Result<double> mm_per_px_impl(CameraConfig const& camera, int image_width) {
         return fail(Core::Problem("camera.aspect", "pixel aspect must be positive and finite"));
     }
     double const full = 2.0 * camera.distance_mm * std::tan(camera.fov_deg * pi / 360.0);
-    return full / camera.image_width_px * (static_cast<double>(camera.image_width_px) / image_width);
+    return full / camera.image_width_px *
+           (static_cast<double>(camera.image_width_px) / image_width);
 }
 
 Pot::PointD to_mm_impl(PixelFrame const& frame, double col, double row) noexcept {

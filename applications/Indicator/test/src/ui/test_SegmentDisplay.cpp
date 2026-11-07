@@ -28,13 +28,16 @@ struct Fixture {
 
 /// True when a pixel of `image` within columns [x0, x1) and rows [y0, y1)
 /// lies within `max_distance` of (r, g, b) in every channel.
-bool has_colour_near(wxImage const& image, int r, int g, int b, int max_distance, int x0 = 0, int x1 = -1, int y0 = 0,
-                     int y1 = -1) {
-    if (x1 < 0) x1 = image.GetWidth();
-    if (y1 < 0) y1 = image.GetHeight();
+bool has_colour_near(wxImage const& image, int r, int g, int b, int max_distance, int x0 = 0,
+                     int x1 = -1, int y0 = 0, int y1 = -1) {
+    if (x1 < 0)
+        x1 = image.GetWidth();
+    if (y1 < 0)
+        y1 = image.GetHeight();
     for (int y = y0; y < y1; ++y) {
         for (int x = x0; x < x1; ++x) {
-            if (std::abs(image.GetRed(x, y) - r) <= max_distance && std::abs(image.GetGreen(x, y) - g) <= max_distance &&
+            if (std::abs(image.GetRed(x, y) - r) <= max_distance &&
+                std::abs(image.GetGreen(x, y) - g) <= max_distance &&
                 std::abs(image.GetBlue(x, y) - b) <= max_distance)
                 return true;
         }
@@ -49,8 +52,12 @@ std::vector<double> count_steps(SegmentDisplay const& d) {
     while (d.counting() && std::chrono::steady_clock::now() < end) {
         steps.push_back(std::stod(d.shown_text().ToStdString()));
         auto const before = std::chrono::steady_clock::now();
-        pump_until([&] { return !d.counting() || std::chrono::steady_clock::now() - before >= std::chrono::milliseconds(20); },
-                   std::chrono::milliseconds(100));
+        pump_until(
+            [&] {
+                return !d.counting() ||
+                       std::chrono::steady_clock::now() - before >= std::chrono::milliseconds(20);
+            },
+            std::chrono::milliseconds(100));
     }
     return steps;
 }
@@ -131,7 +138,8 @@ TEST(WxSegmentDisplay, RightAlignsWithBlankLeadingCells) {
     wxImage const img = f.display->render(1).ConvertToImage();
     // rows below the caption; the first three cells end near x = 121 at the best size
     EXPECT_FALSE(has_colour_near(img, 0x47, 0xFF, 0x86, 40, 0, 115, 20, img.GetHeight()));
-    EXPECT_TRUE(has_colour_near(img, 0x47, 0xFF, 0x86, 40, 125, img.GetWidth(), 20, img.GetHeight()));
+    EXPECT_TRUE(
+        has_colour_near(img, 0x47, 0xFF, 0x86, 40, 125, img.GetWidth(), 20, img.GetHeight()));
     // blank cells still show their unlit segments
     EXPECT_TRUE(has_colour_near(img, 0x0D, 0x24, 0x14, 12, 0, 115, 20, img.GetHeight()));
 }
@@ -168,15 +176,17 @@ TEST(WxSegmentDisplay, FitsNarrowWidth) {
     EXPECT_FALSE(has_colour_near(img, 0x47, 0xFF, 0x86, 40, 0, 2, 20, img.GetHeight()));
 }
 
-// Qt draws the caption in the right half (Arabic) or from the left (other languages); in the right half its
-// right-to-left alignment "right" is the half's left edge, so the Arabic caption starts at the middle
+// Qt draws the caption in the right half (Arabic) or from the left (other languages); in the right
+// half its right-to-left alignment "right" is the half's left edge, so the Arabic caption starts at
+// the middle
 TEST(WxSegmentDisplay, CaptionStartsLeftOrInTheMiddleInArabic) {
     Fixture f;
     auto caption_left = [&] {
         wxImage const img = f.display->render(1).ConvertToImage();
         for (int x = 0; x < img.GetWidth(); ++x) {
             for (int y = 2; y < 18; ++y) {
-                if (img.GetGreen(x, y) - img.GetRed(x, y) > 60) return x;
+                if (img.GetGreen(x, y) - img.GetRed(x, y) > 60)
+                    return x;
             }
         }
         return -1;
@@ -203,7 +213,8 @@ int widest_lit_run(wxImage const& img) {
     int const y = static_cast<int>(std::lround(img.GetHeight() * 0.40));
     int widest = 0, run = 0;
     for (int x = 0; x < img.GetWidth(); ++x) {
-        bool const lit = std::abs(img.GetRed(x, y) - 0x47) <= 40 && std::abs(img.GetGreen(x, y) - 0xFF) <= 40 &&
+        bool const lit = std::abs(img.GetRed(x, y) - 0x47) <= 40 &&
+                         std::abs(img.GetGreen(x, y) - 0xFF) <= 40 &&
                          std::abs(img.GetBlue(x, y) - 0x86) <= 40;
         run = lit ? run + 1 : 0;
         widest = std::max(widest, run);
@@ -220,7 +231,8 @@ TEST(WxSegmentDisplay, DrawsAtContentScale) {
     wxBitmap const one = d.render(1), two = d.render(2);
     EXPECT_EQ(two.GetWidth(), 2 * one.GetWidth());
     EXPECT_EQ(two.GetHeight(), 2 * one.GetHeight());
-    int const widest1 = widest_lit_run(one.ConvertToImage()), widest2 = widest_lit_run(two.ConvertToImage());
+    int const widest1 = widest_lit_run(one.ConvertToImage()),
+              widest2 = widest_lit_run(two.ConvertToImage());
     EXPECT_GE(widest1, 2);
     EXPECT_GE(widest2, 2 * widest1 - 1);
 }

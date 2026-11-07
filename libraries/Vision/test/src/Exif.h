@@ -43,12 +43,14 @@ inline std::string exif_tiff(std::vector<ExifTag> const& tags, bool big_endian =
             data_off += 8;
         } else {
             put(t.numerator, t.type == 3 ? 2 : 4);
-            if (t.type == 3) put(0, 2);
+            if (t.type == 3)
+                put(0, 2);
         }
     }
     put(0, 4);
     for (auto const& t : tags) {
-        if (t.type != 5) continue;
+        if (t.type != 5)
+            continue;
         put(t.numerator, 4);
         put(t.denominator, 4);
     }
@@ -70,9 +72,11 @@ inline std::string exif_jpeg(std::vector<ExifTag> const& tags, bool big_endian =
 
 /// A JPEG whose EXIF has only IFD0 with Orientation `value`: no camera tags.
 inline std::string orientation_only_jpeg(unsigned char value = 6) {
-    unsigned char tiff[] = {'I', 'I', 0x2A, 0x00, 0x08, 0x00, 0x00, 0x00, 0x01, 0x00, 0x12, 0x01, 0x03,
-                                         0x00, 0x01, 0x00, 0x00, 0x00, value, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-    return jpeg_with_app1(std::string("Exif\0\0", 6) + std::string(reinterpret_cast<char const*>(tiff), sizeof tiff));
+    unsigned char tiff[] = {'I',   'I',  0x2A, 0x00, 0x08, 0x00, 0x00, 0x00, 0x01,
+                            0x00,  0x12, 0x01, 0x03, 0x00, 0x01, 0x00, 0x00, 0x00,
+                            value, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+    return jpeg_with_app1(std::string("Exif\0\0", 6) +
+                          std::string(reinterpret_cast<char const*>(tiff), sizeof tiff));
 }
 
 }  // namespace test_Exif

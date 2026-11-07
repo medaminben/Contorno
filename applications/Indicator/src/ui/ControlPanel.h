@@ -12,8 +12,8 @@ class wxBoxSizer;
 class wxGridSizer;
 class wxSizerItem;
 
-/// The ids of the four keys, taken from wx's pool of control ids so no other id can equal them; each click
-/// reaches the panel (and the windows above it) as a wxEVT_BUTTON with its id.
+/// The ids of the four keys, taken from wx's pool of control ids so no other id can equal them;
+/// each click reaches the panel (and the windows above it) as a wxEVT_BUTTON with its id.
 inline wxWindowID const ID_IMPORT = wxWindow::NewControlId();
 inline wxWindowID const ID_OPEN = wxWindow::NewControlId();
 inline wxWindowID const ID_SAVE = wxWindow::NewControlId();
@@ -22,13 +22,13 @@ inline wxWindowID const ID_SETUP = wxWindow::NewControlId();
 /// Pixel sizes of the control panel. The numbers below are the 1920×1080 layout.
 struct ControlPanelMetrics {
     double scale = 1;
-    int height = 140;          ///< the mask box, the readout, two keys
+    int height = 140;  ///< the mask box, the readout, two keys
     int wordmark = 110;
     int gap = 6;
     int margin = 9;
     int spacer = 22;
     int log_min_width = 320;
-    int key_side = 67;         ///< (height − gap) / 2
+    int key_side = 67;  ///< (height − gap) / 2
     int label_px = 16;
 };
 
@@ -62,13 +62,13 @@ public:
     PhotoView& mask() { return *mask_; }
     MessageLog& log() { return *log_; }
 
-    /// Takes the colour, then draws the wordmark in the colour that reads on it and repaints the drawn children,
-    /// which show it in their corners.
+    /// Takes the colour, then draws the wordmark in the colour that reads on it and repaints the
+    /// drawn children, which show it in their corners.
     bool SetBackgroundColour(wxColour const& colour) override;
 
 private:
-    /// The labels and tooltips of the keys in the current language, each key in its text direction, the font
-    /// as large as lets every label fit.
+    /// The labels and tooltips of the keys in the current language, each key in its text direction,
+    /// the font as large as lets every label fit.
     void retranslate();
     /// The wordmark at the window's scale, white or black to read on the panel's colour.
     void update_wordmark();

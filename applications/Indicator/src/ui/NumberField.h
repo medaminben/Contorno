@@ -22,10 +22,12 @@ wxDECLARE_EVENT(EVT_NUMBER_CHANGED, wxCommandEvent);
 /// A number with a unit in a text field and a pair of step arrows: "1500 mm".
 /// The text is written and read in English format (Latin digits, '.') whatever
 /// the interface language, and the value is the last one typed within the range.
-/// Left, the field shows the value again, clamped. Up and Down step by one, Page up and Page down by ten, a notch of the wheel by one. Group separators are read as in English: "1,500" is 1500.
+/// Left, the field shows the value again, clamped. Up and Down step by one, Page up and Page down
+/// by ten, a notch of the wheel by one. Group separators are read as in English: "1,500" is 1500.
 class NumberField : public wxPanel {
 public:
-    NumberField(wxWindow* parent, double min, double max, int decimals, wxString const& suffix, double value);
+    NumberField(wxWindow* parent, double min, double max, int decimals, wxString const& suffix,
+                double value);
 
     double value() const { return value_; }
     /// Clamps to the range and shows the value; no event.

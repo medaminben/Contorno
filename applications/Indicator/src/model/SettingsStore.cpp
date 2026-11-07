@@ -2,7 +2,8 @@
 
 std::optional<std::string> MemorySettingsStore::value(std::string const& key) const {
     auto const found = values_.find(key);
-    if (found == values_.end()) return std::nullopt;
+    if (found == values_.end())
+        return std::nullopt;
     return found->second;
 }
 

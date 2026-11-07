@@ -25,7 +25,8 @@ namespace Vision {
  *         without torch, "cannot read model '<path>'" when the file is
  *         missing. Torch errors (c10::Error) are thrown.
  */
-Result<cv::Mat> ai_probability_impl(cv::Mat const& bgr, std::string const& model_path, double threshold);
+Result<cv::Mat> ai_probability_impl(cv::Mat const& bgr, std::string const& model_path,
+                                    double threshold);
 
 /// ai_probability_impl thresholded: CV_8U, 255 where the probability is above threshold.
 Result<cv::Mat> ai_mask_impl(cv::Mat const& bgr, std::string const& model_path, double threshold);

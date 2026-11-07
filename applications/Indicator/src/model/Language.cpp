@@ -19,9 +19,9 @@ struct Language {
 };
 
 constexpr Language languages[] = {
-    {"en", "English", indicator_strings_en},    {"de", "Deutsch", indicator_strings_de},
-    {"es", "Español", indicator_strings_es},    {"it", "Italiano", indicator_strings_it},
-    {"fr", "Français", indicator_strings_fr},   {"nl", "Nederlands", indicator_strings_nl},
+    {"en", "English", indicator_strings_en},  {"de", "Deutsch", indicator_strings_de},
+    {"es", "Español", indicator_strings_es},  {"it", "Italiano", indicator_strings_it},
+    {"fr", "Français", indicator_strings_fr}, {"nl", "Nederlands", indicator_strings_nl},
     {"ar", "العربية", indicator_strings_ar},
 };
 
@@ -39,18 +39,22 @@ std::string& current() {
 
 std::vector<std::string> language_codes() {
     std::vector<std::string> codes;
-    for (auto const& l : languages) codes.push_back(l.code);
+    for (auto const& l : languages)
+        codes.push_back(l.code);
     return codes;
 }
 
 std::string language_name(std::string const& code) {
     for (auto const& l : languages) {
-        if (code == l.code) return l.name;
+        if (code == l.code)
+            return l.name;
     }
     return {};
 }
 
-std::string current_language() { return current(); }
+std::string current_language() {
+    return current();
+}
 
 std::string set_current_language(std::string const& code) {
     auto const codes = language_codes();
@@ -60,15 +64,18 @@ std::string set_current_language(std::string const& code) {
 
 void add_strings(std::string const& code, StringTable const& table) {
     auto& target = tables()[code];
-    for (auto const& [key, text] : table) target.insert_or_assign(key, text);
+    for (auto const& [key, text] : table)
+        target.insert_or_assign(key, text);
 }
 
 std::string lookup(std::string const& code, std::string const& key) {
     for (std::string const& c : {code, std::string("en")}) {
         auto const t = tables().find(c);
-        if (t == tables().end()) continue;
+        if (t == tables().end())
+            continue;
         auto const s = t->second.find(key);
-        if (s != t->second.end()) return s->second;
+        if (s != t->second.end())
+            return s->second;
     }
     return key;
 }
@@ -77,7 +84,8 @@ std::vector<std::string> string_keys(std::string const& code) {
     std::vector<std::string> keys;
     auto const t = tables().find(code);
     if (t != tables().end()) {
-        for (auto const& entry : t->second) keys.push_back(entry.first);
+        for (auto const& entry : t->second)
+            keys.push_back(entry.first);
     }
     std::sort(keys.begin(), keys.end());
     return keys;
@@ -94,4 +102,6 @@ TextDirection text_direction(std::string const& code) {
     return code == "ar" ? TextDirection::right_to_left : TextDirection::left_to_right;
 }
 
-TextDirection text_direction() { return text_direction(current()); }
+TextDirection text_direction() {
+    return text_direction(current());
+}

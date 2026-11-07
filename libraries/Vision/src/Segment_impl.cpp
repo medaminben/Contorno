@@ -22,8 +22,8 @@ namespace {
 /// band_pct % of the image's smaller side wide (at least one pixel).
 template <class F>
 void for_each_border_pixel(cv::Size size, double band_pct, F&& f) {
-    int const band =
-        std::max(1, static_cast<int>(std::lround(band_pct / 100.0 * std::min(size.width, size.height))));
+    int const band = std::max(
+        1, static_cast<int>(std::lround(band_pct / 100.0 * std::min(size.width, size.height))));
     for (int row = 0; row < size.height; ++row) {
         bool const full = row < band || row >= size.height - band;
         for (int col = 0; col < size.width; ++col) {
@@ -51,11 +51,13 @@ cv::Mat enclosed_holes_impl(cv::Mat const& region, double max_area_px) {
     cv::Mat outside_labels;
     cv::Mat stats;
     cv::Mat centroids;
-    int const m = cv::connectedComponentsWithStats(~region, outside_labels, stats, centroids, 4, CV_32S);
+    int const m =
+        cv::connectedComponentsWithStats(~region, outside_labels, stats, centroids, 4, CV_32S);
     std::vector<uint8_t> enclosed(static_cast<std::size_t>(m), 0);
     for (int i = 1; i < m; ++i) {
         bool const small = stats.at<int>(i, cv::CC_STAT_AREA) < max_area_px;
-        enclosed[static_cast<std::size_t>(i)] = small && !touches_border(stats, i, region.size()) ? 255 : 0;
+        enclosed[static_cast<std::size_t>(i)] =
+            small && !touches_border(stats, i, region.size()) ? 255 : 0;
     }
     cv::Mat holes = cv::Mat::zeros(region.size(), CV_8U);
     for (int row = 0; row < region.rows; ++row) {
@@ -105,7 +107,8 @@ struct Ring {
 
 /// The contour simplified within epsilon pixels, counter-clockwise in mm on
 /// the grid; empty when fewer than three vertices or no area are left.
-Ring simplified_ring(std::vector<cv::Point> const& contour, PixelFrame const& frame, double epsilon) {
+Ring simplified_ring(std::vector<cv::Point> const& contour, PixelFrame const& frame,
+                     double epsilon) {
     std::vector<cv::Point> approx;
     cv::approxPolyDP(contour, approx, epsilon, true);
     Ring ring;
@@ -130,7 +133,8 @@ Ring simplified_ring(std::vector<cv::Point> const& contour, PixelFrame const& fr
     ring.mm.reserve(ring.px.size());
     for (auto const& p : ring.px) {
         auto const q = to_mm_impl(frame, p.x, p.y);
-        ring.mm.push_back({std::llround(q.x * Pot::units_per_mm), std::llround(q.y * Pot::units_per_mm)});
+        ring.mm.push_back(
+            {std::llround(q.x * Pot::units_per_mm), std::llround(q.y * Pot::units_per_mm)});
     }
     return ring;
 }
@@ -166,7 +170,8 @@ bool on_segment(Pot::Point64 const& a, Pot::Point64 const& b, Pot::Point64 const
 }
 
 /// The closed segments ab and cd share a point.
-bool segments_meet(Pot::Point64 const& a, Pot::Point64 const& b, Pot::Point64 const& c, Pot::Point64 const& d) {
+bool segments_meet(Pot::Point64 const& a, Pot::Point64 const& b, Pot::Point64 const& c,
+                   Pot::Point64 const& d) {
     int const o1 = orientation(a, b, c);
     int const o2 = orientation(a, b, d);
     int const o3 = orientation(c, d, a);
@@ -180,7 +185,8 @@ bool segments_meet(Pot::Point64 const& a, Pot::Point64 const& b, Pot::Point64 co
 
 }  // namespace
 
-bool simple_polygon_impl(Pot::Polygon64 const& polygon, std::vector<std::vector<cv::Point>> const& pixel_rings) {
+bool simple_polygon_impl(Pot::Polygon64 const& polygon,
+                         std::vector<std::vector<cv::Point>> const& pixel_rings) {
     if (pixel_rings.size() != 1 + polygon.holes.size()) {
         return false;
     }
@@ -215,7 +221,8 @@ bool simple_polygon_impl(Pot::Polygon64 const& polygon, std::vector<std::vector<
             return false;
         }
     }
-    std::sort(edges.begin(), edges.end(), [](Edge const& x, Edge const& y) { return x.min_x < y.min_x; });
+    std::sort(edges.begin(), edges.end(),
+              [](Edge const& x, Edge const& y) { return x.min_x < y.min_x; });
     auto point = [&](std::size_t ring, std::size_t index) -> Pot::Point64 const& {
         auto const& path = *rings[ring];
         return path[index % path.size()];
@@ -228,7 +235,8 @@ bool simple_polygon_impl(Pot::Polygon64 const& polygon, std::vector<std::vector<
             auto const& f = edges[j];
             auto const& c = point(f.ring, f.index);
             auto const& d = point(f.ring, f.index + 1);
-            if (std::max(std::min(a.y, b.y), std::min(c.y, d.y)) > std::min(std::max(a.y, b.y), std::max(c.y, d.y))) {
+            if (std::max(std::min(a.y, b.y), std::min(c.y, d.y)) >
+                std::min(std::max(a.y, b.y), std::max(c.y, d.y))) {
                 continue;  // y extents apart
             }
             if (e.ring == f.ring) {
@@ -242,7 +250,8 @@ bool simple_polygon_impl(Pot::Polygon64 const& polygon, std::vector<std::vector<
                     auto const& p = f_follows ? a : c;  // start of the first edge
                     auto const& q = f_follows ? b : d;  // the common vertex
                     auto const& t = f_follows ? d : b;  // end of the second edge
-                    if (orientation(p, q, t) == 0 && (p.x - q.x) * (t.x - q.x) + (p.y - q.y) * (t.y - q.y) > 0) {
+                    if (orientation(p, q, t) == 0 &&
+                        (p.x - q.x) * (t.x - q.x) + (p.y - q.y) * (t.y - q.y) > 0) {
                         return false;
                     }
                     continue;
@@ -256,7 +265,8 @@ bool simple_polygon_impl(Pot::Polygon64 const& polygon, std::vector<std::vector<
     // No ring meets another, so one vertex tells on which side a ring lies:
     // tested on the pixel rings the grid rings were made from.
     for (std::size_t h = 1; h < pixel_rings.size(); ++h) {
-        cv::Point2f const v(static_cast<float>(pixel_rings[h].front().x), static_cast<float>(pixel_rings[h].front().y));
+        cv::Point2f const v(static_cast<float>(pixel_rings[h].front().x),
+                            static_cast<float>(pixel_rings[h].front().y));
         if (cv::pointPolygonTest(pixel_rings[0], v, false) <= 0) {
             return false;
         }
@@ -329,8 +339,8 @@ void clean_mask_impl(cv::Mat& mask) {
     }
 }
 
-Result<Pot::Polygon64> trace_polygon_impl(cv::Mat const& region, PixelFrame const& frame, double tolerance_mm,
-                                          double min_hole_area_px) {
+Result<Pot::Polygon64> trace_polygon_impl(cv::Mat const& region, PixelFrame const& frame,
+                                          double tolerance_mm, double min_hole_area_px) {
     auto fail = [](Core::Problem problem) {
         return Core::error_result<Pot::Polygon64>([&] { return std::move(problem); });
     };
@@ -387,7 +397,8 @@ Mask to_mask_impl(cv::Mat const& mask) {
     out.data.resize(mask.total());
     for (int row = 0; row < mask.rows; ++row) {
         auto const* p = mask.ptr<uint8_t>(row);
-        std::copy(p, p + mask.cols, out.data.begin() + static_cast<std::ptrdiff_t>(row) * mask.cols);
+        std::copy(p, p + mask.cols,
+                  out.data.begin() + static_cast<std::ptrdiff_t>(row) * mask.cols);
     }
     return out;
 }
@@ -423,7 +434,9 @@ cv::Mat features_of(cv::Mat const& bgr) {
     cv::Mat lab;
     cv::cvtColor(scaled, lab, cv::COLOR_BGR2Lab);
     cv::Mat out(bgr.size(), CV_32FC(feature_count));
-    auto linear = [](float c) { return c <= 0.04045f ? c / 12.92f : std::pow((c + 0.055f) / 1.055f, 2.4f); };
+    auto linear = [](float c) {
+        return c <= 0.04045f ? c / 12.92f : std::pow((c + 0.055f) / 1.055f, 2.4f);
+    };
     for (int row = 0; row < bgr.rows; ++row) {
         auto const* s = scaled.ptr<cv::Vec3f>(row);
         auto const* l = lab.ptr<cv::Vec3f>(row);
@@ -447,7 +460,8 @@ struct Surface {
 
 Surface fit_background(cv::Mat const& features, double band_pct) {
     std::vector<cv::Point> band;
-    for_each_border_pixel(features.size(), band_pct, [&](int row, int col) { band.emplace_back(col, row); });
+    for_each_border_pixel(features.size(), band_pct,
+                          [&](int row, int col) { band.emplace_back(col, row); });
     std::size_t const n = band.size();
     double const w = features.cols;
     double const h = features.rows;
@@ -456,13 +470,15 @@ Surface fit_background(cv::Mat const& features, double band_pct) {
         auto const t = surface_terms(band[i].x / w - 0.5, band[i].y / h - 0.5);
         std::copy(t.begin(), t.end(), terms.ptr<double>(static_cast<int>(i)));
     }
-    // Least squares, refitted without the pixels off the surface (the object where it reaches the border).
+    // Least squares, refitted without the pixels off the surface (the object where it reaches the
+    // border).
     constexpr int fit_passes = 5;
     constexpr double outlier_sigmas = 3.0;
     Surface out;
     for (std::size_t c = 0; c < out.coef.size(); ++c) {
         std::vector<double> y(n);
-        for (std::size_t i = 0; i < n; ++i) y[i] = features.at<Features>(band[i])[static_cast<int>(c)];
+        for (std::size_t i = 0; i < n; ++i)
+            y[i] = features.at<Features>(band[i])[static_cast<int>(c)];
         std::vector<bool> keep(n, true);
         for (int pass = 0; pass < fit_passes; ++pass) {
             auto const rows = static_cast<int>(std::count(keep.begin(), keep.end(), true));
@@ -481,24 +497,29 @@ Surface fit_background(cv::Mat const& features, double band_pct) {
             std::vector<double> kept;
             for (std::size_t i = 0; i < n; ++i) {
                 residual[i] = y[i] - fitted.at<double>(static_cast<int>(i));
-                if (keep[i]) kept.push_back(residual[i]);
+                if (keep[i])
+                    kept.push_back(residual[i]);
             }
             double const centre = median_of(kept);
-            for (double& r : kept) r = std::abs(r - centre);
+            for (double& r : kept)
+                r = std::abs(r - centre);
             out.sigma[c] = 1.4826 * median_of(kept);
             double const cut = outlier_sigmas * std::max(out.sigma[c], 1e-6);
-            for (std::size_t i = 0; i < n; ++i) keep[i] = std::abs(residual[i]) <= cut;
+            for (std::size_t i = 0; i < n; ++i)
+                keep[i] = std::abs(residual[i]) <= cut;
         }
     }
     return out;
 }
 
-/// Per pixel: how unlike the background it is, in robust sigmas; a shadow (darker up to max_shadow) is forgiven.
+/// Per pixel: how unlike the background it is, in robust sigmas; a shadow (darker up to max_shadow)
+/// is forgiven.
 cv::Mat deviation_from(cv::Mat const& features, Surface const& surface, double max_shadow) {
     // A background without noise would make any change unlike it: sigmas of at least these.
     constexpr std::array<double, feature_count> min_sigma {0.03, 0.4, 0.4};
     std::array<double, feature_count> sigma {};
-    for (std::size_t c = 0; c < sigma.size(); ++c) sigma[c] = std::max(surface.sigma[c], min_sigma[c]);
+    for (std::size_t c = 0; c < sigma.size(); ++c)
+        sigma[c] = std::max(surface.sigma[c], min_sigma[c]);
     double const shadow = std::log(max_shadow);
     double const w = features.cols;
     double const h = features.rows;
@@ -511,27 +532,35 @@ cv::Mat deviation_from(cv::Mat const& features, Surface const& surface, double m
             std::array<double, feature_count> d {};
             for (std::size_t c = 0; c < d.size(); ++c) {
                 double expected = 0;
-                for (std::size_t j = 0; j < t.size(); ++j) expected += t[j] * surface.coef[c].at<double>(static_cast<int>(j));
+                for (std::size_t j = 0; j < t.size(); ++j)
+                    expected += t[j] * surface.coef[c].at<double>(static_cast<int>(j));
                 d[c] = f[col][static_cast<int>(c)] - expected;
             }
             double lightness = d[0] / sigma[0];
-            if (d[0] < 0 && d[0] > -shadow) lightness = 0;
-            else if (d[0] <= -shadow) lightness = (d[0] + shadow) / sigma[0];
-            o[col] = static_cast<float>(
-                std::sqrt(lightness * lightness + std::pow(d[1] / sigma[1], 2) + std::pow(d[2] / sigma[2], 2)));
+            if (d[0] < 0 && d[0] > -shadow)
+                lightness = 0;
+            else if (d[0] <= -shadow)
+                lightness = (d[0] + shadow) / sigma[0];
+            o[col] =
+                static_cast<float>(std::sqrt(lightness * lightness + std::pow(d[1] / sigma[1], 2) +
+                                             std::pow(d[2] / sigma[2], 2)));
         }
     }
     return out;
 }
 
-/// The coarse object: what the background-like areas reaching the border do not cover (CV_8U 0/255, may be empty).
+/// The coarse object: what the background-like areas reaching the border do not cover (CV_8U 0/255,
+/// may be empty).
 cv::Mat coarse_object(cv::Mat const& deviation, double max_deviation) {
     cv::Mat const background_like = deviation <= max_deviation;
     cv::Mat labels;
     cv::connectedComponents(background_like, labels, 4, CV_32S);
     auto const cols = static_cast<std::size_t>(labels.cols);
-    std::vector<uint8_t> reaches_border(static_cast<std::size_t>(*std::max_element(labels.begin<int>(), labels.end<int>())) + 1, 0);
-    for_each_border_pixel(labels.size(), 0, [&](int row, int col) { reaches_border[static_cast<std::size_t>(labels.at<int>(row, col))] = 1; });
+    std::vector<uint8_t> reaches_border(
+        static_cast<std::size_t>(*std::max_element(labels.begin<int>(), labels.end<int>())) + 1, 0);
+    for_each_border_pixel(labels.size(), 0, [&](int row, int col) {
+        reaches_border[static_cast<std::size_t>(labels.at<int>(row, col))] = 1;
+    });
     reaches_border[0] = 0;
     cv::Mat object(labels.size(), CV_8U);
     for (int row = 0; row < labels.rows; ++row) {
@@ -543,17 +572,19 @@ cv::Mat coarse_object(cv::Mat const& deviation, double max_deviation) {
     }
     cv::morphologyEx(object, object, cv::MORPH_OPEN, cv::Mat::ones(3, 3, CV_8U));
     object = largest_region_impl(object).first;
-    // Enclosed areas: holes where the background shows through (background-like, of a few pixels), else filled.
+    // Enclosed areas: holes where the background shows through (background-like, of a few pixels),
+    // else filled.
     constexpr int min_hole_px = 4;
     cv::Mat stats;
     cv::Mat centroids;
-    auto const holes = static_cast<std::size_t>(
-        cv::connectedComponentsWithStats(enclosed_holes_impl(object), labels, stats, centroids, 4, CV_32S));
+    auto const holes = static_cast<std::size_t>(cv::connectedComponentsWithStats(
+        enclosed_holes_impl(object), labels, stats, centroids, 4, CV_32S));
     std::vector<double> sum(holes, 0);
     for (int row = 0; row < labels.rows; ++row) {
         auto const* l = labels.ptr<int>(row);
         auto const* d = deviation.ptr<float>(row);
-        for (std::size_t col = 0; col < cols; ++col) sum[static_cast<std::size_t>(l[col])] += d[col];
+        for (std::size_t col = 0; col < cols; ++col)
+            sum[static_cast<std::size_t>(l[col])] += d[col];
     }
     std::vector<uint8_t> fill(holes, 0);
     for (std::size_t i = 1; i < holes; ++i) {
@@ -563,7 +594,8 @@ cv::Mat coarse_object(cv::Mat const& deviation, double max_deviation) {
     for (int row = 0; row < labels.rows; ++row) {
         auto const* l = labels.ptr<int>(row);
         auto* o = object.ptr<uint8_t>(row);
-        for (std::size_t col = 0; col < cols; ++col) o[col] |= fill[static_cast<std::size_t>(l[col])];
+        for (std::size_t col = 0; col < cols; ++col)
+            o[col] |= fill[static_cast<std::size_t>(l[col])];
     }
     return object;
 }
@@ -576,20 +608,24 @@ cv::Mat background_object_impl(cv::Mat const& bgr, BackgroundOptions const& opti
     cv::resize(bgr, small, cv::Size(), scale, scale, cv::INTER_AREA);
     cv::medianBlur(small, small, options.coarse_median_px);
     cv::Mat const features = features_of(small);
-    cv::Mat const deviation = deviation_from(features, fit_background(features, options.border_band_pct), options.max_shadow);
+    cv::Mat const deviation = deviation_from(
+        features, fit_background(features, options.border_band_pct), options.max_shadow);
     cv::Mat const coarse = coarse_object(deviation, options.max_deviation);
-    if (cv::countNonZero(coarse) == 0) return {};
+    if (cv::countNonZero(coarse) == 0)
+        return {};
 
     // Fine: the edge in a band around the coarse outline, where the colour changes most sharply.
     cv::Mat object;
     cv::resize(coarse, object, bgr.size(), 0, 0, cv::INTER_NEAREST);
     int const r = std::max(3, static_cast<int>(std::lround(options.fine_band_coarse_px / scale)));
-    cv::Mat const kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(2 * r + 1, 2 * r + 1));
+    cv::Mat const kernel =
+        cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(2 * r + 1, 2 * r + 1));
     cv::Mat outer;
     cv::Mat inner;
     cv::dilate(object, outer, kernel);
     cv::erode(object, inner, kernel);
-    if (cv::countNonZero(inner) == 0) return {};
+    if (cv::countNonZero(inner) == 0)
+        return {};
     constexpr int background_marker = 1;
     constexpr int object_marker = 2;
     cv::Mat markers = cv::Mat::zeros(bgr.size(), CV_32S);
@@ -599,11 +635,12 @@ cv::Mat background_object_impl(cv::Mat const& bgr, BackgroundOptions const& opti
     cv::medianBlur(bgr, smooth, options.fine_median_px);
     cv::watershed(smooth, markers);
     cv::Mat found = markers == object_marker;
-    cv::morphologyEx(found, found, cv::MORPH_CLOSE, cv::Mat::ones(3, 3, CV_8U));  // the watershed lines back in
+    cv::morphologyEx(found, found, cv::MORPH_CLOSE,
+                     cv::Mat::ones(3, 3, CV_8U));  // the watershed lines back in
     auto [region, area] = largest_region_impl(found);
-    if (area == 0) return {};
+    if (area == 0)
+        return {};
     return region;
 }
 
 }  // namespace Vision
-

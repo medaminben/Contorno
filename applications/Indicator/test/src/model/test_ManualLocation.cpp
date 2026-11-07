@@ -28,7 +28,8 @@ TEST(WxManualLocation, InstalledCopyWins) {
     fs::path const source = dir.path / "docs/manual";
     touch(dir.path / "share/contorno/manual/fr/index.html");
     touch(source / "fr/index.html");
-    EXPECT_EQ(find_manual("fr", app, source), (dir.path / "share/contorno/manual/fr/index.html").lexically_normal());
+    EXPECT_EQ(find_manual("fr", app, source),
+              (dir.path / "share/contorno/manual/fr/index.html").lexically_normal());
 }
 
 TEST(WxManualLocation, SourceTreeWhenNotInstalled) {
@@ -45,7 +46,8 @@ TEST(WxManualLocation, FallsBackToEnglishThenTheChooser) {
     EXPECT_EQ(find_manual("nl", dir.path / "bin", source), source / "en/index.html");
     TempDir other;
     touch(other.path / "manual/index.html");
-    EXPECT_EQ(find_manual("nl", other.path / "bin", other.path / "manual"), other.path / "manual/index.html");
+    EXPECT_EQ(find_manual("nl", other.path / "bin", other.path / "manual"),
+              other.path / "manual/index.html");
 }
 
 TEST(WxManualLocation, EmptyWhenThereIsNoManual) {
@@ -55,12 +57,15 @@ TEST(WxManualLocation, EmptyWhenThereIsNoManual) {
 }
 
 TEST(WxManualLocation, LinuxBrowsersInOrder) {
-    auto const browsers = manual_browser_candidates(false, "C:/Program Files", "C:/Program Files (x86)");
-    EXPECT_EQ(browsers, (std::vector<std::string> {"chromium", "chromium-browser", "google-chrome", "google-chrome-stable"}));
+    auto const browsers =
+        manual_browser_candidates(false, "C:/Program Files", "C:/Program Files (x86)");
+    EXPECT_EQ(browsers, (std::vector<std::string> {"chromium", "chromium-browser", "google-chrome",
+                                                   "google-chrome-stable"}));
 }
 
 TEST(WxManualLocation, WindowsBrowsersAreEdgeThenTheBareName) {
-    auto const browsers = manual_browser_candidates(true, "C:/Program Files", "C:/Program Files (x86)");
+    auto const browsers =
+        manual_browser_candidates(true, "C:/Program Files", "C:/Program Files (x86)");
     ASSERT_EQ(browsers.size(), 3u);
     EXPECT_EQ(browsers[0], "C:/Program Files/Microsoft/Edge/Application/msedge.exe");
     EXPECT_EQ(browsers[1], "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe");
@@ -77,16 +82,19 @@ TEST(WxManualLocation, WindowIsCentredAndClearOfTheEdges) {
 TEST(WxManualLocation, LaunchOpensTheFileInAnAppWindow) {
     auto const none = manual_browser_launch({}, "/m/en/index.html", "/p");
     EXPECT_TRUE(none.program.empty());
-    auto const command = manual_browser_launch({"chromium", "google-chrome"}, "/m/a b/index.html", "/p", Rect {10, 20, 300, 400});
+    auto const command = manual_browser_launch({"chromium", "google-chrome"}, "/m/a b/index.html",
+                                               "/p", Rect {10, 20, 300, 400});
     EXPECT_EQ(command.program, "chromium");
     EXPECT_EQ(command.arguments,
-              (std::vector<std::string> {"--user-data-dir=/p", "--app=file:///m/a%20b/index.html", "--no-first-run",
-                                         "--disable-extensions", "--window-position=10,20", "--window-size=300,400"}));
+              (std::vector<std::string> {"--user-data-dir=/p", "--app=file:///m/a%20b/index.html",
+                                         "--no-first-run", "--disable-extensions",
+                                         "--window-position=10,20", "--window-size=300,400"}));
     EXPECT_EQ(manual_browser_launch({"chromium"}, "/m/index.html", "/p").arguments.size(), 4u);
 }
 
 TEST(WxManualLocation, LaunchEncodesNonAsciiAndReservedCharacters) {
-    auto const command = manual_browser_launch({"chromium"}, path_from_utf8("/m/\xC3\xBC \xC3\xA4/\xD8\xB9#?%.html"), "/p");
+    auto const command = manual_browser_launch(
+        {"chromium"}, path_from_utf8("/m/\xC3\xBC \xC3\xA4/\xD8\xB9#?%.html"), "/p");
     ASSERT_EQ(command.arguments.size(), 4u);
     EXPECT_EQ(command.arguments[1], "--app=file:///m/%C3%BC%20%C3%A4/%D8%B9%23%3F%25.html");
 }

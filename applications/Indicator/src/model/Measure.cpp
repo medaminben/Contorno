@@ -8,7 +8,8 @@ namespace {
 /// `value` with a fixed number of decimals, whatever the locale.
 std::string fixed(double value, int decimals) {
     char buffer[400];  // the largest double needs 309 digits before the point
-    auto const result = std::to_chars(buffer, buffer + sizeof buffer, value, std::chars_format::fixed, decimals);
+    auto const result =
+        std::to_chars(buffer, buffer + sizeof buffer, value, std::chars_format::fixed, decimals);
     return std::string(buffer, result.ptr);
 }
 
@@ -31,7 +32,8 @@ AreaText format_area(double area_mm2) {
     std::string const unit = "m²";
     for (int decimals = 3; decimals >= 0; --decimals) {
         std::string const text = fixed(m2, decimals);
-        auto const digits = static_cast<long>(text.size()) - std::count(text.begin(), text.end(), '.');
+        auto const digits =
+            static_cast<long>(text.size()) - std::count(text.begin(), text.end(), '.');
         if (digits <= 5) {
             return {text, unit};
         }

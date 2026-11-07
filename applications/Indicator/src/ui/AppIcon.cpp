@@ -24,19 +24,24 @@ void add_png(wxIconBundle& bundle, unsigned char const* data, unsigned int len) 
     ensure_image_handlers();
     wxMemoryInputStream in(data, len);
     wxImage image;
-    if (!image.LoadFile(in, wxBITMAP_TYPE_PNG)) return;
+    if (!image.LoadFile(in, wxBITMAP_TYPE_PNG))
+        return;
     wxIcon icon;
     icon.CopyFromBitmap(wxBitmap(image));
-    if (icon.IsOk()) bundle.AddIcon(icon);
+    if (icon.IsOk())
+        bundle.AddIcon(icon);
 }
 
 void add_svg(wxIconBundle& bundle, unsigned char const* svg) {
-    wxBitmapBundle const drawn = wxBitmapBundle::FromSVG(reinterpret_cast<char const*>(svg), wxSize(64, 64));
-    if (!drawn.IsOk()) return;
+    wxBitmapBundle const drawn =
+        wxBitmapBundle::FromSVG(reinterpret_cast<char const*>(svg), wxSize(64, 64));
+    if (!drawn.IsOk())
+        return;
     for (int size : {16, 24, 32, 48, 64, 128}) {
         wxIcon icon;
         icon.CopyFromBitmap(drawn.GetBitmap(wxSize(size, size)));
-        if (icon.IsOk()) bundle.AddIcon(icon);
+        if (icon.IsOk())
+            bundle.AddIcon(icon);
     }
 }
 
@@ -56,7 +61,9 @@ wxIconBundle app_icon(bool dark_scheme) {
 }
 
 void follow_system_scheme(wxTopLevelWindow* window) {
-    auto apply = [window] { window->SetIcons(app_icon(wxSystemSettings::GetAppearance().IsDark())); };
+    auto apply = [window] {
+        window->SetIcons(app_icon(wxSystemSettings::GetAppearance().IsDark()));
+    };
     apply();
     window->Bind(wxEVT_SYS_COLOUR_CHANGED, [apply](wxSysColourChangedEvent& event) {
         apply();
@@ -65,7 +72,8 @@ void follow_system_scheme(wxTopLevelWindow* window) {
     // SetIcons before the window is realized only stores the bundle. GTK applies it on realize,
     // and again here once the window exists, so the title-bar icon is the bundle's.
     window->Bind(wxEVT_SHOW, [apply](wxShowEvent& event) {
-        if (event.IsShown()) apply();
+        if (event.IsShown())
+            apply();
         event.Skip();
     });
 }

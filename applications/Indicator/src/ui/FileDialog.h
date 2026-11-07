@@ -8,7 +8,8 @@ class wxWindow;
 /// one: the system's cannot be themed), starting in `folder`, its tool icons
 /// green. `filter` is "Images (*.jpg *.png)", pairs separated by ";;", or a
 /// wx wildcard. Empty when cancelled.
-wxString choose_open_file(wxWindow* parent, wxString const& title, wxString const& folder, wxString const& filter);
+wxString choose_open_file(wxWindow* parent, wxString const& title, wxString const& folder,
+                          wxString const& filter);
 
 /// The file to save to, as choose_open_file, starting at `suggested` (a folder
 /// and a file name). `suffix` (no dot) is added to a name typed without one.

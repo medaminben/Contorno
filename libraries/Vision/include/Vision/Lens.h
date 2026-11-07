@@ -40,7 +40,8 @@ struct CameraSettings {
 /// p the pixel width as shown (the sensor's pixel height when `rotated`),
 /// pixel_aspect = height / width, inverted when `rotated`. Measuring does not
 /// use it: find_objects takes lens_scale.
-CameraConfig VISION_API to_camera_config(LensCamera const& lens, int image_width_px, bool rotated = false) noexcept;
+CameraConfig VISION_API to_camera_config(LensCamera const& lens, int image_width_px,
+                                         bool rotated = false) noexcept;
 
 /// d · pixel width / f, d · pixel height / f (mm/px), swapped when `rotated`.
 PixelScale VISION_API lens_scale(LensCamera const& lens, bool rotated = false) noexcept;
@@ -52,8 +53,8 @@ LensCamera VISION_API from_legacy(CameraConfig const& old, double pixel_size_um 
 /// The square pixel (µm) of a photo showing the whole sensor: the sensor's
 /// long side over the photo's long side, whatever the orientation of either;
 /// 0 when either long side is not positive.
-double VISION_API sensor_pixel_um(double sensor_width_mm, double sensor_height_mm, int photo_width_px,
-                                  int photo_height_px) noexcept;
+double VISION_API sensor_pixel_um(double sensor_width_mm, double sensor_height_mm,
+                                  int photo_width_px, int photo_height_px) noexcept;
 
 }  // namespace Vision
 

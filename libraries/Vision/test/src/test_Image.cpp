@@ -20,7 +20,7 @@ std::string jpeg(int w, int h, bool orientation6) {
     std::string out(bytes.begin(), bytes.end());
     if (orientation6) {
         std::string const app1 = test_Exif::orientation_only_jpeg();  // SOI, APP1, EOI
-        out.insert(2, app1.substr(2, app1.size() - 4));               // its APP1 right after our SOI
+        out.insert(2, app1.substr(2, app1.size() - 4));  // its APP1 right after our SOI
     }
     return out;
 }

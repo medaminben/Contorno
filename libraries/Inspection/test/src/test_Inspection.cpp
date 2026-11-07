@@ -21,10 +21,12 @@ Vision::ObjectsAnalysis square_with_hole() {
     a.frame = {20, 10, 0.5, 0.5};
     a.mask = {20, 10, std::vector<std::uint8_t>(200, 0)};
     for (int row = 2; row < 8; ++row) {
-        for (int col = 5; col < 15; ++col) a.mask.data[static_cast<std::size_t>(row * 20 + col)] = 255;
+        for (int col = 5; col < 15; ++col)
+            a.mask.data[static_cast<std::size_t>(row * 20 + col)] = 255;
     }
     for (int row = 4; row < 6; ++row) {
-        for (int col = 9; col < 11; ++col) a.mask.data[static_cast<std::size_t>(row * 20 + col)] = 0;
+        for (int col = 9; col < 11; ++col)
+            a.mask.data[static_cast<std::size_t>(row * 20 + col)] = 0;
     }
     auto const mm = [](double v) { return static_cast<std::int64_t>(v * Pot::units_per_mm); };
     a.objects = {{{{mm(2.5), mm(1)}, {mm(7.5), mm(1)}, {mm(7.5), mm(4)}, {mm(2.5), mm(4)}},
@@ -34,7 +36,9 @@ Vision::ObjectsAnalysis square_with_hole() {
 }
 
 /// A photo: any image OpenCV reads (here a 20 x 10 grey PNG).
-std::string photo() { return *Vision::encode_mask_png(square_with_hole().mask); }
+std::string photo() {
+    return *Vision::encode_mask_png(square_with_hole().mask);
+}
 
 Inspection::Record record() {
     Inspection::Record r;
@@ -54,7 +58,8 @@ std::vector<ZipEntry> entries() {
 
 ZipEntry* entry(std::vector<ZipEntry>& all, std::string const& name) {
     for (auto& e : all) {
-        if (e.name == name) return &e;
+        if (e.name == name)
+            return &e;
     }
     return nullptr;
 }
@@ -66,8 +71,9 @@ std::vector<ZipEntry> without(std::vector<ZipEntry> all, std::string const& name
 
 /// The camera.json of a version-1 inspection.
 std::string camera_v1(double distance, double fov, int width) {
-    return "{\"format\": \"contorno-camera\", \"version\": 1, \"distance_mm\": " + std::to_string(distance) +
-           ", \"fov_deg\": " + std::to_string(fov) + ", \"image_width_px\": " + std::to_string(width) + "}";
+    return "{\"format\": \"contorno-camera\", \"version\": 1, \"distance_mm\": " +
+           std::to_string(distance) + ", \"fov_deg\": " + std::to_string(fov) +
+           ", \"image_width_px\": " + std::to_string(width) + "}";
 }
 
 }  // namespace
@@ -81,9 +87,10 @@ TEST(Inspection, PhotoName) {
 TEST(Inspection, EntryNamesInOrder) {
     auto const all = entries();
     std::vector<std::string> names;
-    for (auto const& e : all) names.push_back(e.name);
-    EXPECT_EQ(names, (std::vector<std::string> {"original.png", "mask.png", "camera.json", "parameters.json",
-                                                "objects.dxf", "result.json"}));
+    for (auto const& e : all)
+        names.push_back(e.name);
+    EXPECT_EQ(names, (std::vector<std::string> {"original.png", "mask.png", "camera.json",
+                                                "parameters.json", "objects.dxf", "result.json"}));
     EXPECT_EQ(all[0].data, photo());  // the photo untouched
 }
 
@@ -92,7 +99,8 @@ TEST(Inspection, NoObjectsNoDxf) {
     a.objects.clear();
     auto const e = Inspection::to_entries(record(), a, false);
     ASSERT_FALSE(e.isError());
-    for (auto const& x : e()) EXPECT_NE(x.name, "objects.dxf");
+    for (auto const& x : e())
+        EXPECT_NE(x.name, "objects.dxf");
 }
 
 TEST(Inspection, NoMaskIsAProblem) {
@@ -138,7 +146,8 @@ TEST(Inspection, ToleranceIsWrittenDown) {
 TEST(Inspection, MinAreaSnapsToAPreset) {
     auto all = entries();
     entry(all, "parameters.json")->data =
-        "{\"format\": \"contorno-objects-parameters\", \"version\": 1, \"min_area_mm2\": 480, \"outline_tolerance_mm\": 0.5}";
+        "{\"format\": \"contorno-objects-parameters\", \"version\": 1, \"min_area_mm2\": 480, "
+        "\"outline_tolerance_mm\": 0.5}";
     auto const read = Inspection::from_entries(all, "x.zip");
     ASSERT_FALSE(read.isError()) << read.error();
     EXPECT_EQ(read().min_area_mm2, 500);
@@ -149,7 +158,8 @@ TEST(Inspection, MissingEntriesNameTheZip) {
         auto const read = Inspection::from_entries(without(entries(), name), "x.zip");
         ASSERT_TRUE(read.isError()) << name;
         EXPECT_EQ(read.error().code(), "inspection.missing_file") << name;
-        EXPECT_EQ(read.error().text(), std::string("x.zip is not an inspection: it has no ") + name + ".");
+        EXPECT_EQ(read.error().text(),
+                  std::string("x.zip is not an inspection: it has no ") + name + ".");
     }
     auto const read = Inspection::from_entries(without(entries(), "original.png"), "x.zip");
     ASSERT_TRUE(read.isError());
@@ -184,7 +194,8 @@ TEST(Inspection, MaskMustMatchAndBeBlackOrWhite) {
     entry(all, "mask.png")->data = *Vision::encode_mask_png({2, 2, {0, 255, 255, 0}});
     auto const small = Inspection::from_entries(all, "x.zip");
     EXPECT_EQ(small.error().code(), "inspection.mask_size");
-    EXPECT_EQ(small.error().text(), "mask.png: 2 x 2 pixels, but the image in result.json is 20 x 10.");
+    EXPECT_EQ(small.error().text(),
+              "mask.png: 2 x 2 pixels, but the image in result.json is 20 x 10.");
 
     auto grey = square_with_hole().mask;
     grey.data[0] = 128;
@@ -192,15 +203,18 @@ TEST(Inspection, MaskMustMatchAndBeBlackOrWhite) {
     EXPECT_EQ(Inspection::from_entries(all, "x.zip").error().code(), "inspection.mask_values");
 }
 
-// a version-1 camera kept the scale of the width it was saved with: the photo's width as shown rescales it
+// a version-1 camera kept the scale of the width it was saved with: the photo's width as shown
+// rescales it
 TEST(Inspection, LegacyCameraKeepsItsScale) {
     auto all = entries();
-    entry(all, "camera.json")->data = camera_v1(1500, 60, 40);  // saved for a photo 40 px wide; this one is 20
+    entry(all, "camera.json")->data =
+        camera_v1(1500, 60, 40);  // saved for a photo 40 px wide; this one is 20
     auto const read = Inspection::from_entries(all, "x.zip");
     ASSERT_FALSE(read.isError()) << read.error();
     Vision::CameraConfig const old {1500, 60, 40};
     double const old_scale = Vision::mm_per_px(old, 40)();
-    EXPECT_NEAR(Vision::lens_scale(read().camera.lens).x, old_scale * 2, 1e-9);  // half the pixels for the same width
+    EXPECT_NEAR(Vision::lens_scale(read().camera.lens).x, old_scale * 2,
+                1e-9);  // half the pixels for the same width
 }
 
 TEST(Inspection, LegacyNeedsAReadablePhoto) {
@@ -212,7 +226,8 @@ TEST(Inspection, LegacyNeedsAReadablePhoto) {
 
 TEST(Inspection, OlderHideInspectionGivesPhotoAndCamera) {
     auto all = entries();
-    entry(all, "parameters.json")->data = "{\"format\": \"contorno-hide-parameters\", \"version\": 1}";
+    entry(all, "parameters.json")->data =
+        "{\"format\": \"contorno-hide-parameters\", \"version\": 1}";
     entry(all, "result.json")->data = "{\"format\": \"contorno-hide-result\"}";  // not read
     auto const read = Inspection::from_entries(all, "x.zip");
     ASSERT_FALSE(read.isError()) << read.error();

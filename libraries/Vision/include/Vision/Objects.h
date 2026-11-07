@@ -16,7 +16,7 @@ struct ObjectOptions {
     std::string model_path {};          ///< TorchScript IS-Net (.pt); required
     double outline_tolerance_mm {1.0};  ///< simplification of the outline, in mm
     double threshold {0.5};             ///< mask probability above which a pixel is an object
-    double min_area_pct {0.1};          ///< regions (and holes) under this % of the image are dropped
+    double min_area_pct {0.1};  ///< regions (and holes) under this % of the image are dropped
     /// A hole is kept only where the model sees background: its mean
     /// probability must be under this, else (an unsure part of the object,
     /// such as marks drawn on it) it is filled.
@@ -63,14 +63,14 @@ struct ObjectsAnalysis {
  *         LibTorch, no model path is given, the model or the image cannot be
  *         read, or the scale is not positive and finite
  */
-Result<ObjectsAnalysis> VISION_API find_objects(std::string const& image_path,
-                                                PixelScale scale,
+Result<ObjectsAnalysis> VISION_API find_objects(std::string const& image_path, PixelScale scale,
                                                 ObjectOptions const& options) noexcept;
 
 /// ObjectOptions::min_area_pct for a minimum area in mm2: a percentage of the
 /// image (width · height · x · y), at most 100 (a minimum larger than the photo
 /// finds no object); 0 when any input is not finite or <= 0.
-double VISION_API min_area_pct(double min_area_mm2, int width_px, int height_px, PixelScale scale) noexcept;
+double VISION_API min_area_pct(double min_area_mm2, int width_px, int height_px,
+                               PixelScale scale) noexcept;
 
 /// The minimum areas offered, in mm2: {0, 10, 50, 100, 500, 1000, 5000, 10000, 50000}.
 std::span<double const> VISION_API min_area_presets() noexcept;

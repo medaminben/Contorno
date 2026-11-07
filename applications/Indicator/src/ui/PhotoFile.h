@@ -12,11 +12,13 @@ void ensure_image_handlers();
 
 /// A photo read from a file.
 struct PhotoFile {
-    /// As shown: its EXIF orientation applied (the size Vision analyses). Invalid when it cannot be read.
+    /// As shown: its EXIF orientation applied (the size Vision analyses). Invalid when it cannot be
+    /// read.
     wxImage image;
     /// The camera tags of the file (empty when it has none).
     Vision::PhotoMetadata metadata;
-    /// Why it cannot be read ("" when it can): the system's reason, or that it is not an image wx reads.
+    /// Why it cannot be read ("" when it can): the system's reason, or that it is not an image wx
+    /// reads.
     std::string error;
 };
 

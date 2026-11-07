@@ -44,7 +44,8 @@ constexpr int skipped = 77;
 bool pump_until(std::function<bool()> const& done, std::chrono::milliseconds timeout) {
     auto const end = std::chrono::steady_clock::now() + timeout;
     while (!done()) {
-        if (std::chrono::steady_clock::now() >= end) return false;
+        if (std::chrono::steady_clock::now() >= end)
+            return false;
         wxTheApp->Yield(true);
         wxMilliSleep(5);
     }
@@ -85,7 +86,8 @@ bool readout_matches(MainWindow& window) {
 /// Outer rings and holes of all objects.
 std::size_t ring_count(Vision::ObjectsAnalysis const& a) {
     std::size_t rings = 0;
-    for (auto const& o : a.objects) rings += 1 + o.holes.size();
+    for (auto const& o : a.objects)
+        rings += 1 + o.holes.size();
     return rings;
 }
 
@@ -93,11 +95,15 @@ std::size_t ring_count(Vision::ObjectsAnalysis const& a) {
 wxImage screenshot(wxWindow& window) {
 #ifdef INDICATOR_GTK3
     GdkWindow* const gdk = gtk_widget_get_window(window.GetHandle());
-    if (!gdk) return {};
-    GdkPixbuf* const pixbuf = gdk_pixbuf_get_from_window(gdk, 0, 0, gdk_window_get_width(gdk), gdk_window_get_height(gdk));
-    if (!pixbuf) return {};
+    if (!gdk)
+        return {};
+    GdkPixbuf* const pixbuf = gdk_pixbuf_get_from_window(gdk, 0, 0, gdk_window_get_width(gdk),
+                                                         gdk_window_get_height(gdk));
+    if (!pixbuf)
+        return {};
     int const w = gdk_pixbuf_get_width(pixbuf), h = gdk_pixbuf_get_height(pixbuf);
-    int const channels = gdk_pixbuf_get_n_channels(pixbuf), stride = gdk_pixbuf_get_rowstride(pixbuf);
+    int const channels = gdk_pixbuf_get_n_channels(pixbuf),
+              stride = gdk_pixbuf_get_rowstride(pixbuf);
     guchar const* const pixels = gdk_pixbuf_get_pixels(pixbuf);
     wxImage image(w, h, false);
     for (int y = 0; y < h; ++y) {
@@ -133,72 +139,94 @@ int self_test(MainWindow& window, std::vector<std::string> const& args) {
     auto const out = path_from_utf8(args[3]);
     std::error_code ignored;
     std::filesystem::create_directories(out, ignored);
-    if (window.GetIcons().IsEmpty()) return fail("icon", "the window has no icon");
+    if (window.GetIcons().IsEmpty())
+        return fail("icon", "the window has no icon");
 
     if (!Vision::ai_available()) {
         std::fprintf(stderr, "self-test: skipped: Vision was built without LibTorch\n");
         return skipped;
     }
     auto& display = window.panel().display();
-    if (!window.import_photo(photo)) return fail("import", window);
-    if (!window.busy() && (window.message_key() == "message.ai.no_libtorch" || window.message_key() == "message.ai.no_model")) {
+    if (!window.import_photo(photo))
+        return fail("import", window);
+    if (!window.busy() && (window.message_key() == "message.ai.no_libtorch" ||
+                           window.message_key() == "message.ai.no_model")) {
         std::fprintf(stderr, "self-test: skipped: %s\n", window.message().c_str());
         return skipped;
     }
-    if (!wait_idle(window)) return fail("import", window);
+    if (!wait_idle(window))
+        return fail("import", window);
     auto const& analysis = window.analysis();
     if (!analysis || analysis->objects.empty() || !(analysis->area_mm2 > 0)) {
         return fail("result", "no object or no area found");
     }
-    if (!readout_matches(window)) return fail("readout", utf8(display.text()) + " for the result's area");
+    if (!readout_matches(window))
+        return fail("readout", utf8(display.text()) + " for the result's area");
 
     // import while busy: the readout never shows the result of the photo before
-    if (!window.import_photo(photo)) return fail("import while busy", window);
-    if (!window.busy()) return fail("import while busy", "no analysis started");
-    if (!window.import_photo(photo)) return fail("import while busy", window);
+    if (!window.import_photo(photo))
+        return fail("import while busy", window);
+    if (!window.busy())
+        return fail("import while busy", "no analysis started");
+    if (!window.import_photo(photo))
+        return fail("import while busy", window);
     if (!(display.text() == "-----" || display.dimmed())) {
         return fail("import while busy", "the readout shows " + utf8(display.text()));
     }
-    if (!wait_idle(window)) return fail("import while busy", window);
-    if (!readout_matches(window)) return fail("import while busy", utf8(display.text()));
+    if (!wait_idle(window))
+        return fail("import while busy", window);
+    if (!readout_matches(window))
+        return fail("import while busy", utf8(display.text()));
 
     // export: the entries of Inspection.EntryNames, one DXF shape per ring
     auto const shown = *window.analysis();
     auto const zip = out / "self_test.zip";
     std::filesystem::remove(zip, ignored);
-    if (!window.export_inspection(zip)) return fail("export", window);
+    if (!window.export_inspection(zip))
+        return fail("export", window);
     auto entries = Tools::read_zip(utf8(zip));
-    if (entries.isError()) return fail("export", entries.error().text());
+    if (entries.isError())
+        return fail("export", entries.error().text());
     std::vector<std::string> names;
-    for (auto const& e : entries()) names.push_back(e.name);
+    for (auto const& e : entries())
+        names.push_back(e.name);
     std::string suffix = utf8(photo.extension());
-    for (char& c : suffix) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
-    std::vector<std::string> const expected {"original" + suffix, "mask.png", "camera.json", "parameters.json",
-                                             "objects.dxf", "result.json"};
+    for (char& c : suffix)
+        c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+    std::vector<std::string> const expected {"original" + suffix, "mask.png",    "camera.json",
+                                             "parameters.json",   "objects.dxf", "result.json"};
     if (names != expected) {
         std::string list;
-        for (auto const& name : names) list += (list.empty() ? "" : ", ") + name;
+        for (auto const& name : names)
+            list += (list.empty() ? "" : ", ") + name;
         return fail("export", "entries " + list);
     }
     auto rings = Tools::parse_dxf(entries()[4].data);
-    if (rings.isError()) return fail("objects.dxf", rings.error().text());
+    if (rings.isError())
+        return fail("objects.dxf", rings.error().text());
     if (rings().size() != ring_count(shown)) {
-        return fail("objects.dxf", std::to_string(rings().size()) + " shapes for " + std::to_string(ring_count(shown)) + " rings");
+        return fail("objects.dxf", std::to_string(rings().size()) + " shapes for " +
+                                       std::to_string(ring_count(shown)) + " rings");
     }
 
     // open: the saved result, no analysis
-    if (!window.open_inspection(zip)) return fail("open", window);
-    if (window.busy()) return fail("open", "an analysis started");
+    if (!window.open_inspection(zip))
+        return fail("open", window);
+    if (window.busy())
+        return fail("open", "an analysis started");
     auto const& reopened = window.analysis();
-    if (!reopened || reopened->area_mm2 != shown.area_mm2 || reopened->objects.size() != shown.objects.size()) {
+    if (!reopened || reopened->area_mm2 != shown.area_mm2 ||
+        reopened->objects.size() != shown.objects.size()) {
         return fail("open", "not the exported result");
     }
     for (std::size_t i = 0; i < shown.objects.size(); ++i) {
-        if (reopened->objects[i].outer != shown.objects[i].outer || reopened->objects[i].holes != shown.objects[i].holes) {
+        if (reopened->objects[i].outer != shown.objects[i].outer ||
+            reopened->objects[i].holes != shown.objects[i].holes) {
             return fail("open", "object " + std::to_string(i) + " differs");
         }
     }
-    if (!readout_matches(window)) return fail("open readout", utf8(display.text()));
+    if (!readout_matches(window))
+        return fail("open readout", utf8(display.text()));
 
     // the last message laid out, the log's scroll and the readout's count ended
     pump_until([] { return false; }, std::chrono::seconds(1));
@@ -207,8 +235,8 @@ int self_test(MainWindow& window, std::vector<std::string> const& args) {
     if (!shot.IsOk() || !shot.SaveFile(wx(utf8(out / "self_test_window.png")), wxBITMAP_TYPE_PNG)) {
         return fail("screenshot", utf8(out));
     }
-    std::fprintf(stderr, "self-test: ok: %zu object(s), %s %s\n", shown.objects.size(), utf8(display.text()).c_str(),
-                 utf8(display.unit()).c_str());
+    std::fprintf(stderr, "self-test: ok: %zu object(s), %s %s\n", shown.objects.size(),
+                 utf8(display.text()).c_str(), utf8(display.unit()).c_str());
     return 0;
 }
 
@@ -216,8 +244,9 @@ int self_test(MainWindow& window, std::vector<std::string> const& args) {
 /// line, `--version`, and `--self-test <photo> <dir>`.
 class IndicatorApp : public wxApp {
 public:
-    /// The name the desktop pairs the window with its desktop entry by (contorno-indicator.desktop):
-    /// the window's WM_CLASS on X11, the application id under Wayland. The settings file does not depend on it.
+    /// The name the desktop pairs the window with its desktop entry by
+    /// (contorno-indicator.desktop): the window's WM_CLASS on X11, the application id under
+    /// Wayland. The settings file does not depend on it.
     IndicatorApp() {
         SetAppName("contorno-indicator");
         SetClassName("contorno-indicator");
@@ -227,7 +256,8 @@ public:
     }
     bool OnInit() override {
         std::vector<std::string> args;
-        for (int i = 0; i < argc; ++i) args.push_back(utf8(argv[i]));
+        for (int i = 0; i < argc; ++i)
+            args.push_back(utf8(argv[i]));
         if (args.size() > 1 && args[1] == "--version") {
             std::printf("Indicator %s\n", INDICATOR_VERSION);
             return false;
@@ -235,12 +265,15 @@ public:
         bool const testing = args.size() > 1 && args[1] == "--self-test";
         // self-tests never touch the user's settings
         std::shared_ptr<SettingsStore> store;
-        if (testing) store = std::make_shared<MemorySettingsStore>();
-        else store = std::make_shared<WxConfigStore>(default_settings_file());
+        if (testing)
+            store = std::make_shared<MemorySettingsStore>();
+        else
+            store = std::make_shared<WxConfigStore>(default_settings_file());
         register_indicator_strings();
         install_wx_catalogues();
         apply_language(load_indicator_settings(*store).language);
-        auto* window = new MainWindow(store, testing ? wxDEFAULT_FRAME_STYLE : wxDEFAULT_FRAME_STYLE | wxMAXIMIZE);
+        auto* window = new MainWindow(
+            store, testing ? wxDEFAULT_FRAME_STYLE : wxDEFAULT_FRAME_STYLE | wxMAXIMIZE);
         if (testing) {
             window->Show();
             CallAfter([this, window, args] {
@@ -256,7 +289,8 @@ public:
         // at its restored size.
         window->Show();
         window->Maximize();
-        if (args.size() > 1) window->import_photo(path_from_utf8(args[1]));
+        if (args.size() > 1)
+            window->import_photo(path_from_utf8(args[1]));
         return true;
     }
     int OnRun() override {

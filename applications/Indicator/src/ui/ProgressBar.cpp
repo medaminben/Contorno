@@ -24,7 +24,9 @@ double const sweep_ms = 1600;  ///< one pass of the busy chunk
 int const tick_ms = 30;
 
 wxColour dimmed(int r, int g, int b, double level) {
-    auto const scaled = [level](int v) { return static_cast<unsigned char>(std::lround(v * level)); };
+    auto const scaled = [level](int v) {
+        return static_cast<unsigned char>(std::lround(v * level));
+    };
     return wxColour(scaled(r), scaled(g), scaled(b));
 }
 
@@ -38,7 +40,9 @@ ProgressBar::ProgressBar(wxWindow* parent, wxWindowID id) : timer_(this) {
     Bind(wxEVT_TIMER, &ProgressBar::on_tick, this);
 }
 
-wxSize ProgressBar::DoGetBestSize() const { return wxSize(200, content_height + 2 * static_cast<int>(frame_width)); }
+wxSize ProgressBar::DoGetBestSize() const {
+    return wxSize(200, content_height + 2 * static_cast<int>(frame_width));
+}
 
 void ProgressBar::set_running(bool running) {
     state_ = running ? State::running : State::stopped;
@@ -48,17 +52,24 @@ void ProgressBar::set_running(bool running) {
 }
 
 double ProgressBar::elapsed_ms() const {
-    return std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - since_).count();
+    return std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - since_)
+        .count();
 }
 
-bool ProgressBar::full() const { return state_ == State::stopped && elapsed_ms() < full_ms + fade_ms; }
+bool ProgressBar::full() const {
+    return state_ == State::stopped && elapsed_ms() < full_ms + fade_ms;
+}
 
-bool ProgressBar::empty() const { return state_ == State::empty || (state_ == State::stopped && !full()); }
+bool ProgressBar::empty() const {
+    return state_ == State::empty || (state_ == State::stopped && !full());
+}
 
 double ProgressBar::level() const {
-    if (state_ != State::stopped) return 1;
+    if (state_ != State::stopped)
+        return 1;
     double const fading = elapsed_ms() - full_ms;
-    if (fading <= 0 || fading >= fade_ms) return 1;  // full, or empty and lit again
+    if (fading <= 0 || fading >= fade_ms)
+        return 1;  // full, or empty and lit again
     return 1 - fading / fade_ms;
 }
 
@@ -81,11 +92,13 @@ void ProgressBar::draw(wxGraphicsContext& gc, wxSize size) const {
     gc.SetBrush(wxBrush(face));
     double const half = frame_width / 2;
     gc.DrawRoundedRectangle(half, half, size.x - frame_width, size.y - frame_width, radius - half);
-    if (empty()) return;
+    if (empty())
+        return;
     // the chunk inside the frame: the whole width when full, a sweeping part while running
     double const inset = frame_width + chunk_margin;
     double const x0 = inset, y0 = inset, w = size.x - 2 * inset, h = size.y - 2 * inset;
-    if (w <= 0 || h <= 0) return;
+    if (w <= 0 || h <= 0)
+        return;
     double x = x0, cw = w;
     if (running()) {
         cw = std::max(30.0, w / 4);
@@ -105,7 +118,8 @@ void ProgressBar::draw(wxGraphicsContext& gc, wxSize size) const {
 void ProgressBar::on_paint(wxPaintEvent&) {
     wxAutoBufferedPaintDC dc(this);
     std::unique_ptr<wxGraphicsContext> gc = paint_context(dc, *this);
-    if (gc) draw(*gc, GetClientSize());
+    if (gc)
+        draw(*gc, GetClientSize());
 }
 
 wxBitmap ProgressBar::render(double scale) const {
@@ -114,7 +128,8 @@ wxBitmap ProgressBar::render(double scale) const {
     bitmap.CreateWithDIPSize(size, scale);
     wxMemoryDC dc(bitmap);
     std::unique_ptr<wxGraphicsContext> gc(wxGraphicsContext::Create(dc));
-    if (gc) draw(*gc, size);
+    if (gc)
+        draw(*gc, size);
     gc.reset();
     dc.SelectObject(wxNullBitmap);
     return bitmap;

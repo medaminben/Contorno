@@ -13,20 +13,22 @@
 /// (a key that is on is lit green all round).
 class Key : public wxControl {
 public:
-    Key(wxWindow* parent, wxWindowID id, wxString const& label, wxBitmapBundle const& icon = {}, int pad_y = 0,
-        int pad_x = 0);
+    Key(wxWindow* parent, wxWindowID id, wxString const& label, wxBitmapBundle const& icon = {},
+        int pad_y = 0, int pad_x = 0);
     void SetCheckable(bool checkable);
     bool IsChecked() const { return checked_; }
     void SetChecked(bool checked);
     wxBitmapBundle const& icon() const { return icon_; }
     /// Replaces the icon (the theme key shows the moon, or the sun when it is on).
     void SetIcon(wxBitmapBundle const& icon);
-    /// A round key: the corners are half the key's size and, hovered, hovered it gets a 1 px green ring.
+    /// A round key: the corners are half the key's size and, hovered, hovered it gets a 1 px green
+    /// ring.
     void SetRound(bool round);
     bool IsRound() const { return round_; }
     /// A click as the user makes it: toggles a checkable key and emits the event.
     void Click();
-    /// The key as drawn, `scale` device pixels per logical one (the window's own scale for the screen).
+    /// The key as drawn, `scale` device pixels per logical one (the window's own scale for the
+    /// screen).
     wxBitmap Render(double scale) const;
 
     bool AcceptsFocus() const override { return IsEnabled(); }

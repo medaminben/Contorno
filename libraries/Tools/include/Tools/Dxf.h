@@ -31,7 +31,8 @@ Result<std::string> TOOLS_API to_dxf(Pot::Polygon64 const& sheet) noexcept;
  * `layer`, in the polygons' own frame (not shifted: e.g. the image mm frame).
  * Error when no ring has at least 3 points.
  */
-Result<std::string> TOOLS_API to_dxf(std::vector<Pot::Polygon64> const& polygons, std::string const& layer) noexcept;
+Result<std::string> TOOLS_API to_dxf(std::vector<Pot::Polygon64> const& polygons,
+                                     std::string const& layer) noexcept;
 
 }  // namespace Tools
 #endif  // TOOLS_DXF_H

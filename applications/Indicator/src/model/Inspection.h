@@ -28,8 +28,8 @@ struct InspectionFiles {
 /// The entries of an inspection zip (see Inspection::to_entries) for the photo
 /// at `files.photo_path`, written with the analyser's outline tolerance (0.5 mm).
 /// Error when the photo cannot be read or an entry cannot be written.
-InspectionResult<std::vector<Tools::ZipEntry>> inspection_entries(InspectionFiles const& files,
-                                                                  Vision::ObjectsAnalysis const& analysis);
+InspectionResult<std::vector<Tools::ZipEntry>> inspection_entries(
+    InspectionFiles const& files, Vision::ObjectsAnalysis const& analysis);
 
 /// Reads an inspection zip (see Inspection::from_entries): writes its photo
 /// into `into_dir` and returns the photo's path with the rest. Error naming

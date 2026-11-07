@@ -23,7 +23,8 @@ struct ZipEntry {
  * '\' or has a ".." segment.
  */
 Result<std::string> TOOLS_API to_zip(std::vector<ZipEntry> const& entries) noexcept;
-Result<> TOOLS_API write_zip(std::string const& path, std::vector<ZipEntry> const& entries) noexcept;
+Result<> TOOLS_API write_zip(std::string const& path,
+                             std::vector<ZipEntry> const& entries) noexcept;
 
 /**
  * @brief The entries of a zip archive, in the order of its central directory

@@ -32,11 +32,14 @@ struct Restore {
     }
 };
 
-/// Counts the paints of a window while it lives (the window may outlive it: a frame is destroyed when idle).
+/// Counts the paints of a window while it lives (the window may outlive it: a frame is destroyed
+/// when idle).
 struct PaintCounter {
     int count = 0;
     wxWindow* window;
-    explicit PaintCounter(wxWindow* w) : window(w) { window->Bind(wxEVT_PAINT, &PaintCounter::on_paint, this); }
+    explicit PaintCounter(wxWindow* w) : window(w) {
+        window->Bind(wxEVT_PAINT, &PaintCounter::on_paint, this);
+    }
     ~PaintCounter() { window->Unbind(wxEVT_PAINT, &PaintCounter::on_paint, this); }
     PaintCounter(PaintCounter const&) = delete;
     PaintCounter& operator=(PaintCounter const&) = delete;
@@ -65,9 +68,11 @@ struct Fixture {
     /// Where the panel's parts are, in the panel's coordinates.
     std::vector<wxRect> geometry() const {
         std::vector<wxRect> out;
-        for (Key* key : keys()) out.push_back(key->GetRect());
-        for (wxWindow* part : {static_cast<wxWindow*>(&panel->display()), static_cast<wxWindow*>(&panel->log()),
-                               static_cast<wxWindow*>(&panel->mask())})
+        for (Key* key : keys())
+            out.push_back(key->GetRect());
+        for (wxWindow* part :
+             {static_cast<wxWindow*>(&panel->display()), static_cast<wxWindow*>(&panel->log()),
+              static_cast<wxWindow*>(&panel->mask())})
             out.push_back(part->GetRect());
         return out;
     }
@@ -153,21 +158,24 @@ TEST(WxPanel, SizesFollowTheScreenTheWindowIsOn) {
     EXPECT_EQ(logo->GetBitmap().GetLogicalHeight(), m.wordmark);
 }
 
-// The Qt key draws "Import" with a 16 px em (QFont::setPixelSize): its ink 16 px high, 51-53 px wide on the
-// 67 px key. wxFont::SetPixelSize would make the whole line 16 px high, the ink only 11.
+// The Qt key draws "Import" with a 16 px em (QFont::setPixelSize): its ink 16 px high, 51-53 px
+// wide on the 67 px key. wxFont::SetPixelSize would make the whole line 16 px high, the ink
+// only 11.
 TEST(WxPanel, KeyLabelIsAsLargeAsQts) {
     Fixture f;
     Key* import = f.keys()[0];
     auto const m = control_panel_metrics_for(f.panel);
     ASSERT_EQ(import->GetSize(), wxSize(m.key_side, m.key_side));
     // The Qt key's ink is measured on the 1920×1080 key (67 px, 16 px em).
-    if (m.key_side != 67) return;
+    if (m.key_side != 67)
+        return;
     ASSERT_EQ(utf8(import->GetLabelText()), "Import");
     wxImage const image = import->Render(1).ConvertToImage();
     int top = image.GetHeight(), bottom = -1, left = image.GetWidth(), right = -1;
     for (int y = 0; y < image.GetHeight(); ++y) {
         for (int x = 0; x < image.GetWidth(); ++x) {
-            if (image.GetGreen(x, y) - image.GetRed(x, y) <= 60) continue;  // the text's green, not the grey face
+            if (image.GetGreen(x, y) - image.GetRed(x, y) <= 60)
+                continue;  // the text's green, not the grey face
             top = std::min(top, y);
             bottom = std::max(bottom, y);
             left = std::min(left, x);
@@ -198,7 +206,8 @@ TEST(WxPanel, AClickReachesThePanelWithTheKeysId) {
     Fixture f;
     std::vector<int> seen;
     f.panel->Bind(wxEVT_BUTTON, [&](wxCommandEvent& e) { seen.push_back(e.GetId()); });
-    for (Key* key : f.keys()) key->Click();
+    for (Key* key : f.keys())
+        key->Click();
     EXPECT_EQ(seen, (std::vector<int> {ID_IMPORT, ID_OPEN, ID_SAVE, ID_SETUP}));
 }
 
@@ -227,9 +236,9 @@ TEST(WxPanel, StaysLeftToRightInArabic) {
     EXPECT_LT(before[5].x, before[4].x);  // log left of the readout
 }
 
-// Switched to Arabic while open, the readout, the log and the mask stay left to right (a mouse position in a
-// right-to-left window counts from its right edge), and GTK's mirrored context of a right-to-left window never
-// shows: the screen shows what they draw
+// Switched to Arabic while open, the readout, the log and the mask stay left to right (a mouse
+// position in a right-to-left window counts from its right edge), and GTK's mirrored context of a
+// right-to-left window never shows: the screen shows what they draw
 TEST(WxPanel, DrawnPartsAreNotMirroredAfterASwitchToArabic) {
     Fixture f;
     f.frame->Show();
@@ -239,13 +248,16 @@ TEST(WxPanel, DrawnPartsAreNotMirroredAfterASwitchToArabic) {
     EXPECT_EQ(f.panel->mask().GetLayoutDirection(), wxLayout_LeftToRight);
     f.panel->log().add(Message("panel.import"));
     pump_until([&] { return !f.panel->log().gliding(); }, 2000ms);
-    for (wxWindow* part : {static_cast<wxWindow*>(&f.panel->display()), static_cast<wxWindow*>(&f.panel->log())}) {
+    for (wxWindow* part :
+         {static_cast<wxWindow*>(&f.panel->display()), static_cast<wxWindow*>(&f.panel->log())}) {
         wxRect const all(wxPoint(0, 0), part->GetSize());
         Ink const shown = ink_on_screen(*part, all);
-        if (!shown.read) GTEST_SKIP() << "the screen cannot be read here";
+        if (!shown.read)
+            GTEST_SKIP() << "the screen cannot be read here";
         ASSERT_GT(shown.count, 0);
-        wxImage const drawn = dynamic_cast<SegmentDisplay*>(part) ? f.panel->display().render(1).ConvertToImage()
-                                                                   : f.panel->log().render(1).ConvertToImage();
+        wxImage const drawn = dynamic_cast<SegmentDisplay*>(part)
+                                  ? f.panel->display().render(1).ConvertToImage()
+                                  : f.panel->log().render(1).ConvertToImage();
         EXPECT_LT(ink_difference(shown, ink_of(drawn, all)), 0.05);
     }
 }
@@ -257,7 +269,8 @@ TEST(WxPanel, DrawnPartsPaintUnmirroredWhenRightToLeft) {
     f.panel->log().add(Message("panel.import"));
     pump_until([&] { return !f.panel->log().gliding(); }, 2000ms);
     PaintCounter display_paints(&f.panel->display()), log_paints(&f.panel->log());
-    for (wxWindow* part : {static_cast<wxWindow*>(&f.panel->display()), static_cast<wxWindow*>(&f.panel->log())}) {
+    for (wxWindow* part :
+         {static_cast<wxWindow*>(&f.panel->display()), static_cast<wxWindow*>(&f.panel->log())}) {
         PaintCounter& paints = part == &f.panel->display() ? display_paints : log_paints;
         part->SetLayoutDirection(wxLayout_RightToLeft);
         // read only what was painted right to left, not the frame from before
@@ -266,10 +279,12 @@ TEST(WxPanel, DrawnPartsPaintUnmirroredWhenRightToLeft) {
         ASSERT_TRUE(pump_until([&] { return paints.count > 0; }, 3000ms));
         wxRect const all(wxPoint(0, 0), part->GetSize());
         Ink const shown = ink_on_screen(*part, all);
-        if (!shown.read) GTEST_SKIP() << "the screen cannot be read here";
+        if (!shown.read)
+            GTEST_SKIP() << "the screen cannot be read here";
         ASSERT_GT(shown.count, 0);
-        wxImage const drawn = dynamic_cast<SegmentDisplay*>(part) ? f.panel->display().render(1).ConvertToImage()
-                                                                   : f.panel->log().render(1).ConvertToImage();
+        wxImage const drawn = dynamic_cast<SegmentDisplay*>(part)
+                                  ? f.panel->display().render(1).ConvertToImage()
+                                  : f.panel->log().render(1).ConvertToImage();
         EXPECT_LT(ink_difference(shown, ink_of(drawn, all)), 0.05);
     }
 }
@@ -287,10 +302,12 @@ TEST(WxPanel, HasTheWordmarkAtItsHeight) {
 TEST(WxPanel, WordmarkIsWhiteOnDarkAndBlackOnLight) {
     Fixture f;
     auto opaque_colour = [&] {
-        wxImage const image = find_descendant<wxStaticBitmap>(f.panel)->GetBitmap().ConvertToImage();
+        wxImage const image =
+            find_descendant<wxStaticBitmap>(f.panel)->GetBitmap().ConvertToImage();
         for (int y = 0; y < image.GetHeight(); ++y)
             for (int x = 0; x < image.GetWidth(); ++x)
-                if (image.HasAlpha() && image.GetAlpha(x, y) == 255) return wxColour(image.GetRed(x, y), image.GetGreen(x, y), image.GetBlue(x, y));
+                if (image.HasAlpha() && image.GetAlpha(x, y) == 255)
+                    return wxColour(image.GetRed(x, y), image.GetGreen(x, y), image.GetBlue(x, y));
         return wxColour(1, 2, 3);
     };
     apply_theme(f.frame, false);
@@ -314,24 +331,28 @@ namespace {
 /// Counts the paints a window receives (the original handler still runs).
 }  // namespace
 
-// the window recolours its panel, not the keys (MainWindow::apply_theme): built after a light window, the keys'
-// corners must still show the black panel, not white specks
+// the window recolours its panel, not the keys (MainWindow::apply_theme): built after a light
+// window, the keys' corners must still show the black panel, not white specks
 TEST(WxPanel, KeyCornersShowThePanelsColour) {
     set_light_theme(true);
     Fixture f;
     f.panel->SetBackgroundColour(palette(false).panel);
     for (Key* key : f.keys()) {
         wxImage const image = key->Render(1).ConvertToImage();
-        for (wxPoint corner : {wxPoint(0, 0), wxPoint(image.GetWidth() - 1, 0), wxPoint(0, image.GetHeight() - 1),
-                               wxPoint(image.GetWidth() - 1, image.GetHeight() - 1)}) {
-            wxColour const shown(image.GetRed(corner.x, corner.y), image.GetGreen(corner.x, corner.y),
+        for (wxPoint corner :
+             {wxPoint(0, 0), wxPoint(image.GetWidth() - 1, 0), wxPoint(0, image.GetHeight() - 1),
+              wxPoint(image.GetWidth() - 1, image.GetHeight() - 1)}) {
+            wxColour const shown(image.GetRed(corner.x, corner.y),
+                                 image.GetGreen(corner.x, corner.y),
                                  image.GetBlue(corner.x, corner.y));
-            EXPECT_EQ(shown.GetAsString(wxC2S_HTML_SYNTAX), "#000000") << corner.x << "," << corner.y;
+            EXPECT_EQ(shown.GetAsString(wxC2S_HTML_SYNTAX), "#000000")
+                << corner.x << "," << corner.y;
         }
     }
 }
 
-// a drawn child shows its parent's colour in its corners, so it must be painted again when that colour changes
+// a drawn child shows its parent's colour in its corners, so it must be painted again when that
+// colour changes
 TEST(WxPanel, DrawnChildrenRepaintWhenTheParentColourChanges) {
     Fixture f;
     f.frame->Show();
@@ -345,7 +366,7 @@ TEST(WxPanel, DrawnChildrenRepaintWhenTheParentColourChanges) {
     f.panel->Update();
     ASSERT_EQ(display.count + log.count, 0);  // nothing is invalid until the colour changes
     f.panel->SetBackgroundColour(wxColour(200, 50, 50));  // not through apply_theme
-    f.panel->Update();  // paints what is invalid now
+    f.panel->Update();                                    // paints what is invalid now
     EXPECT_GT(display.count, 0);
     EXPECT_GT(log.count, 0);
     EXPECT_EQ(pixel(f.panel->display().render(1), 0, 0), wxColour(200, 50, 50));
@@ -356,7 +377,9 @@ TEST(WxPanel, DrawnChildrenRepaintWhenTheParentColourChanges) {
 
 namespace {
 
-Vision::PixelFrame frame_of(wxImage const& image) { return {image.GetWidth(), image.GetHeight(), 1.0, 1.0}; }
+Vision::PixelFrame frame_of(wxImage const& image) {
+    return {image.GetWidth(), image.GetHeight(), 1.0, 1.0};
+}
 
 void set_photo(PhotoView& view, wxImage const& image, bool keep_view = false) {
     view.set_photo(image, frame_of(image), keep_view);
@@ -364,7 +387,10 @@ void set_photo(PhotoView& view, wxImage const& image, bool keep_view = false) {
 
 /// A rectangle (x0, y0)-(x1, y1) in mm, as one polygon.
 Pot::Polygon64 rectangle(double x0, double y0, double x1, double y1) {
-    auto p = [](double x, double y) { return Pot::Point64 {std::llround(x * Pot::units_per_mm), std::llround(y * Pot::units_per_mm)}; };
+    auto p = [](double x, double y) {
+        return Pot::Point64 {std::llround(x * Pot::units_per_mm),
+                             std::llround(y * Pot::units_per_mm)};
+    };
     return {{p(x0, y0), p(x1, y0), p(x1, y1), p(x0, y1)}, {}};
 }
 
@@ -412,15 +438,16 @@ TEST(WxPhotoView, FitsThePhotoAndKeepsFittingOnResize) {
     f.view->SetSize(400, 400);
     EXPECT_DOUBLE_EQ(f.view->zoom(), 4.0);
     wxImage const drawn = f.view->render(1).ConvertToImage();
-    EXPECT_EQ(drawn.GetRed(200, 200), 255);                      // the photo
-    EXPECT_EQ(drawn.GetRed(200, 20), 60);                        // above it: the backdrop
+    EXPECT_EQ(drawn.GetRed(200, 200), 255);  // the photo
+    EXPECT_EQ(drawn.GetRed(200, 20), 60);    // above it: the backdrop
 }
 
 TEST(WxPhotoView, WheelZoomsAboutTheViewCentre) {
     ViewFixture f;
     f.view->SetSize(100, 100);
     set_photo(*f.view, solid(100, 100, 255, 0, 0));
-    // the cursor is elsewhere: the Qt view's anchor is the view's centre (of the view as it is before the step)
+    // the cursor is elsewhere: the Qt view's anchor is the view's centre (of the view as it is
+    // before the step)
     for (int i = 0; i < 5; ++i) {
         wxSize const size = f.view->GetClientSize();
         wxPoint const centre(size.x / 2, size.y / 2);
@@ -434,7 +461,8 @@ TEST(WxPhotoView, WheelZoomsAboutTheViewCentre) {
     }
     EXPECT_FALSE(f.view->fitted());
     EXPECT_NEAR(f.view->zoom(), std::pow(1.15, 5), 1e-9);
-    for (int i = 0; i < 5; ++i) wheel(*f.view, -120, wxPoint(10, 90));
+    for (int i = 0; i < 5; ++i)
+        wheel(*f.view, -120, wxPoint(10, 90));
     EXPECT_NEAR(f.view->zoom(), 1.0, 1e-9);
     EXPECT_FALSE(f.view->fitted());  // zoomed once: it stays so
 }
@@ -452,7 +480,8 @@ TEST(WxPhotoView, ResizeKeepsTheZoomOnceZoomed) {
 TEST(WxPhotoView, DragPans) {
     ViewFixture f;
     f.frame->Show();
-    ASSERT_TRUE(pump_until([&] { return f.view->IsShownOnScreen(); }, 3000ms));  // the drag grabs the pointer
+    ASSERT_TRUE(pump_until([&] { return f.view->IsShownOnScreen(); },
+                           3000ms));  // the drag grabs the pointer
     f.view->SetSize(100, 100);
     set_photo(*f.view, solid(100, 100, 255, 0, 0));
     f.view->zoom_at(wxPoint(50, 50), 4.0);
@@ -502,7 +531,8 @@ TEST(WxPhotoView, KeepViewKeepsTheZoomForTheSameSize) {
 TEST(WxPhotoView, LinkedViewsZoomAndScrollTogether) {
     TwoViews f;
     f.frame->Show();
-    ASSERT_TRUE(pump_until([&] { return f.a->IsShownOnScreen() && f.b->IsShownOnScreen(); }, 3000ms));
+    ASSERT_TRUE(
+        pump_until([&] { return f.a->IsShownOnScreen() && f.b->IsShownOnScreen(); }, 3000ms));
     f.a->link_to(f.b);
     double notified = 0;
     f.b->on_zoom_changed([&](double zoom, bool zoomed) { notified = zoomed ? zoom : -1; });
@@ -512,13 +542,15 @@ TEST(WxPhotoView, LinkedViewsZoomAndScrollTogether) {
     EXPECT_DOUBLE_EQ(f.b->zoom(), f.a->zoom());
     EXPECT_DOUBLE_EQ(notified, f.a->zoom());
     EXPECT_EQ(f.b->view_origin(), f.a->view_origin());
-    EXPECT_NE(f.a->view_origin(), wxPoint(0, 0));  // a pair that never scrolled would be equal anyway
+    EXPECT_NE(f.a->view_origin(),
+              wxPoint(0, 0));  // a pair that never scrolled would be equal anyway
 }
 
 TEST(WxPhotoView, LinkedViewsFollowTheirPan) {
     TwoViews f;
     f.frame->Show();
-    ASSERT_TRUE(pump_until([&] { return f.a->IsShownOnScreen() && f.b->IsShownOnScreen(); }, 3000ms));
+    ASSERT_TRUE(
+        pump_until([&] { return f.a->IsShownOnScreen() && f.b->IsShownOnScreen(); }, 3000ms));
     f.a->link_to(f.b);
     f.a->zoom_at(wxPoint(50, 50), 4.0);
     drag(*f.a, wxPoint(60, 60), wxPoint(40, 50));
@@ -529,11 +561,13 @@ TEST(WxPhotoView, LinkedViewsFollowTheirPan) {
     EXPECT_NE(f.a->view_origin(), after_a);
 }
 
-// the scroll bars' events as GTK delivers them: through the window's handler chain, scroll helper first
+// the scroll bars' events as GTK delivers them: through the window's handler chain, scroll helper
+// first
 TEST(WxPhotoView, LinkedViewsFollowScrollBarDrags) {
     TwoViews f;
     f.frame->Show();
-    ASSERT_TRUE(pump_until([&] { return f.a->IsShownOnScreen() && f.b->IsShownOnScreen(); }, 3000ms));
+    ASSERT_TRUE(
+        pump_until([&] { return f.a->IsShownOnScreen() && f.b->IsShownOnScreen(); }, 3000ms));
     f.a->link_to(f.b);
     f.a->zoom_at(wxPoint(50, 50), 4.0);
     ASSERT_EQ(f.a->view_origin(), f.b->view_origin());
@@ -541,9 +575,10 @@ TEST(WxPhotoView, LinkedViewsFollowScrollBarDrags) {
         wxEventType type;
         int position;
     };
-    for (Step const step : {Step {wxEVT_SCROLLWIN_THUMBTRACK, 30}, Step {wxEVT_SCROLLWIN_THUMBRELEASE, 31},
-                            Step {wxEVT_SCROLLWIN_LINEDOWN, 0}, Step {wxEVT_SCROLLWIN_PAGEDOWN, 0},
-                            Step {wxEVT_SCROLLWIN_THUMBTRACK, 3}}) {
+    for (Step const step :
+         {Step {wxEVT_SCROLLWIN_THUMBTRACK, 30}, Step {wxEVT_SCROLLWIN_THUMBRELEASE, 31},
+          Step {wxEVT_SCROLLWIN_LINEDOWN, 0}, Step {wxEVT_SCROLLWIN_PAGEDOWN, 0},
+          Step {wxEVT_SCROLLWIN_THUMBTRACK, 3}}) {
         for (PhotoView* view : {f.a, f.b}) {
             PhotoView* other = view == f.a ? f.b : f.a;
             wxPoint const before = view->view_origin();
@@ -552,7 +587,8 @@ TEST(WxPhotoView, LinkedViewsFollowScrollBarDrags) {
             view->ProcessWindowEvent(event);
             // the follow may come once the event is through
             pump_until([&] { return other->view_origin() == view->view_origin(); }, 500ms);
-            EXPECT_EQ(other->view_origin(), view->view_origin()) << step.type << " " << step.position;
+            EXPECT_EQ(other->view_origin(), view->view_origin())
+                << step.type << " " << step.position;
             (void)before;
         }
     }
@@ -562,7 +598,8 @@ TEST(WxPhotoView, LinkedViewsFollowScrollBarDrags) {
 TEST(WxPhotoView, LinkedViewFollowsTheClampOfAResize) {
     TwoViews f;
     f.frame->Show();
-    ASSERT_TRUE(pump_until([&] { return f.a->IsShownOnScreen() && f.b->IsShownOnScreen(); }, 3000ms));
+    ASSERT_TRUE(
+        pump_until([&] { return f.a->IsShownOnScreen() && f.b->IsShownOnScreen(); }, 3000ms));
     f.a->link_to(f.b);
     f.a->zoom_at(wxPoint(50, 50), 4.0);
     f.a->Scroll(1000, 1000);  // as far as it goes
@@ -582,17 +619,20 @@ TEST(WxPhotoView, PolygonLayersShowInRenderImage) {
     wxImage const plain = f.view->render_image();
     ASSERT_TRUE(plain.IsOk());
     EXPECT_EQ(plain.GetSize(), wxSize(100, 100));
-    // mm (20, 10)-(80, 30) with y up: the top edge is at row 70 (100 - 30), the bottom one at row 90
-    f.view->add_polygons({rectangle(20, 10, 80, 30)}, wxPen(wxColour(255, 0, 255), 2), *wxTRANSPARENT_BRUSH);
+    // mm (20, 10)-(80, 30) with y up: the top edge is at row 70 (100 - 30), the bottom one at row
+    // 90
+    f.view->add_polygons({rectangle(20, 10, 80, 30)}, wxPen(wxColour(255, 0, 255), 2),
+                         *wxTRANSPARENT_BRUSH);
     EXPECT_EQ(f.view->polygon_layers(), 1u);
     wxImage const with = f.view->render_image();
-    EXPECT_EQ(with.GetRed(50, 70), 255);   // the pen's colour on the photo's blue
+    EXPECT_EQ(with.GetRed(50, 70), 255);  // the pen's colour on the photo's blue
     EXPECT_EQ(with.GetBlue(50, 70), 255);
     EXPECT_EQ(with.GetGreen(50, 70), 0);
     EXPECT_EQ(with.GetRed(50, 90), 255);
-    EXPECT_EQ(with.GetRed(50, 10), 0);     // not mirrored: nothing near the bottom edge of the image's top
+    EXPECT_EQ(with.GetRed(50, 10),
+              0);  // not mirrored: nothing near the bottom edge of the image's top
     EXPECT_EQ(with.GetRed(50, 30), 0);
-    EXPECT_EQ(with.GetRed(50, 80), 0);     // inside: the photo (no fill)
+    EXPECT_EQ(with.GetRed(50, 80), 0);  // inside: the photo (no fill)
     f.view->set_layer_visible(0, false);
     EXPECT_EQ(f.view->render_image().GetRed(50, 70), 0);
     f.view->set_layer_visible(0, true);
@@ -605,8 +645,10 @@ TEST(WxPhotoView, PolygonLayersShowInRenderImage) {
 TEST(WxPhotoView, LayersStackAndRemoveFromAGivenOne) {
     ViewFixture f;
     set_photo(*f.view, solid(100, 100, 0, 0, 255));
-    f.view->add_polygons({rectangle(20, 10, 80, 30)}, wxPen(wxColour(255, 0, 0), 2), *wxTRANSPARENT_BRUSH);
-    f.view->add_polygons({rectangle(20, 50, 80, 70)}, wxPen(wxColour(0, 255, 0), 2), *wxTRANSPARENT_BRUSH);
+    f.view->add_polygons({rectangle(20, 10, 80, 30)}, wxPen(wxColour(255, 0, 0), 2),
+                         *wxTRANSPARENT_BRUSH);
+    f.view->add_polygons({rectangle(20, 50, 80, 70)}, wxPen(wxColour(0, 255, 0), 2),
+                         *wxTRANSPARENT_BRUSH);
     EXPECT_EQ(f.view->polygon_layers(), 2u);
     f.view->remove_polygons(1);
     EXPECT_EQ(f.view->polygon_layers(), 1u);
@@ -624,7 +666,8 @@ TEST(WxPhotoView, FilledPolygonWithAHoleIsOddEven) {
     set_photo(*f.view, solid(100, 100, 0, 0, 255));
     Pot::Polygon64 ring = rectangle(10, 10, 90, 90);
     ring.holes.push_back(rectangle(40, 40, 60, 60).outer);
-    f.view->add_polygons({ring}, wxPen(wxColour(0, 0, 0), 1, wxPENSTYLE_TRANSPARENT), wxBrush(wxColour(255, 0, 0)));
+    f.view->add_polygons({ring}, wxPen(wxColour(0, 0, 0), 1, wxPENSTYLE_TRANSPARENT),
+                         wxBrush(wxColour(255, 0, 0)));
     wxImage const image = f.view->render_image();
     EXPECT_EQ(image.GetRed(20, 50), 255);  // filled
     EXPECT_EQ(image.GetRed(50, 50), 0);    // the hole shows the photo

@@ -22,17 +22,22 @@ namespace {
 
 /// A file filter in the current language: only the description is translated.
 wxString filter_with(std::string const& description, std::string const& patterns) {
-    return wx(description + " (" + patterns + ");;" + Message("dialog.all_files").render() + " (*)");
+    return wx(description + " (" + patterns + ");;" + Message("dialog.all_files").render() +
+              " (*)");
 }
 
-std::filesystem::path chosen(wxString const& path) { return path_from_utf8(utf8(path)); }
+std::filesystem::path chosen(wxString const& path) {
+    return path_from_utf8(utf8(path));
+}
 
 }  // namespace
 
 void MainWindow::choose_photo() {
-    auto const path = choose_open_file(this, wx(Message("dialog.import").render()), wx(settings_.last_folder),
-                                       filter_with(Message("dialog.images").render(), "*.png *.jpg *.jpeg *.bmp *.tif *.tiff"));
-    if (path.empty()) return;
+    auto const path = choose_open_file(
+        this, wx(Message("dialog.import").render()), wx(settings_.last_folder),
+        filter_with(Message("dialog.images").render(), "*.png *.jpg *.jpeg *.bmp *.tif *.tiff"));
+    if (path.empty())
+        return;
     remember_folder(chosen(path));
     import_photo(chosen(path));
 }
@@ -45,23 +50,28 @@ void MainWindow::remember_folder(std::filesystem::path const& path) {
 }
 
 bool MainWindow::import_photo(std::filesystem::path const& path) {
-    if (!load_photo(path)) return false;  // a failed import keeps the photo, camera and result shown
-    camera_ = Vision::resolve_camera(settings_.camera, metadata_, photo_.GetWidth(), photo_.GetHeight());
+    if (!load_photo(path))
+        return false;  // a failed import keeps the photo, camera and result shown
+    camera_ =
+        Vision::resolve_camera(settings_.camera, metadata_, photo_.GetWidth(), photo_.GetHeight());
     min_area_mm2_ = settings_.min_area_mm2;
     note_.reset();
     export_stem_ = path.parent_path() / path.stem();
     set_message(Message("message.imported")
                     .with("name", utf8(path.filename()))
-                    .with("size", std::to_string(photo_.GetWidth()) + " x " + std::to_string(photo_.GetHeight()) + " px"));
+                    .with("size", std::to_string(photo_.GetWidth()) + " x " +
+                                      std::to_string(photo_.GetHeight()) + " px"));
     set_message(camera_message(camera_, shown_rotated(path)));
     analyse();
     return true;
 }
 
 void MainWindow::choose_inspection() {
-    auto const path = choose_open_file(this, wx(Message("dialog.open").render()), wx(settings_.last_folder),
-                                       filter_with(Message("dialog.inspections").render(), "*.zip"));
-    if (path.empty()) return;
+    auto const path =
+        choose_open_file(this, wx(Message("dialog.open").render()), wx(settings_.last_folder),
+                         filter_with(Message("dialog.inspections").render(), "*.zip"));
+    if (path.empty())
+        return;
     remember_folder(chosen(path));
     open_inspection(chosen(path));
 }
@@ -77,9 +87,10 @@ std::filesystem::path MainWindow::new_inspection_dir(std::string& reason) {
     std::random_device random;
     for (int attempt = 0; attempt < 100; ++attempt) {
         // the process id, a counter and random bits: no other window or process makes this folder
-        auto const dir = root / ("indicator-" + std::to_string(wxGetProcessId()) + "-" + std::to_string(counter++) +
-                                 "-" + std::to_string(random()));
-        if (std::filesystem::create_directory(dir, error)) return dir;
+        auto const dir = root / ("indicator-" + std::to_string(wxGetProcessId()) + "-" +
+                                 std::to_string(counter++) + "-" + std::to_string(random()));
+        if (std::filesystem::create_directory(dir, error))
+            return dir;
         if (error) {
             reason = error.message();
             return {};
@@ -106,12 +117,14 @@ bool MainWindow::open_inspection(std::filesystem::path const& path) {
     if (f.result) {
         // checked first: a refused inspection keeps the photo, camera and result shown
         auto const size = shown_size(f.photo_path);
-        if (!size || size->width != f.result->frame.width || size->height != f.result->frame.height) {
+        if (!size || size->width != f.result->frame.width ||
+            size->height != f.result->frame.height) {
             fail(Message("message.size_differs_saved").with("name", utf8(path.filename())), true);
             return false;
         }
     }
-    if (!load_photo(f.photo_path)) return false;
+    if (!load_photo(f.photo_path))
+        return false;
     export_stem_ = path.parent_path() / path.stem();
     set_title(utf8(path.filename()));  // not the zip's "original.jpg"
     set_message(Message("message.opened").with("path", utf8(path)));
@@ -136,10 +149,13 @@ void MainWindow::choose_export() {
         return;
     }
     // in the last folder, named after the photo
-    auto const suggested = path_from_utf8(settings_.last_folder) / (export_stem_.filename().u8string() + u8".zip");
-    auto const path = choose_save_file(this, wx(Message("dialog.save").render()), wx(utf8(suggested)),
-                                       filter_with(Message("dialog.inspections").render(), "*.zip"), "zip");
-    if (path.empty()) return;
+    auto const suggested =
+        path_from_utf8(settings_.last_folder) / (export_stem_.filename().u8string() + u8".zip");
+    auto const path =
+        choose_save_file(this, wx(Message("dialog.save").render()), wx(utf8(suggested)),
+                         filter_with(Message("dialog.inspections").render(), "*.zip"), "zip");
+    if (path.empty())
+        return;
     remember_folder(chosen(path));
     export_inspection(chosen(path));
 }
@@ -159,11 +175,16 @@ bool MainWindow::export_inspection(std::filesystem::path const& path) {
     files.min_area_mm2 = analysed_min_area_mm2_;
     auto entries = inspection_entries(files, *analysis_);
     if (entries.isError()) {
-        fail(Message("message.cannot_save").with("path", utf8(path)).with("reason", entries.error()), true);
+        fail(
+            Message("message.cannot_save").with("path", utf8(path)).with("reason", entries.error()),
+            true);
         return false;
     }
     if (auto written = Tools::write_zip(utf8(path), entries()); written.isError()) {
-        fail(Message("message.cannot_save").with("path", utf8(path)).with("reason", from_library(written.error())), true);
+        fail(Message("message.cannot_save")
+                 .with("path", utf8(path))
+                 .with("reason", from_library(written.error())),
+             true);
         return false;
     }
     error_ = {};
@@ -174,13 +195,14 @@ bool MainWindow::export_inspection(std::filesystem::path const& path) {
 bool MainWindow::load_photo(std::filesystem::path const& path) {
     PhotoFile const file = read_photo(path);
     if (!file.image.IsOk()) {
-        fail(Message("message.cannot_read").with("path", utf8(path)).with("reason", file.error), true);
+        fail(Message("message.cannot_read").with("path", utf8(path)).with("reason", file.error),
+             true);
         return false;
     }
     photo_path_ = path;
     photo_ = file.image;
     metadata_ = file.metadata;  // to resolve the camera again
-    expected_id_ = 0;  // a result still coming for the previous photo is dropped
+    expected_id_ = 0;           // a result still coming for the previous photo is dropped
     analysed_min_area_mm2_ = 0;
     set_running(false);  // an analysis still running is obsolete
     Vision::PixelFrame const frame {photo_.GetWidth(), photo_.GetHeight(), 0};

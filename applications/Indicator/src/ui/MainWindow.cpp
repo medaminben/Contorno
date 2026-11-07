@@ -102,23 +102,26 @@ wxImage mask_shape(Vision::Mask const& mask, int width, int height) {
         return image;
     }
     for (std::size_t i = 0; i < mask.data.size(); ++i) {
-        if (mask.data[i] != 0) alpha[i] = 255;
+        if (mask.data[i] != 0)
+            alpha[i] = 255;
     }
     return image;
 }
 
 /// Whether the Set Up dialog gave back the camera it was given.
 bool same_camera(Vision::CameraSettings const& a, Vision::CameraSettings const& b) {
-    return a.distance_mm == b.distance_mm && a.focal_length_mm == b.focal_length_mm && a.input == b.input &&
-           a.pixel_width_um == b.pixel_width_um && a.pixel_height_um == b.pixel_height_um &&
-           a.sensor_width_mm == b.sensor_width_mm && a.sensor_height_mm == b.sensor_height_mm;
+    return a.distance_mm == b.distance_mm && a.focal_length_mm == b.focal_length_mm &&
+           a.input == b.input && a.pixel_width_um == b.pixel_width_um &&
+           a.pixel_height_um == b.pixel_height_um && a.sensor_width_mm == b.sensor_width_mm &&
+           a.sensor_height_mm == b.sensor_height_mm;
 }
 
 /// "1 object", "3 objects", "No object found".
 Message count_message(Vision::ObjectsAnalysis const& a) {
-    return a.objects.empty()        ? Message("message.objects.none")
-           : a.objects.size() == 1 ? Message("message.objects.one")
-                                   : Message("message.objects.many").with("count", std::to_string(a.objects.size()));
+    return a.objects.empty() ? Message("message.objects.none")
+           : a.objects.size() == 1
+               ? Message("message.objects.one")
+               : Message("message.objects.many").with("count", std::to_string(a.objects.size()));
 }
 
 /// "0.500 mm/px" or "0.500 × 0.600 mm/px".
@@ -131,7 +134,8 @@ std::string scale_with_unit(Vision::PixelFrame const& frame) {
 std::string first_folder() {
 #ifdef INDICATOR_SAMPLES_DIR
     std::error_code ignored;
-    if (std::filesystem::is_directory(path_from_utf8(INDICATOR_SAMPLES_DIR), ignored)) return INDICATOR_SAMPLES_DIR;
+    if (std::filesystem::is_directory(path_from_utf8(INDICATOR_SAMPLES_DIR), ignored))
+        return INDICATOR_SAMPLES_DIR;
 #endif
     return utf8(wxGetHomeDir());
 }
@@ -139,14 +143,17 @@ std::string first_folder() {
 }  // namespace
 
 MainWindow::MainWindow(std::shared_ptr<SettingsStore> store, long style)
-    : wxFrame(nullptr, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, style), store_(std::move(store)),
+    : wxFrame(nullptr, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, style),
+      store_(std::move(store)),
       model_default_(path_from_utf8(INDICATOR_DEFAULT_MODEL)) {
-    if (!store_) store_ = std::make_shared<WxConfigStore>(default_settings_file());
+    if (!store_)
+        store_ = std::make_shared<WxConfigStore>(default_settings_file());
     set_title({});
     settings_ = load_indicator_settings(*store_);
     // the model keeps the text stored; a folder that is gone starts the dialogs in the first one
     std::error_code ignored;
-    if (settings_.last_folder.empty() || !std::filesystem::is_directory(path_from_utf8(settings_.last_folder), ignored)) {
+    if (settings_.last_folder.empty() ||
+        !std::filesystem::is_directory(path_from_utf8(settings_.last_folder), ignored)) {
         settings_.last_folder = first_folder();
     }
     camera_ = Vision::resolve_camera(settings_.camera, {}, 0, 0);
@@ -177,8 +184,9 @@ MainWindow::MainWindow(std::shared_ptr<SettingsStore> store, long style)
     column->Add(panel_, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, margin);
     column->Add(status_, 0, wxEXPAND);
     body_->SetSizer(column);
-    for (wxWindow* window : {static_cast<wxWindow*>(this), body_, row_, static_cast<wxWindow*>(raw_),
-                             static_cast<wxWindow*>(processed_), status_, static_cast<wxWindow*>(progress_)}) {
+    for (wxWindow* window :
+         {static_cast<wxWindow*>(this), body_, row_, static_cast<wxWindow*>(raw_),
+          static_cast<wxWindow*>(processed_), status_, static_cast<wxWindow*>(progress_)}) {
         keep_left_to_right(window);  // the window never mirrors, whatever the language
     }
     apply_theme(settings_.light);
@@ -201,12 +209,17 @@ MainWindow::MainWindow(std::shared_ptr<SettingsStore> store, long style)
     SetMinClientSize(column->CalcMin());
     if ((GetWindowStyleFlag() & wxMAXIMIZE) == 0) {
         int const shown_on = wxDisplay::GetFromWindow(this);
-        wxRect const area = wxDisplay(shown_on == wxNOT_FOUND ? 0u : static_cast<unsigned>(shown_on)).GetClientArea();
+        wxRect const area =
+            wxDisplay(shown_on == wxNOT_FOUND ? 0u : static_cast<unsigned>(shown_on))
+                .GetClientArea();
         wxSize const room(area.width * 9 / 10, area.height * 9 / 10);
         int const below = spacing + panel_->GetBestSize().y + margin + status_->GetBestSize().y;
-        auto height_for = [&](int w) { return margin + std::max(0, row->side_for(w - 2 * margin)) + below; };
+        auto height_for = [&](int w) {
+            return margin + std::max(0, row->side_for(w - 2 * margin)) + below;
+        };
         int width = std::min(1500, room.x);
-        while (width > 600 && height_for(width) > room.y) width -= 20;
+        while (width > 600 && height_for(width) > room.y)
+            width -= 20;
         SetClientSize(width, height_for(width));
     }
 }
@@ -219,26 +232,35 @@ MainWindow::~MainWindow() {
     }
 }
 
-void MainWindow::set_model_candidates_for_test(std::filesystem::path configured, std::filesystem::path compiled_default) {
+void MainWindow::set_model_candidates_for_test(std::filesystem::path configured,
+                                               std::filesystem::path compiled_default) {
     model_configured_ = std::move(configured);
     model_default_ = std::move(compiled_default);
 }
 
-std::string MainWindow::message() const { return utf8(log_->last_message()); }
+std::string MainWindow::message() const {
+    return utf8(log_->last_message());
+}
 
-std::string MainWindow::message_key() const { return log_->last_text().key(); }
+std::string MainWindow::message_key() const {
+    return log_->last_text().key();
+}
 
 void MainWindow::set_title(std::string const& file) {
     title_file_ = file;
-    SetTitle(wx(file.empty() ? Message("window.title").render() : Message("window.title_file").with("file", file).render()));
+    SetTitle(wx(file.empty() ? Message("window.title").render()
+                             : Message("window.title_file").with("file", file).render()));
 }
 
-void MainWindow::set_message(Message const& message) { log_->add(message); }
+void MainWindow::set_message(Message const& message) {
+    log_->add(message);
+}
 
 void MainWindow::fail(Message const& message, bool dialog) {
     error_ = message;
     set_message(message);
-    if (dialog && IsShown()) warn(this, wx(Message("window.title").render()), wx(message.render()));
+    if (dialog && IsShown())
+        warn(this, wx(Message("window.title").render()), wx(message.render()));
 }
 
 void MainWindow::emit_analysed(bool ok) {
@@ -262,28 +284,37 @@ void MainWindow::show_no_result(bool keep_view, bool keep_readout) {
 
 void MainWindow::open_camera() {
     wxSize const photo = photo_.IsOk() ? photo_.GetSize() : wxSize();
-    CameraDialog dialog(this, settings_.camera, photo, !photo_path_.empty() && shown_rotated(photo_path_),
-                        settings_.language, settings_.light);
-    if (dialog.ShowModal() != wxID_OK) return;
+    CameraDialog dialog(this, settings_.camera, photo,
+                        !photo_path_.empty() && shown_rotated(photo_path_), settings_.language,
+                        settings_.light);
+    if (dialog.ShowModal() != wxID_OK)
+        return;
     bool const new_camera = !same_camera(dialog.camera(), settings_.camera);
     bool const new_language = dialog.language() != settings_.language;
     bool const new_theme = dialog.light() != settings_.light;
-    if (!new_camera && !new_language && !new_theme) return;  // OK without a change: nothing happens
+    if (!new_camera && !new_language && !new_theme)
+        return;  // OK without a change: nothing happens
     settings_.camera = dialog.camera();
     settings_.language = dialog.language();
     settings_.light = dialog.light();
     save_indicator_settings(*store_, settings_);
-    if (new_theme) apply_theme(settings_.light);
-    if (new_language) apply_language(settings_.language);  // before the log line, which is then in it
-    if (!new_camera) return;  // the language or the theme: the result stands
-    camera_ = Vision::resolve_camera(settings_.camera, photo_path_.empty() ? Vision::PhotoMetadata {} : metadata_,
-                                     photo_.IsOk() ? photo_.GetWidth() : 0, photo_.IsOk() ? photo_.GetHeight() : 0);
-    set_message(photo_path_.empty() ? Message("message.camera_saved") : camera_message(camera_, shown_rotated(photo_path_)));
+    if (new_theme)
+        apply_theme(settings_.light);
+    if (new_language)
+        apply_language(settings_.language);  // before the log line, which is then in it
+    if (!new_camera)
+        return;  // the language or the theme: the result stands
+    camera_ = Vision::resolve_camera(
+        settings_.camera, photo_path_.empty() ? Vision::PhotoMetadata {} : metadata_,
+        photo_.IsOk() ? photo_.GetWidth() : 0, photo_.IsOk() ? photo_.GetHeight() : 0);
+    set_message(photo_path_.empty() ? Message("message.camera_saved")
+                                    : camera_message(camera_, shown_rotated(photo_path_)));
     analyse();
 }
 
 void MainWindow::analyse() {
-    if (photo_path_.empty()) return;
+    if (photo_path_.empty())
+        return;
     // Checked before every request: no fallback to the colour method.
     std::optional<Message> unavailable;
     std::filesystem::path model;
@@ -291,11 +322,13 @@ void MainWindow::analyse() {
         unavailable = Message("message.ai.no_libtorch");
     } else {
         std::vector<std::filesystem::path> looked_in;
-        auto const app_dir = path_from_utf8(utf8(wxStandardPaths::Get().GetExecutablePath())).parent_path();
+        auto const app_dir =
+            path_from_utf8(utf8(wxStandardPaths::Get().GetExecutablePath())).parent_path();
         model = find_model(model_configured_, app_dir, model_default_, &looked_in);
         if (model.empty()) {
             std::string places;
-            for (auto const& place : looked_in) places += (places.empty() ? "" : ", ") + utf8(place);
+            for (auto const& place : looked_in)
+                places += (places.empty() ? "" : ", ") + utf8(place);
             unavailable = Message("message.ai.no_model").with("places", places);
         }
     }
@@ -312,7 +345,8 @@ void MainWindow::analyse() {
     expected_id_ = analyser_->request(photo_path_, camera_.lens, requested_min_area_mm2_, model);
     set_running(true);
     panel_->display().set_dimmed(true);  // the shown value is stale until the result
-    if (!note_) set_message(Message("message.analysing"));
+    if (!note_)
+        set_message(Message("message.analysing"));
 }
 
 void MainWindow::show_result(AnalysisDone const& done) {
@@ -329,7 +363,8 @@ void MainWindow::show_result(AnalysisDone const& done) {
         fail(message, false);
         emit_analysed(false);
     };
-    if (!done.analysis) return failed(done.error);
+    if (!done.analysis)
+        return failed(done.error);
     auto const& a = *done.analysis;
     if (a.frame.width != photo_.GetWidth() || a.frame.height != photo_.GetHeight()) {
         return failed(Message("message.size_differs_analysed"));
@@ -341,10 +376,12 @@ void MainWindow::show_result(AnalysisDone const& done) {
                           .with("count", count_message(a))
                           .with("scale", scale_with_unit(a.frame))
                           .with("seconds", fixed_text(done.seconds, 1) + " s");
-    if (note_) message.with("note", *note_);
+    if (note_)
+        message.with("note", *note_);
     note_.reset();  // said once, with the first result
     set_message(message);
-    if (a.from_background) set_message(Message("message.from_background"));
+    if (a.from_background)
+        set_message(Message("message.from_background"));
     emit_analysed(true);
 }
 
@@ -360,7 +397,7 @@ void MainWindow::show_saved_result(Vision::ObjectsAnalysis const& analysis, doub
 void MainWindow::show_analysis(Vision::ObjectsAnalysis const& analysis) {
     analysis_ = analysis;
     auto const& a = *analysis_;
-    wxPen const pen(contour_colour, 2);  // as many device pixels wide at every zoom
+    wxPen const pen(contour_colour, 2);            // as many device pixels wide at every zoom
     processed_->set_photo(photo_, a.frame, true);  // keeps the linked zoom
     processed_->add_polygons(a.objects, pen, *wxTRANSPARENT_BRUSH);
     mask_->set_photo(mask_shape(a.mask, a.frame.width, a.frame.height), a.frame, true);
@@ -384,6 +421,6 @@ void MainWindow::apply_theme(bool light) {
     }
     panel_->SetBackgroundColour(colour);
     panel_->Refresh();
-    progress_->Refresh();  // its corners
+    progress_->Refresh();    // its corners
     set_light_theme(light);  // the dialogs opened from now on
 }

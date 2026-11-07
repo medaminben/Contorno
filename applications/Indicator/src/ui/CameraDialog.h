@@ -94,7 +94,7 @@ private:
     double sensor_w_, sensor_h_, pixel_w_, pixel_h_;
     bool was_sensor_;
     bool busy_ {false};
-    int open_lists_ {0};  ///< drop-down lists that are open
+    int open_lists_ {0};   ///< drop-down lists that are open
     int field_width_ {0};  ///< the widest field's own least width (px)
 };
 

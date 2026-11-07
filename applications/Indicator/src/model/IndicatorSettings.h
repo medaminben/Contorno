@@ -14,7 +14,8 @@ struct IndicatorSettings {
     /// last file imported, opened or saved. Empty until one is stored; the UI
     /// then starts in the samples folder or the home folder.
     std::string last_folder {};
-    std::string language {"en"};  ///< ui/language: a code of language_codes(); unknown reads as "en"
+    std::string language {
+        "en"};           ///< ui/language: a code of language_codes(); unknown reads as "en"
     bool light {false};  ///< ui/theme: "light" for light panels, anything else is "dark"
 };
 

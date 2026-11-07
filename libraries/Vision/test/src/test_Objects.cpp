@@ -24,22 +24,30 @@ namespace test_Objects {
 namespace {
 
 /// The TorchScript IS-Net of the tests (empty when it is not built).
-std::string model() { return CONTORNO_ISNET_MODEL; }
+std::string model() {
+    return CONTORNO_ISNET_MODEL;
+}
 
 /// A sample photo of docs/samples.
-std::string sample(std::string const& rel) { return std::string(CONTORNO_SAMPLES_DIR "/") + rel; }
+std::string sample(std::string const& rel) {
+    return std::string(CONTORNO_SAMPLES_DIR "/") + rel;
+}
 
 /// The scale of the default lens camera.
-Vision::PixelScale default_scale() { return Vision::lens_scale(Vision::LensCamera {}); }
+Vision::PixelScale default_scale() {
+    return Vision::lens_scale(Vision::LensCamera {});
+}
 
 bool have_model() {
     std::error_code ec;
-    return Vision::ai_available() && !model().empty() && std::filesystem::is_regular_file(model(), ec);
+    return Vision::ai_available() && !model().empty() &&
+           std::filesystem::is_regular_file(model(), ec);
 }
 
-#define REQUIRE_MODEL()                                         \
-    do {                                                        \
-        if (!have_model()) GTEST_SKIP() << "no IS-Net model";   \
+#define REQUIRE_MODEL()                        \
+    do {                                       \
+        if (!have_model())                     \
+            GTEST_SKIP() << "no IS-Net model"; \
     } while (false)
 
 Vision::ObjectOptions options_with_model() {
@@ -59,14 +67,16 @@ void expect_clear_of_border(Pot::Path64 const& ring, Vision::PixelFrame const& f
         double const x = p.x / Pot::units_per_mm;
         double const y = p.y / Pot::units_per_mm;
         double const d = std::min({x, y, w - x, h - y});
-        EXPECT_GT(d, margin) << "vertex " << x << ", " << y << " mm is " << d << " mm from the border";
+        EXPECT_GT(d, margin) << "vertex " << x << ", " << y << " mm is " << d
+                             << " mm from the border";
     }
 }
 
 /// A temporary file name unique to this test process.
 std::string temp_file(std::string const& name) {
     static std::string const token = std::to_string(std::random_device {}());
-    return (std::filesystem::temp_directory_path() / ("contorno_objects_" + token + "_" + name)).string();
+    return (std::filesystem::temp_directory_path() / ("contorno_objects_" + token + "_" + name))
+        .string();
 }
 
 }  // namespace
@@ -81,8 +91,8 @@ TEST(Objects, AiAvailableMatchesBuild) {
 
 TEST(Objects, ScaleIsUsedAsGiven) {
     REQUIRE_MODEL();
-    auto const r = Vision::find_objects(sample("leather/calf_black.jpg"), Vision::PixelScale {0.5, 0.7},
-                                        options_with_model());
+    auto const r = Vision::find_objects(sample("leather/calf_black.jpg"),
+                                        Vision::PixelScale {0.5, 0.7}, options_with_model());
     ASSERT_FALSE(r.isError());
     EXPECT_EQ(r().frame.mm_per_px_x, 0.5);
     EXPECT_EQ(r().frame.mm_per_px_y, 0.7);
@@ -92,8 +102,8 @@ TEST(Objects, ScaleIsUsedAsGiven) {
 
 // runs without LibTorch: the scale is checked before the model is read
 TEST(Objects, InvalidScaleIsAnError) {
-    for (auto const s : {Vision::PixelScale {0, 1}, Vision::PixelScale {1, -1}, Vision::PixelScale {std::nan(""), 1},
-                         Vision::PixelScale {1, INFINITY}}) {
+    for (auto const s : {Vision::PixelScale {0, 1}, Vision::PixelScale {1, -1},
+                         Vision::PixelScale {std::nan(""), 1}, Vision::PixelScale {1, INFINITY}}) {
         auto const r = Vision::find_objects(sample("leather/calf_black.jpg"), s, {"any.pt"});
         ASSERT_TRUE(r.isError());
         EXPECT_NE(r.error().text().find("scale"), std::string::npos);
@@ -130,7 +140,8 @@ TEST(Objects, MissingModelFileIsAnError) {
 }
 
 TEST(Objects, WithoutTorchIsAnError) {
-    if (Vision::ai_available()) GTEST_SKIP() << "Vision was built with LibTorch";
+    if (Vision::ai_available())
+        GTEST_SKIP() << "Vision was built with LibTorch";
     Vision::ObjectOptions options;
     options.model_path = model().empty() ? std::string("/nonexistent.pt") : model();
     auto r = Vision::find_objects(sample("leather/calf_black.jpg"), default_scale(), options);
@@ -139,7 +150,8 @@ TEST(Objects, WithoutTorchIsAnError) {
 }
 
 TEST(Objects, CorruptModelIsAnError) {
-    if (!Vision::ai_available()) GTEST_SKIP() << "Vision was built without LibTorch";
+    if (!Vision::ai_available())
+        GTEST_SKIP() << "Vision was built without LibTorch";
     auto const path = temp_file("corrupt.pt");
     {
         std::ofstream out(path, std::ios::binary);
@@ -162,7 +174,8 @@ TEST(Objects, CalfHasItsHole) {
     ASSERT_FALSE(warm.isError()) << warm.error();
     auto const start = std::chrono::steady_clock::now();
     auto r = Vision::find_objects(sample("leather/calf_black.jpg"), default_scale(), options);
-    auto const seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
+    auto const seconds =
+        std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
     ASSERT_FALSE(r.isError()) << r.error();
     auto const& a = r();
     // Recorded, not bounded: a wall-clock limit is flaky when ctest runs tests in parallel.
@@ -180,7 +193,8 @@ TEST(Objects, CalfHasItsHole) {
 
 TEST(Objects, WholeSkinDoesNotReachBorder) {
     REQUIRE_MODEL();
-    auto r = Vision::find_objects(sample("leather/chekiang_lamb.jpg"), default_scale(), options_with_model());
+    auto r = Vision::find_objects(sample("leather/chekiang_lamb.jpg"), default_scale(),
+                                  options_with_model());
     ASSERT_FALSE(r.isError()) << r.error();
     auto const& a = r();
     ASSERT_EQ(a.objects.size(), 1u);
@@ -198,8 +212,10 @@ TEST(Objects, OnlyTheLargestIsKept) {
     REQUIRE_MODEL();
     // a drawn photo: a large and a small brown ellipse on light grey
     cv::Mat photo(1200, 1600, CV_8UC3, cv::Scalar(200, 200, 200));
-    cv::ellipse(photo, cv::Point(500, 600), cv::Size(300, 200), 0, 0, 360, cv::Scalar(60, 90, 140), cv::FILLED);
-    cv::ellipse(photo, cv::Point(1250, 600), cv::Size(150, 100), 0, 0, 360, cv::Scalar(60, 90, 140), cv::FILLED);
+    cv::ellipse(photo, cv::Point(500, 600), cv::Size(300, 200), 0, 0, 360, cv::Scalar(60, 90, 140),
+                cv::FILLED);
+    cv::ellipse(photo, cv::Point(1250, 600), cv::Size(150, 100), 0, 0, 360, cv::Scalar(60, 90, 140),
+                cv::FILLED);
     auto const path = temp_file("two_ellipses.png");
     ASSERT_TRUE(cv::imwrite(path, photo));
     auto options = options_with_model();
@@ -220,8 +236,10 @@ TEST(Objects, OnlyTheLargestIsKept) {
         x1 = std::max(x1, x);
         y1 = std::max(y1, y);
     }
-    EXPECT_TRUE(x0 <= 500 && 500 <= x1 && y0 <= 600 && 600 <= y1) << x0 << ", " << y0 << " to " << x1 << ", " << y1;
-    EXPECT_FALSE(x0 <= 1250 && 1250 <= x1 && y0 <= 600 && 600 <= y1) << x0 << ", " << y0 << " to " << x1 << ", " << y1;
+    EXPECT_TRUE(x0 <= 500 && 500 <= x1 && y0 <= 600 && 600 <= y1)
+        << x0 << ", " << y0 << " to " << x1 << ", " << y1;
+    EXPECT_FALSE(x0 <= 1250 && 1250 <= x1 && y0 <= 600 && 600 <= y1)
+        << x0 << ", " << y0 << " to " << x1 << ", " << y1;
 }
 
 TEST(Objects, EmptyTableHasNoObjects) {
@@ -236,7 +254,8 @@ TEST(Objects, EmptyTableHasNoObjects) {
     EXPECT_EQ(a.area_mm2, 0.0);
     EXPECT_EQ(a.mask.width, 800);
     EXPECT_EQ(a.mask.height, 600);
-    EXPECT_TRUE(std::all_of(a.mask.data.begin(), a.mask.data.end(), [](uint8_t v) { return v == 0; }));
+    EXPECT_TRUE(
+        std::all_of(a.mask.data.begin(), a.mask.data.end(), [](uint8_t v) { return v == 0; }));
 }
 
 TEST(Objects, GreyImageWorks) {
@@ -264,7 +283,8 @@ std::vector<int> mask_holes(Vision::Mask const& m) {
     for (int i = 1; i < n; ++i) {
         int const x = stats.at<int>(i, cv::CC_STAT_LEFT), y = stats.at<int>(i, cv::CC_STAT_TOP);
         int const w = stats.at<int>(i, cv::CC_STAT_WIDTH), h = stats.at<int>(i, cv::CC_STAT_HEIGHT);
-        if (x > 0 && y > 0 && x + w < mask.cols && y + h < mask.rows) out.push_back(stats.at<int>(i, cv::CC_STAT_AREA));
+        if (x > 0 && y > 0 && x + w < mask.cols && y + h < mask.rows)
+            out.push_back(stats.at<int>(i, cv::CC_STAT_AREA));
     }
     return out;
 }
@@ -280,9 +300,11 @@ TEST(Objects, EveryMaskHoleHasARing) {
         options.min_area_pct = pct;
         auto r = Vision::find_objects(sample(photo), default_scale(), options);
         EXPECT_FALSE(r.isError()) << r.error();
-        if (r.isError()) return std::vector<int> {};
+        if (r.isError())
+            return std::vector<int> {};
         std::size_t rings = 0;
-        for (auto const& o : r().objects) rings += o.holes.size();
+        for (auto const& o : r().objects)
+            rings += o.holes.size();
         auto const holes = mask_holes(r().mask);
         EXPECT_EQ(rings, holes.size()) << photo << " at " << pct << " %";
         return holes;
@@ -303,14 +325,19 @@ TEST(Objects, EveryMaskHoleHasARing) {
 // clean photo's
 TEST(Objects, MarkedHideHasNoFalseHole) {
     REQUIRE_MODEL();
-    auto clean = Vision::find_objects(sample("leather/cowhide_stretched.jpg"), default_scale(), options_with_model());
-    auto marked = Vision::find_objects(sample("leather/cowhide_marked.png"), default_scale(), options_with_model());
+    auto clean = Vision::find_objects(sample("leather/cowhide_stretched.jpg"), default_scale(),
+                                      options_with_model());
+    auto marked = Vision::find_objects(sample("leather/cowhide_marked.png"), default_scale(),
+                                       options_with_model());
     ASSERT_FALSE(clean.isError()) << clean.error();
     ASSERT_FALSE(marked.isError()) << marked.error();
     ASSERT_EQ(marked().objects.size(), 1u);
     double const image_px = 1600.0 * 1200;
-    for (int const px : mask_holes(marked().mask)) EXPECT_LT(px, 0.01 * image_px);
-    auto white = [](Vision::Mask const& m) { return std::count(m.data.begin(), m.data.end(), 255); };
+    for (int const px : mask_holes(marked().mask))
+        EXPECT_LT(px, 0.01 * image_px);
+    auto white = [](Vision::Mask const& m) {
+        return std::count(m.data.begin(), m.data.end(), 255);
+    };
     EXPECT_NEAR(static_cast<double>(white(marked().mask)), static_cast<double>(white(clean().mask)),
                 0.03 * static_cast<double>(white(clean().mask)));
 }
@@ -326,7 +353,8 @@ TEST(Objects, CalfKeepsItsHole) {
     ASSERT_EQ(m.width, 1334);
     EXPECT_EQ(m.data[static_cast<std::size_t>(1414 * m.width + 916)], 0);  // the hole's centre
     std::size_t rings = 0;
-    for (auto const& o : r().objects) rings += o.holes.size();
+    for (auto const& o : r().objects)
+        rings += o.holes.size();
     EXPECT_GE(rings, 1u);
 }
 
@@ -335,7 +363,8 @@ TEST(Objects, CalfKeepsItsHole) {
 // included, stands out from the plain carpet, so it is taken instead
 TEST(Objects, SpottedCalfIsTheWholeHide) {
     REQUIRE_MODEL();
-    auto r = Vision::find_objects(sample("leather/calf_spotted.jpg"), default_scale(), options_with_model());
+    auto r = Vision::find_objects(sample("leather/calf_spotted.jpg"), default_scale(),
+                                  options_with_model());
     ASSERT_FALSE(r.isError()) << r.error();
     ASSERT_EQ(r().objects.size(), 1u);
     auto const& m = r().mask;
@@ -350,10 +379,12 @@ TEST(Objects, SpottedCalfIsTheWholeHide) {
     EXPECT_EQ(at(40, 40), 0) << "carpet";
     EXPECT_EQ(at(700, 1380), 0) << "carpet";
     EXPECT_EQ(at(1500, 1390), 0) << "carpet";
-    double const share = static_cast<double>(std::count(m.data.begin(), m.data.end(), 255)) / (1531.0 * 1414);
+    double const share =
+        static_cast<double>(std::count(m.data.begin(), m.data.end(), 255)) / (1531.0 * 1414);
     EXPECT_GT(share, 0.70);
     EXPECT_LT(share, 0.90);
-    EXPECT_TRUE(r().from_background) << "the object found from the background replaced the model's region";
+    EXPECT_TRUE(r().from_background)
+        << "the object found from the background replaced the model's region";
 }
 
 // without the background check the model's region stands: on the spotted
@@ -365,7 +396,8 @@ TEST(Objects, BackgroundCheckCanBeTurnedOff) {
     auto r = Vision::find_objects(sample("leather/calf_spotted.jpg"), default_scale(), options);
     ASSERT_FALSE(r.isError()) << r.error();
     auto const& m = r().mask;
-    double const share = static_cast<double>(std::count(m.data.begin(), m.data.end(), 255)) / (1.0 * m.width * m.height);
+    double const share = static_cast<double>(std::count(m.data.begin(), m.data.end(), 255)) /
+                         (1.0 * m.width * m.height);
     EXPECT_LT(share, 0.20);
     EXPECT_FALSE(r().from_background);
 }
@@ -374,10 +406,13 @@ namespace {
 
 /// Relative area error, in %, of find_objects on a synthetic photo against its true mask.
 double synthetic_area_error_pct(std::string const& stem) {
-    auto r = Vision::find_objects(sample("synthetic/" + stem + ".jpg"), default_scale(), options_with_model());
+    auto r = Vision::find_objects(sample("synthetic/" + stem + ".jpg"), default_scale(),
+                                  options_with_model());
     EXPECT_FALSE(r.isError()) << r.error();
-    if (r.isError()) return 100;
-    cv::Mat const truth = cv::imread(sample("synthetic/" + stem + "_mask.png"), cv::IMREAD_GRAYSCALE);
+    if (r.isError())
+        return 100;
+    cv::Mat const truth =
+        cv::imread(sample("synthetic/" + stem + "_mask.png"), cv::IMREAD_GRAYSCALE);
     EXPECT_FALSE(truth.empty());
     double const true_px = cv::countNonZero(truth > 127);
     auto const& m = r().mask;
@@ -404,8 +439,10 @@ TEST(Objects, SmallDifferenceKeepsTheModelOutline) {
 
 TEST(Objects, RepeatedCallsAgree) {
     REQUIRE_MODEL();
-    auto first = Vision::find_objects(sample("leather/calf_black.jpg"), default_scale(), options_with_model());
-    auto second = Vision::find_objects(sample("leather/calf_black.jpg"), default_scale(), options_with_model());
+    auto first = Vision::find_objects(sample("leather/calf_black.jpg"), default_scale(),
+                                      options_with_model());
+    auto second = Vision::find_objects(sample("leather/calf_black.jpg"), default_scale(),
+                                       options_with_model());
     ASSERT_FALSE(first.isError()) << first.error();
     ASSERT_FALSE(second.isError()) << second.error();
     EXPECT_EQ(first().mask.data, second().mask.data);

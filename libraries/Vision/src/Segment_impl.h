@@ -14,13 +14,17 @@ namespace Vision {
 
 /// Tuning of background_object_impl; the defaults are the tuned values.
 struct BackgroundOptions {
-    int coarse_side_px {160};           ///< longest side of the coarse copy
-    int coarse_median_px {5};           ///< median aperture on the coarse copy (removes lines of a pixel)
-    double border_band_pct {4};         ///< width of the band the background is fitted to, % of the smaller side
-    double max_deviation {6};           ///< deviation, in robust sigmas, up to which a pixel is background-like
-    double max_shadow {1.15};           ///< darker by up to this factor with the background's colour: a shadow
-    int fine_median_px {9};             ///< median aperture at full size before the edge is placed
-    double fine_band_coarse_px {2.5};   ///< half-width of the band the edge is placed in, in coarse pixels
+    int coarse_side_px {160};  ///< longest side of the coarse copy
+    int coarse_median_px {5};  ///< median aperture on the coarse copy (removes lines of a pixel)
+    double border_band_pct {
+        4};  ///< width of the band the background is fitted to, % of the smaller side
+    double max_deviation {
+        6};  ///< deviation, in robust sigmas, up to which a pixel is background-like
+    double max_shadow {
+        1.15};               ///< darker by up to this factor with the background's colour: a shadow
+    int fine_median_px {9};  ///< median aperture at full size before the edge is placed
+    double fine_band_coarse_px {
+        2.5};  ///< half-width of the band the edge is placed in, in coarse pixels
 };
 
 /**
@@ -62,12 +66,11 @@ cv::Mat background_object_impl(cv::Mat const& bgr, BackgroundOptions const& opti
  * @brief Contour in pixels to a counter-clockwise ring on the grid in the image mm frame
  *
  * The pixel contour is simplified by cv::approxPolyDP within px_for_mm
- * (tolerance_mm over the smaller of the frame's sx, sy) pixels; when the result is not a simple ring
- * (see simple_polygon_impl), the epsilon is halved, down to 0 (collinear
- * points removed only). Orientation comes from the sign of cv::contourArea
- * on the simplified pixel contour: rows run down, so a positive pixel area is
- * clockwise in mm. Pixels map by to_mm. Empty when no simple ring of at least
- * three vertices is found.
+ * (tolerance_mm over the smaller of the frame's sx, sy) pixels; when the result is not a simple
+ * ring (see simple_polygon_impl), the epsilon is halved, down to 0 (collinear points removed only).
+ * Orientation comes from the sign of cv::contourArea on the simplified pixel contour: rows run
+ * down, so a positive pixel area is clockwise in mm. Pixels map by to_mm. Empty when no simple ring
+ * of at least three vertices is found.
  */
 Pot::Path64 contour_to_path_impl(std::vector<cv::Point> const& contour, PixelFrame const& frame,
                                  double tolerance_mm);
@@ -84,7 +87,8 @@ Pot::Path64 contour_to_path_impl(std::vector<cv::Point> const& contour, PixelFra
  * pixel_rings, the pixel vertices the rings were made from (outline first,
  * then the holes in order). Orientation is not checked.
  */
-bool simple_polygon_impl(Pot::Polygon64 const& polygon, std::vector<std::vector<cv::Point>> const& pixel_rings);
+bool simple_polygon_impl(Pot::Polygon64 const& polygon,
+                         std::vector<std::vector<cv::Point>> const& pixel_rings);
 
 /**
  * @brief Make the mask's pixel contours simple rings
@@ -107,7 +111,8 @@ void clean_mask_impl(cv::Mat& mask);
  *
  * @return CV_8U 0/255 of the mask's size
  */
-cv::Mat enclosed_holes_impl(cv::Mat const& region, double max_area_px = std::numeric_limits<double>::infinity());
+cv::Mat enclosed_holes_impl(cv::Mat const& region,
+                            double max_area_px = std::numeric_limits<double>::infinity());
 
 /// Largest 8-connected region of a CV_8U 0/255 mask (all zero when none) and its area in pixels.
 std::pair<cv::Mat, int> largest_region_impl(cv::Mat const& mask);
@@ -125,8 +130,8 @@ std::pair<cv::Mat, int> largest_region_impl(cv::Mat const& mask);
  *
  * @return error when the mask is empty or no simple polygon is found
  */
-Result<Pot::Polygon64> trace_polygon_impl(cv::Mat const& region, PixelFrame const& frame, double tolerance_mm,
-                                          double min_hole_area_px = 0);
+Result<Pot::Polygon64> trace_polygon_impl(cv::Mat const& region, PixelFrame const& frame,
+                                          double tolerance_mm, double min_hole_area_px = 0);
 
 /// Row-major copy of a CV_8U mask.
 Mask to_mask_impl(cv::Mat const& mask);

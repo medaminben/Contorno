@@ -25,45 +25,54 @@ TEST(WxFileDialog, StartsInTheFolderIconsGreen) {
     int green_icons = 0, unnamed_tools = 0;
     drive_modal([&](wxDialog& dialog) {
         auto* files = find_descendant<wxGenericFileCtrl>(&dialog);
-        if (files) folder = files->GetShownDirectory();
+        if (files)
+            folder = files->GetShownDirectory();
         std::vector<Key*> keys;
         collect_descendants(&dialog, keys);
         for (Key* key : keys) {
             wxBitmapBundle const icon = key->icon();
-            if (!icon.IsOk()) continue;
-            if (key->GetToolTipText().empty()) ++unnamed_tools;
+            if (!icon.IsOk())
+                continue;
+            if (key->GetToolTipText().empty())
+                ++unnamed_tools;
             wxImage const image = icon.GetBitmap(wxSize(20, 20)).ConvertToImage();
             bool green = false;
             for (int y = 0; y < image.GetHeight() && !green; ++y) {
                 for (int x = 0; x < image.GetWidth() && !green; ++x) {
                     bool const opaque = !image.HasAlpha() || image.GetAlpha(x, y) == 255;
-                    green = opaque && image.GetGreen(x, y) > 200 && image.GetRed(x, y) < 120 && image.GetBlue(x, y) < 180;
+                    green = opaque && image.GetGreen(x, y) > 200 && image.GetRed(x, y) < 120 &&
+                            image.GetBlue(x, y) < 180;
                 }
             }
-            if (green) ++green_icons;
+            if (green)
+                ++green_icons;
         }
         dialog.EndModal(wxID_CANCEL);
     });
-    EXPECT_TRUE(choose_open_file(nullptr, "Import photo", INDICATOR_SAMPLES_DIR, "Images (*.jpg)").empty());
+    EXPECT_TRUE(
+        choose_open_file(nullptr, "Import photo", INDICATOR_SAMPLES_DIR, "Images (*.jpg)").empty());
     EXPECT_EQ(folder, wxString(INDICATOR_SAMPLES_DIR));
     EXPECT_EQ(unnamed_tools, 0);  // every icon-only key has a tooltip
-    EXPECT_GE(green_icons, 3);  // back, forward, up, new folder, list, details
+    EXPECT_GE(green_icons, 3);    // back, forward, up, new folder, list, details
 }
 
 TEST(WxFileDialog, SaveAddsTheSuffix) {
     wxString const folder = wx(utf8(std::filesystem::temp_directory_path()));
     drive_modal([&](wxDialog& dialog) {
         auto* name = find_descendant<wxTextCtrl>(&dialog);
-        if (name) name->SetValue("contorno-suffix-test");
+        if (name)
+            name->SetValue("contorno-suffix-test");
         wxCommandEvent accept(wxEVT_BUTTON, wxID_OK);
         dialog.GetEventHandler()->ProcessEvent(accept);
     });
-    wxString const path = choose_save_file(nullptr, "Save", folder + "/a.zip", "Inspections (*.zip)", "zip");
+    wxString const path =
+        choose_save_file(nullptr, "Save", folder + "/a.zip", "Inspections (*.zip)", "zip");
     EXPECT_EQ(path, folder + "/contorno-suffix-test.zip");
 }
 
 namespace {
-/// Saves over `existing`: the confirmation is answered with `answer`; the dialog is then cancelled if still open.
+/// Saves over `existing`: the confirmation is answered with `answer`; the dialog is then cancelled
+/// if still open.
 wxString save_over(std::filesystem::path const& existing, int answer, bool* asked) {
     drive_modal([=](wxDialog& dialog) {
         drive_modal(
@@ -76,7 +85,8 @@ wxString save_over(std::filesystem::path const& existing, int answer, bool* aske
         find_descendant<wxTextCtrl>(&dialog)->SetValue(wx(utf8(existing.filename())));
         wxCommandEvent accept(wxEVT_BUTTON, wxID_OK);
         dialog.GetEventHandler()->ProcessEvent(accept);
-        if (dialog.IsModal()) dialog.EndModal(wxID_CANCEL);  // answered no: still open
+        if (dialog.IsModal())
+            dialog.EndModal(wxID_CANCEL);  // answered no: still open
     });
     return choose_save_file(nullptr, "Save", wx(utf8(existing)), "Inspections (*.zip)", "zip");
 }
@@ -107,10 +117,12 @@ TEST(WxFileDialog, FolderNamesUseTheFieldText) {
         auto* files = find_descendant<wxGenericFileCtrl>(&dialog);
         auto* list = files ? files->GetFileList() : nullptr;
         auto colour_of = [&](wxString const& name, wxColour* colour, bool* saw) {
-            if (!list) return;
+            if (!list)
+                return;
             for (long row = 0; row < list->GetItemCount(); ++row) {
                 auto* data = static_cast<wxFileData*>(wxUIntToPtr(list->GetItemData(row)));
-                if (!data || data->GetFileName() != name) continue;
+                if (!data || data->GetFileName() != name)
+                    continue;
                 *colour = list->GetItemTextColour(row);
                 *saw = true;
                 return;
@@ -126,7 +138,8 @@ TEST(WxFileDialog, FolderNamesUseTheFieldText) {
         }
         dialog.EndModal(wxID_CANCEL);
     });
-    EXPECT_TRUE(choose_open_file(nullptr, "Import", wx(utf8(dir.path / "sub")), "All (*)|*").empty());
+    EXPECT_TRUE(
+        choose_open_file(nullptr, "Import", wx(utf8(dir.path / "sub")), "All (*)|*").empty());
     wxColour const ink = palette(false).field_text;
     EXPECT_TRUE(saw_opened);
     EXPECT_EQ(opened, ink);  // ".." is a directory row
@@ -146,7 +159,8 @@ TEST(WxFileDialog, LabelsFollowTheLanguage) {
         std::vector<wxStaticText*> labels;
         collect_descendants(&dialog, labels);
         for (auto* label : labels)
-            if (label->GetLabel() == expected) found = label->GetLabel();
+            if (label->GetLabel() == expected)
+                found = label->GetLabel();
         dialog.EndModal(wxID_CANCEL);
     });
     choose_open_file(nullptr, "Import", INDICATOR_SAMPLES_DIR, "Images (*.jpg)");
@@ -161,7 +175,8 @@ TEST(WxFileDialog, WarnShowsTheMessageAndCloses) {
         title = dialog.GetTitle();
         std::vector<wxStaticText*> labels;
         collect_descendants(&dialog, labels);
-        for (auto* label : labels) message += label->GetLabel();
+        for (auto* label : labels)
+            message += label->GetLabel();
         dialog.EndModal(wxID_OK);
     });
     warn(nullptr, "Careful", "Something happened");

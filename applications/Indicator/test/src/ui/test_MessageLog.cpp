@@ -53,7 +53,9 @@ protected:
     MessageLog* log = nullptr;
 };
 
-Message hi(std::string const& who) { return Message("t.hi").with("who", who); }
+Message hi(std::string const& who) {
+    return Message("t.hi").with("who", who);
+}
 
 void mouse(wxWindow* w, wxEventType type, wxPoint p) {
     wxMouseEvent e(type);
@@ -93,9 +95,11 @@ TEST_F(WxLog, ArabicBlocksAreRightToLeft) {
     apply_language("ar");
     EXPECT_EQ(log->GetLayoutDirection(), wxLayout_LeftToRight);
     ASSERT_EQ(log->line_count(), 2u);
-    for (std::size_t i = 0; i < log->line_count(); ++i) EXPECT_EQ(log->line_direction(i), wxLayout_RightToLeft);
+    for (std::size_t i = 0; i < log->line_count(); ++i)
+        EXPECT_EQ(log->line_direction(i), wxLayout_RightToLeft);
     apply_language("en");
-    for (std::size_t i = 0; i < log->line_count(); ++i) EXPECT_EQ(log->line_direction(i), wxLayout_LeftToRight);
+    for (std::size_t i = 0; i < log->line_count(); ++i)
+        EXPECT_EQ(log->line_direction(i), wxLayout_LeftToRight);
 }
 
 TEST_F(WxLog, ArabicLastMessageHasNoIsolates) {
@@ -106,7 +110,8 @@ TEST_F(WxLog, ArabicLastMessageHasNoIsolates) {
 }
 
 TEST_F(WxLog, FullLogRebuildsInOrder) {
-    for (int i = 0; i < MessageLog::max_lines + 5; ++i) log->add(hi(std::to_string(i)));
+    for (int i = 0; i < MessageLog::max_lines + 5; ++i)
+        log->add(hi(std::to_string(i)));
     apply_language("de");
     EXPECT_EQ(log->line_count(), static_cast<std::size_t>(MessageLog::max_lines));
     EXPECT_TRUE(log->line_text(0).EndsWith("Hallo 5"));
@@ -134,7 +139,8 @@ TEST_F(WxLog, CopyPutsTheSelectionOnTheClipboard) {
     log->add(hi("b"));
     drag(log, log->position_of(0, 10), log->position_of(0, 14));
     ASSERT_EQ(log->selected_text(), "Hi a");
-    if (!wxTheClipboard->Open()) GTEST_SKIP() << "no clipboard";
+    if (!wxTheClipboard->Open())
+        GTEST_SKIP() << "no clipboard";
     wxTheClipboard->Clear();
     wxTheClipboard->Close();
     wxKeyEvent key(wxEVT_KEY_DOWN);
@@ -160,7 +166,8 @@ TEST_F(WxLog, NothingSelectedCopiesNothing) {
 
 TEST_F(WxLog, WheelHandleAndTrackScroll) {
     log->SetSize(300, 60);
-    for (int i = 0; i < 20; ++i) log->add(hi(std::to_string(i)));
+    for (int i = 0; i < 20; ++i)
+        log->add(hi(std::to_string(i)));
     log->rerender();  // at the bottom at once
     double const range = log->scroll_range();
     ASSERT_GT(range, 0);
@@ -233,7 +240,9 @@ TEST_F(WxLog, WrappedLineSelectsAcrossItsRows) {
     EXPECT_NE(log->position_of(0, 3).y, log->position_of(0, 40).y);
 }
 
-TEST_F(WxLog, TabDoesNotStopAtTheLog) { EXPECT_FALSE(log->AcceptsFocusFromKeyboard()); }
+TEST_F(WxLog, TabDoesNotStopAtTheLog) {
+    EXPECT_FALSE(log->AcceptsFocusFromKeyboard());
+}
 
 TEST_F(WxLog, PaintsTextAndSelection) {
     log->add(hi("a"));
@@ -242,14 +251,16 @@ TEST_F(WxLog, PaintsTextAndSelection) {
         int n = 0;
         for (int y = 0; y < image.GetHeight(); ++y)
             for (int x = 0; x < image.GetWidth(); ++x)
-                if (image.GetRed(x, y) == r && image.GetGreen(x, y) == g && image.GetBlue(x, y) == b) ++n;
+                if (image.GetRed(x, y) == r && image.GetGreen(x, y) == g &&
+                    image.GetBlue(x, y) == b)
+                    ++n;
         return n;
     };
     EXPECT_GT(count(0x47, 0xFF, 0x86), 0);  // the lit text
     EXPECT_EQ(count(0x1f, 0x5c, 0x35), 0);
     log->select_all();
     EXPECT_GT(count(0x1f, 0x5c, 0x35), 50);  // the selection's face
-    EXPECT_GT(count(0xc8, 0xff, 0xd9), 0);    // the selected text
+    EXPECT_GT(count(0xc8, 0xff, 0xd9), 0);   // the selected text
 }
 
 TEST_F(WxLog, HighlightLiesUnderTheSelectedGlyphsOfAnArabicLine) {
@@ -263,7 +274,9 @@ TEST_F(WxLog, HighlightLiesUnderTheSelectedGlyphsOfAnArabicLine) {
     int inside = 0, outside = 0;
     for (int y = a.y - 5; y <= a.y + 5; ++y) {
         for (int x = 4; x < image.GetWidth() - 12; ++x) {
-            if (image.GetRed(x, y) != 0x1f || image.GetGreen(x, y) != 0x5c || image.GetBlue(x, y) != 0x35) continue;
+            if (image.GetRed(x, y) != 0x1f || image.GetGreen(x, y) != 0x5c ||
+                image.GetBlue(x, y) != 0x35)
+                continue;
             (x >= lo - 1 && x <= hi_x + 1 ? inside : outside) += 1;
         }
     }
@@ -274,10 +287,12 @@ TEST_F(WxLog, HighlightLiesUnderTheSelectedGlyphsOfAnArabicLine) {
 TEST_F(WxLog, ArabicBlocksAreStackedByTheirOwnHeight) {
     apply_language("ar");
     log->SetSize(300, 60);
-    for (int i = 0; i < 10; ++i) log->add(hi("\u0645\u064e\u0631\u0652\u062d\u064e\u0628\u064b\u0627"));
+    for (int i = 0; i < 10; ++i)
+        log->add(hi("\u0645\u064e\u0631\u0652\u062d\u064e\u0628\u064b\u0627"));
     log->rerender();
     double total = 0;
-    for (std::size_t i = 0; i < log->line_count(); ++i) total += log->block_height(i);
+    for (std::size_t i = 0; i < log->line_count(); ++i)
+        total += log->block_height(i);
     EXPECT_GT(log->block_height(0), 0);
     EXPECT_NEAR(log->position_of(1, 0).y - log->position_of(0, 0).y, log->block_height(0), 1.0);
     EXPECT_NEAR(log->scroll_range(), total - (60 - 2 * 4 - 2 * 2), 0.001);
@@ -311,7 +326,8 @@ TEST_F(WxLog, BlockHeightIsTheLayoutsOwnPixelHeight) {
     apply_language("ar");
     std::string const word = "\u0645\u064e\u0631\u0652\u062d\u064e\u0628\u064b\u0627";
     log->add(hi(word));
-    PangoLayout* layout = gtk_widget_create_pango_layout(static_cast<GtkWidget*>(log->GetHandle()), nullptr);
+    PangoLayout* layout =
+        gtk_widget_create_pango_layout(static_cast<GtkWidget*>(log->GetHandle()), nullptr);
     pango_layout_set_font_description(layout, log->text_font().GetNativeFontInfo()->description);
     std::string const text = log->line_text(0).utf8_string();
     pango_layout_set_text(layout, text.data(), static_cast<int>(text.size()));

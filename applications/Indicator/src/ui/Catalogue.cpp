@@ -24,23 +24,28 @@ namespace {
 bool installed = false;
 
 #ifdef INDICATOR_WX_CATALOGUES
-/// Serves the embedded wxstd catalogues. Other domains (wx also asks for the port's own, "gtk") have none.
+/// Serves the embedded wxstd catalogues. Other domains (wx also asks for the port's own, "gtk")
+/// have none.
 class EmbeddedLoader : public wxTranslationsLoader {
 public:
     wxMsgCatalog* LoadCatalog(wxString const& domain, wxString const& lang) override {
-        if (!is_std(domain)) return nullptr;
+        if (!is_std(domain))
+            return nullptr;
         for (std::size_t i = 0; i < indicator::embedded_wx_catalogue_count; ++i) {
             auto const& entry = indicator::embedded_wx_catalogues[i];
             if (lang == entry.language) {
                 return wxMsgCatalog::CreateFromData(
-                    wxScopedCharBuffer::CreateNonOwned(reinterpret_cast<char const*>(entry.data), entry.size), domain);
+                    wxScopedCharBuffer::CreateNonOwned(reinterpret_cast<char const*>(entry.data),
+                                                       entry.size),
+                    domain);
             }
         }
         return nullptr;
     }
     wxArrayString GetAvailableTranslations(wxString const& domain) const override {
         wxArrayString languages;
-        if (!is_std(domain)) return languages;
+        if (!is_std(domain))
+            return languages;
         for (std::size_t i = 0; i < indicator::embedded_wx_catalogue_count; ++i) {
             languages.Add(indicator::embedded_wx_catalogues[i].language);
         }
@@ -68,7 +73,8 @@ void install_wx_catalogues() {
 }
 
 void select_wx_catalogue(std::string const& code) {
-    if (!installed) return;
+    if (!installed)
+        return;
     // a fresh wxTranslations: wx picks the language when a catalogue is added
     auto* translations = new wxTranslations;
 #ifdef INDICATOR_WX_CATALOGUES

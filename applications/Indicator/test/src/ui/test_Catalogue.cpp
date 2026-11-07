@@ -9,7 +9,8 @@
 namespace test_Catalogue {
 
 TEST(WxCatalogue, GermanFileDialogTexts) {
-    if (!wx_catalogues_embedded()) GTEST_SKIP() << "no wxstd catalogue embedded (wx3.2-i18n not installed)";
+    if (!wx_catalogues_embedded())
+        GTEST_SKIP() << "no wxstd catalogue embedded (wx3.2-i18n not installed)";
     apply_language("de");
     EXPECT_NE(wxGetTranslation("Cancel"), "Cancel");
     apply_language("en");
