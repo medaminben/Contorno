@@ -17,6 +17,6 @@ jobs:
       contents: read
     with:
       presets: "ci"
-      apt-packages: "libwxgtk3.2-dev libopencv-dev gettext python3-venv"
+      apt-packages: "libwxgtk3.2-dev libopencv-dev gettext python3-venv fonts-noto-core locales-all"
       xvfb: true
       timeout-minutes: 90
