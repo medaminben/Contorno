@@ -18,13 +18,17 @@ namespace test_LibraryText {
 
 namespace {
 
-bool contains(std::string const& text, std::string const& part) { return text.find(part) != std::string::npos; }
+bool contains(std::string const& text, std::string const& part) {
+    return text.find(part) != std::string::npos;
+}
 
 /// No part of the message, however deeply nested, is the raw fallback.
 bool fully_known(Message const& message) {
-    if (message.key() == "common.raw") return false;
+    if (message.key() == "common.raw")
+        return false;
     for (auto const& inner : message.nested()) {
-        if (!fully_known(inner)) return false;
+        if (!fully_known(inner))
+            return false;
     }
     return true;
 }
@@ -33,7 +37,8 @@ bool fully_known(Message const& message) {
 std::string unescaped(std::string const& literal) {
     std::string text;
     for (std::size_t i = 0; i < literal.size(); ++i) {
-        if (literal[i] == '\\' && i + 1 < literal.size()) ++i;
+        if (literal[i] == '\\' && i + 1 < literal.size())
+            ++i;
         text += literal[i];
     }
     return text;
@@ -42,7 +47,8 @@ std::string unescaped(std::string const& literal) {
 /// U+2066 and U+2069 as UTF-8: the isolates the right to left languages put around plain text.
 void remove_isolates(std::string& text) {
     for (std::string const mark : {"\xE2\x81\xA6", "\xE2\x81\xA9"}) {
-        for (auto at = text.find(mark); at != std::string::npos; at = text.find(mark)) text.erase(at, mark.size());
+        for (auto at = text.find(mark); at != std::string::npos; at = text.find(mark))
+            text.erase(at, mark.size());
     }
 }
 
@@ -83,22 +89,24 @@ TEST(WxLibraryText, BadJson) {
 
 TEST(WxLibraryText, NoTorch) {
     register_indicator_strings();
-    if (Vision::ai_available()) GTEST_SKIP();
+    if (Vision::ai_available())
+        GTEST_SKIP();
     Vision::ObjectOptions options;
     options.model_path = "/nonexistent.pt";
     auto const result = Vision::find_objects(INDICATOR_SAMPLES_DIR "/leather/calf_black.jpg",
-                                            Vision::lens_scale(Vision::LensCamera {}), options);
+                                             Vision::lens_scale(Vision::LensCamera {}), options);
     ASSERT_TRUE(result.isError());
     EXPECT_TRUE(fully_known(from_library(result.error())));
 }
 
 TEST(WxLibraryText, UnreadableModel) {
     register_indicator_strings();
-    if (!Vision::ai_available()) GTEST_SKIP();
+    if (!Vision::ai_available())
+        GTEST_SKIP();
     Vision::ObjectOptions options;
     options.model_path = "/nonexistent.pt";
     auto const result = Vision::find_objects(INDICATOR_SAMPLES_DIR "/leather/calf_black.jpg",
-                                            Vision::lens_scale(Vision::LensCamera {}), options);
+                                             Vision::lens_scale(Vision::LensCamera {}), options);
     ASSERT_TRUE(result.isError());
     Message const message = from_library(result.error());
     EXPECT_TRUE(fully_known(message));
@@ -110,8 +118,8 @@ TEST(WxLibraryText, WrappedAtEveryLevel) {
     register_indicator_strings();
     Vision::ObjectOptions options;
     options.model_path = "/m.pt";
-    auto const result = Vision::find_objects(INDICATOR_SAMPLES_DIR "/leather/calf_black.jpg", Vision::PixelScale {0, 1},
-                                            options);
+    auto const result = Vision::find_objects(INDICATOR_SAMPLES_DIR "/leather/calf_black.jpg",
+                                             Vision::PixelScale {0, 1}, options);
     ASSERT_TRUE(result.isError());
     Message const message = from_library(result.error());
     EXPECT_TRUE(fully_known(message));
@@ -123,7 +131,8 @@ TEST(WxLibraryText, RawStaysAsItIs) {
     register_indicator_strings();
     for (auto const& code : language_codes()) {
         // the right to left languages isolate the plain text; nothing else changes
-        std::string text = from_library(Core::Problem::raw("something new: 12 mm {x}")).render(code);
+        std::string text =
+            from_library(Core::Problem::raw("something new: 12 mm {x}")).render(code);
         remove_isolates(text);
         EXPECT_EQ(text, "something new: 12 mm {x}") << code;
     }
@@ -142,15 +151,20 @@ TEST(WxLibraryText, OutOfMemoryIsTranslated) {
 TEST(WxLibraryText, EveryLibraryProblemHasItsSentence) {
     register_indicator_strings();
     std::regex const made(
-        R"re(\b(?:Problem|wrapped|entry_problem|entry|path_problem|problem)\(\s*"([a-z_]+(?:\.[a-z_]+)*)",\s*"((?:[^"\\]|\\.)*)")re");
+        R"re(\b(?:Problem|wrapped|entry_problem|entry|path_problem|problem)\(\s*"([a-z_]+(?:\.[a-z_]+)*)",\s*((?:"(?:[^"\\]|\\.)*"\s*)+))re");
+    // a long sentence is split into adjacent literals, which the compiler joins
+    std::regex const literal(R"re("((?:[^"\\]|\\.)*)")re");
     int found = 0;
     namespace fs = std::filesystem;
     for (auto const& entry : fs::recursive_directory_iterator(CONTORNO_LIBRARIES_DIR)) {
-        if (!entry.is_regular_file()) continue;
+        if (!entry.is_regular_file())
+            continue;
         std::string const ext = entry.path().extension().string();
-        if (ext != ".cpp" && ext != ".h") continue;
+        if (ext != ".cpp" && ext != ".h")
+            continue;
         std::string const path = entry.path().generic_string();
-        if (contains(path, "/test/")) continue;
+        if (contains(path, "/test/"))
+            continue;
         std::ifstream file(entry.path(), std::ios::binary);
         ASSERT_TRUE(file) << path;
         std::stringstream buffer;
@@ -158,9 +172,15 @@ TEST(WxLibraryText, EveryLibraryProblemHasItsSentence) {
         std::string const source = buffer.str();
         for (std::sregex_iterator it(source.begin(), source.end(), made), end; it != end; ++it) {
             std::string const code = (*it)[1].str();
-            if (code == "raw" || code.rfind("test.", 0) == 0) continue;
+            if (code == "raw" || code.rfind("test.", 0) == 0)
+                continue;
             std::string const key = "lib." + code;
-            std::string const english = unescaped((*it)[2].str());
+            std::string const literals = (*it)[2].str();
+            std::string joined;
+            for (std::sregex_iterator part(literals.begin(), literals.end(), literal), stop;
+                 part != stop; ++part)
+                joined += (*part)[1].str();
+            std::string const english = unescaped(joined);
             EXPECT_EQ(lookup("en", key), english) << key << " in " << path;
             for (auto const& language : language_codes()) {
                 EXPECT_NE(lookup(language, key), key) << key << " missing in " << language;

@@ -19,14 +19,19 @@ public:
 
 // The wx tests need an application object and a display; gtest_main has neither.
 int main(int argc, char** argv) {
-    // ctest sets this too; a direct run gets X11 (the GTK default under Wayland is not what the tests drive)
+    // ctest sets this too; a direct run gets X11 (the GTK default under Wayland is not what the
+    // tests drive)
     setenv("GDK_BACKEND", "x11", 0);
+    ::testing::InitGoogleTest(&argc, argv);
+    // The build lists the tests (gtest_discover_tests) where there may be no display.
+    if (GTEST_FLAG_GET(list_tests))
+        return RUN_ALL_TESTS();
     wxApp::SetInstance(new TestApp);
-    if (!wxEntryStart(argc, argv)) return 1;
+    if (!wxEntryStart(argc, argv))
+        return 1;
     wxTheApp->CallOnInit();
     register_indicator_strings();
     install_wx_catalogues();
-    ::testing::InitGoogleTest(&argc, argv);
     int const result = RUN_ALL_TESTS();
     wxTheApp->OnExit();
     wxEntryCleanup();
