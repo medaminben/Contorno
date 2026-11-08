@@ -240,6 +240,8 @@ int self_test(MainWindow& window, std::vector<std::string> const& args) {
     return 0;
 }
 
+}  // namespace
+
 /// The application object: the main window, a photo given on the command
 /// line, `--version`, and `--self-test <photo> <dir>`.
 class IndicatorApp : public wxApp {
@@ -303,7 +305,5 @@ public:
 private:
     int exit_code_ = -1;  ///< the self-test's
 };
-
-}  // namespace
 
 wxIMPLEMENT_APP(IndicatorApp);
