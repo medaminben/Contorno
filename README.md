@@ -27,13 +27,25 @@ Cowhide Skin" by Enda012, [Wikimedia Commons](https://commons.wikimedia.org/wiki
 - Runs offline. The interface and the manual are in English, Deutsch, Español,
   Italiano, Français, Nederlands and العربية.
 
-How accurate the area is, and why, is the subject of the article
-[*Measuring the surface of animal hides from a single photograph*](docs/articles/contorno-area-measurement/contorno-area-measurement.pdf).
+## Download
 
-## Status
+The installers of the latest release:
 
-Contorno is in development. It is built and tested on Linux (Debian 13,
-GTK 3). There are no installers yet; build it from source as below.
+- **Windows 10 and 11 (64-bit):** [contorno-indicator-setup.exe](https://github.com/medaminben/Contorno/releases/latest/download/contorno-indicator-setup.exe)
+- **Debian 13:** [contorno-indicator_amd64.deb](https://github.com/medaminben/Contorno/releases/latest/download/contorno-indicator_amd64.deb),
+  installed with `sudo apt install ./contorno-indicator_amd64.deb`
+
+They contain the program, the AI model, the manual and the area-measurement
+article. The sample photos, the sources and the articles' scripts are in this
+repository: clone it to get them. Earlier versions and beta builds are on the
+[releases page](https://github.com/medaminben/Contorno/releases).
+
+## Articles
+
+- [*Measuring the surface of animal hides from a single photograph*](docs/articles/contorno-area-measurement/contorno-area-measurement.pdf):
+  the method, how accurate the area is and why, and its limits.
+- [*Contorno Indicator: the desktop application*](docs/articles/contorno-indicator/contorno-indicator.pdf):
+  how the method is implemented, and the tools that build and check it.
 
 ## Building
 
@@ -59,7 +71,11 @@ build/default/bin/Indicator
 
 The presets are `default` (release), `debug`, `coverage`, `asan` and `ci`;
 each builds into `build/<preset>`. Without LibTorch the program still builds,
-and says on screen that it cannot measure.
+and says on screen that it cannot measure. The installers come from the
+presets `deb` (then `cpack` in `build/deb`) and `windows-installer` (target
+`Indicator_installer`, with MSVC, vcpkg and Inno Setup); the
+[Installers workflow](.github/workflows/installers.yml) builds both for every
+release.
 
 ## Documentation
 
@@ -67,8 +83,6 @@ and says on screen that it cannot measure.
 |---|---|
 | [User manual](docs/manual/content/en/) | operators; built into `docs/manual/index.html` and opened from the program |
 | [Architecture](docs/architecture/architecture.md) | engineers who build, change or review Contorno |
-| [Area measurement article](docs/articles/contorno-area-measurement/contorno-area-measurement.pdf) | the method, its error budget and its limits |
-| [Implementation paper](docs/articles/contorno-indicator/contorno-indicator.pdf) | how the Indicator is built and checked |
 | [Sample images](docs/samples/image-sources.md) | the origin and licence of every photo in the repository |
 
 ## Contributing

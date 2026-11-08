@@ -10,3 +10,5 @@ jobs:
     permissions:
       contents: write
       actions: write
+    with:
+      installer-workflow: installers.yml

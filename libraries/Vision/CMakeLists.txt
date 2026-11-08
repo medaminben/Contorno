@@ -91,6 +91,12 @@ if(CONTORNO_WITH_TORCH)
     install(DIRECTORY ${CONTORNO_TORCH_ROOT}/lib/
         DESTINATION ${CMAKE_INSTALL_LIBDIR}
         FILES_MATCHING PATTERN "*.so*"
+        PATTERN "*test*" EXCLUDE
+        PATTERN "libtorch_python*" EXCLUDE
+        PATTERN "libbackend_with_compiler*" EXCLUDE
+        PATTERN "libaoti_custom_ops*" EXCLUDE
+        PATTERN "libshm" EXCLUDE
+        PATTERN "libshm_windows" EXCLUDE
     )
 endif()
 

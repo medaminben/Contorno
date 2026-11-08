@@ -52,6 +52,33 @@
       "inherits": "base",
       "binaryDir": "${sourceDir}/build/ci",
       "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+    },
+    {
+      "name": "deb",
+      "displayName": "Contorno Debian package (cpack in build/deb)",
+      "inherits": "base",
+      "binaryDir": "${sourceDir}/build/deb",
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux" },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "BUILD_TESTING": "OFF",
+        "CMAKE_INSTALL_PREFIX": "/usr",
+        "CMAKE_INSTALL_LIBDIR": "lib/contorno",
+        "CMAKE_INSTALL_RPATH": "$ORIGIN;$ORIGIN/../lib/contorno"
+      }
+    },
+    {
+      "name": "windows-installer",
+      "displayName": "Contorno Windows installer (MSVC, wxWidgets from vcpkg, Inno Setup)",
+      "inherits": "base",
+      "binaryDir": "${sourceDir}/build/windows-installer",
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" },
+      "toolchainFile": "$env{VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "BUILD_TESTING": "OFF",
+        "VCPKG_TARGET_TRIPLET": "x64-windows"
+      }
     }
   ],
   "buildPresets": [
@@ -59,7 +86,9 @@
     { "name": "debug",    "configurePreset": "debug" },
     { "name": "coverage", "configurePreset": "coverage" },
     { "name": "asan",     "configurePreset": "asan" },
-    { "name": "ci",       "configurePreset": "ci" }
+    { "name": "ci",       "configurePreset": "ci" },
+    { "name": "deb",      "configurePreset": "deb" },
+    { "name": "windows-installer", "configurePreset": "windows-installer" }
   ],
   "testPresets": [
     {

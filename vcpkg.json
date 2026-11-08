@@ -1,0 +1,12 @@
+{
+  "name": "contorno",
+  "version-semver": "1.0.0",
+  "description": "wxWidgets for the Windows build (preset windows-installer); Linux takes it from the distribution",
+  "builtin-baseline": "6fdd23fa0a9479a9f9a1c48178696f60cf39255d",
+  "dependencies": [
+    "wxwidgets"
+  ],
+  "overrides": [
+    { "name": "wxwidgets", "version": "3.2.8.1" }
+  ]
+}

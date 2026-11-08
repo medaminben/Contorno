@@ -12,11 +12,17 @@
 
 option(CONTORNO_TORCH_FETCH "Download LibTorch when find_package fails" ON)
 set(CONTORNO_TORCH_VERSION "2.12.0" CACHE STRING "LibTorch release fetched when none is installed")
+if(WIN32)
+    set(_contorno_torch_archive "libtorch-win-shared-with-deps-2.12.0%2Bcpu.zip")
+    set(_contorno_torch_sha256 "8f8f018ca1cf372158916192dc1e97219983c047cdcd7cd9b11d21e64a2e93bf")
+else()
+    set(_contorno_torch_archive "libtorch-shared-with-deps-2.12.0%2Bcpu.zip")
+    set(_contorno_torch_sha256 "220bdabe192da7b6ae4b07e8735094b9ae542cc5743fc129c0a85315c03e34bc")
+endif()
 set(CONTORNO_TORCH_URL
-    "https://download.pytorch.org/libtorch/cpu/libtorch-shared-with-deps-2.12.0%2Bcpu.zip"
+    "https://download.pytorch.org/libtorch/cpu/${_contorno_torch_archive}"
     CACHE STRING "URL of the fetched LibTorch archive")
-set(CONTORNO_TORCH_SHA256
-    "220bdabe192da7b6ae4b07e8735094b9ae542cc5743fc129c0a85315c03e34bc"
+set(CONTORNO_TORCH_SHA256 "${_contorno_torch_sha256}"
     CACHE STRING "SHA-256 of the fetched LibTorch archive")
 
 find_package(Torch QUIET HINTS /opt/libtorch)

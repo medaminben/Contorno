@@ -61,6 +61,7 @@ if(BUILD_APPS AND EXISTS "${applications_dir}/CMakeLists.txt")
 endif()
 
 include(InstallConfig)
+include(Installers)
 
 if(BUILD_VERBOSE_OUTPUT)
     dump_cmake_vars(BuildLogEnd.log)
