@@ -12,7 +12,7 @@ StringTable indicator_strings_fr() {
         {"file.lookIn", "Regarder dans :"},
         {"panel.import", "Importer"},
         {"panel.open", "Ouvrir"},
-        {"panel.save", "Enregistrer"},
+        {"panel.save", "Sauver"},
         {"panel.setup", "Réglages"},
         {"panel.import.tip", "Importer une photo des objets"},
         {"panel.open.tip", "Ouvrir une inspection (zip)"},

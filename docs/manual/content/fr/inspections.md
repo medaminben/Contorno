@@ -6,7 +6,7 @@ summary: Un fichier zip garde la photo, la caméra, le contour et la surface.
 
 ## Enregistrer {#save}
 
-Appuyez sur `Enregistrer` dès que l'afficheur montre le résultat. Choisissez un dossier et un nom ; le nom de la photo est proposé. Pendant l'analyse d'une photo, `Enregistrer` attend le résultat : le panneau de messages indique *Attendez la fin de l'analyse.*
+Appuyez sur `Sauver` dès que l'afficheur montre le résultat. Choisissez un dossier et un nom ; le nom de la photo est proposé. Pendant l'analyse d'une photo, `Sauver` attend le résultat : le panneau de messages indique *Attendez la fin de l'analyse.*
 
 Le fichier est un zip ordinaire que tout programme sait lire :
 
@@ -31,4 +31,4 @@ Une inspection enregistrée par une ancienne version de Contorno (une inspection
 
 ## Dossiers {#folders}
 
-`Importer`, `Ouvrir` et `Enregistrer` commencent tous dans le dossier du dernier fichier choisi dans l'un d'eux.
+`Importer`, `Ouvrir` et `Sauver` commencent tous dans le dossier du dernier fichier choisi dans l'un d'eux.

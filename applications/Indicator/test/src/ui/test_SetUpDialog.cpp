@@ -1009,11 +1009,13 @@ TEST(WxSetUpDialog, DialogStyle) {
     EXPECT_EQ(hex(p.key_text), "#47FF86");
     EXPECT_EQ(utf8(ok->GetLabel()), "OK");
     wxImage const image = ok->Render(1.0).ConvertToImage();
+    // within a few levels: where no glyph covers a whole pixel, antialiasing mixes in the face
+    auto near = [](unsigned char value, int target) { return std::abs(value - target) <= 8; };
     bool green = false;
     for (int y = 0; y < image.GetHeight() && !green; ++y) {
         for (int x = 0; x < image.GetWidth() && !green; ++x) {
-            green = image.GetRed(x, y) == 0x47 && image.GetGreen(x, y) == 0xFF &&
-                    image.GetBlue(x, y) == 0x86;
+            green = near(image.GetRed(x, y), 0x47) && near(image.GetGreen(x, y), 0xFF) &&
+                    near(image.GetBlue(x, y), 0x86);
         }
     }
     EXPECT_TRUE(green) << "no key-green text pixel";

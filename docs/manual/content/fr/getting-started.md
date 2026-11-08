@@ -12,7 +12,7 @@ Ouvrez Contorno Indicator. La fenêtre occupe tout l'écran. Avant la première 
 2. La même photo avec le contour trouvé, en vert. C'est à l'intérieur de ce contour que la surface est mesurée.
 3. `Importer` — choisir une photo de l'objet sur la table. Son analyse commence aussitôt.
 4. `Ouvrir` — revoir une inspection enregistrée. Voir [Enregistrer et ouvrir des inspections](inspections).
-5. `Enregistrer` — garder la photo, la caméra, le contour et la surface dans un seul fichier zip.
+5. `Sauver` — garder la photo, la caméra, le contour et la surface dans un seul fichier zip.
 6. `Réglages` — la caméra, la langue et le thème. Voir [Réglages](set-up).
 7. Le masque : l'objet tel que l'analyse le voit, en noir, avec son contour en vert.
 8. Le panneau de messages. Chaque ligne commence par son heure. Il dit ce qui a été importé, d'où vient l'échelle, combien d'objets ont été trouvés et combien de temps cela a pris.

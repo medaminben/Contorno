@@ -10,7 +10,7 @@ StringTable indicator_strings_nl() {
         {"file.fileName", "Bestandsnaam:"},
         {"file.fileType", "Bestandstype:"},
         {"file.lookIn", "Zoeken in:"},
-        {"panel.import", "Importeren"},
+        {"panel.import", "Import"},
         {"panel.open", "Openen"},
         {"panel.save", "Opslaan"},
         {"panel.setup", "Instellen"},
