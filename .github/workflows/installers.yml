@@ -129,6 +129,15 @@ jobs:
         run: |
           cmake --build --preset windows-installer --target Indicator_installer -- -k 0
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Self-test the staged program
+        shell: pwsh
+        timeout-minutes: 10
+        run: |
+          # a GUI program: Start-Process waits for it and gives its exit code (77: no AI)
+          $p = Start-Process build/windows-installer/stage/bin/Indicator.exe -Wait -PassThru `
+            -ArgumentList '--self-test', 'docs/samples/leather/calf_black.jpg', "$env:RUNNER_TEMP/self-test"
+          if ($p.ExitCode -ne 0) { Write-Error "self-test exit code $($p.ExitCode)"; exit 1 }
+          Get-ChildItem "$env:RUNNER_TEMP/self-test"
           Copy-Item build/windows-installer/dist/contorno-indicator-*-setup.exe contorno-indicator-setup.exe
       - uses: actions/upload-artifact@v4
         with:
