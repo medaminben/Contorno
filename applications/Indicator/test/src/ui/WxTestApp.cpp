@@ -101,7 +101,7 @@ Ink ink_on_screen(wxWindow& window, wxRect area) {
     pump_until(
         [&] {
             wxImage const shown = on_screen(window);
-            if (shown.GetSize() == window.GetSize()) {
+            if (shown.IsOk() && shown.GetSize() == window.GetSize()) {
                 ink = ink_of(shown, area);
                 ink.read = true;
             }
