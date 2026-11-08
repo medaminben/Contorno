@@ -27,7 +27,7 @@ La surface ne vaut que ce que vaut la photo. Quelques minutes consacrées à l'i
 :::
 
 ::: step
-**Vérifiez le contour, puis enregistrez.** Zoomez sur les bords : la ligne verte doit suivre le bord de la peau, et non une ombre ou la table. Appuyez sur `Enregistrer` pour garder la mesure.
+**Vérifiez le contour, puis enregistrez.** Zoomez sur les bords : la ligne verte doit suivre le bord de la peau, et non une ombre ou la table. Appuyez sur `Sauver` pour garder la mesure.
 :::
 
 ## Ce qui est mesuré {#what}

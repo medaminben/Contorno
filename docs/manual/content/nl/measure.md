@@ -23,7 +23,7 @@ Het oppervlak is zo goed als de foto. Een paar minuten voor de opstelling geven 
 :::
 
 ::: step
-**Importeer de foto.** Druk op `Importeren` en kies het bestand (JPEG, PNG, BMP of TIFF). De voortgangsbalk loopt enkele seconden; dan verschijnt rechts de contour en toont de uitlezing het oppervlak.
+**Importeer de foto.** Druk op `Import` en kies het bestand (JPEG, PNG, BMP of TIFF). De voortgangsbalk loopt enkele seconden; dan verschijnt rechts de contour en toont de uitlezing het oppervlak.
 :::
 
 ::: step

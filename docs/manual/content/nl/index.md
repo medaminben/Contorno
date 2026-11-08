@@ -20,7 +20,7 @@ De contour wordt gevonden door een model van kunstmatige intelligentie (IS-Net) 
 
 ## Waar beginnen
 
-Lees eenmaal [Aan de slag](getting-started) en stel dan de camera in onder [Instellen](set-up). Een meting heeft drie stappen: de huid plat neerleggen, de foto nemen, hem laden met `Importeren`. Zie [Een huid meten](measure).
+Lees eenmaal [Aan de slag](getting-started) en stel dan de camera in onder [Instellen](set-up). Een meting heeft drie stappen: de huid plat neerleggen, de foto nemen, hem laden met `Import`. Zie [Een huid meten](measure).
 
 ::: note
 Het ? in het venster Instellen opent deze handleiding, in de taal die daar gekozen is.

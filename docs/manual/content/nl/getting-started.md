@@ -10,7 +10,7 @@ Open Contorno Indicator. Het venster vult het scherm. Vóór de eerste foto toon
 
 1. De foto zoals hij genomen is, onaangeroerd.
 2. Dezelfde foto met de gevonden contour, in groen. Binnen deze contour wordt het oppervlak gemeten.
-3. `Importeren` — een foto van het voorwerp op de tafel kiezen. De analyse begint meteen.
+3. `Import` — een foto van het voorwerp op de tafel kiezen. De analyse begint meteen.
 4. `Openen` — een opgeslagen inspectie weer tonen. Zie [Inspecties opslaan en openen](inspections).
 5. `Opslaan` — foto, camera, contour en oppervlak in één zip-bestand bewaren.
 6. `Instellen` — de camera, de taal en het thema. Zie [Instellen](set-up).
