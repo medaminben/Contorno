@@ -483,7 +483,7 @@ std::string photo_name(std::string const& photo_path) {
         return "original";
     std::string suffix = file.substr(dot + 1);
     std::transform(suffix.begin(), suffix.end(), suffix.begin(),
-                   [](unsigned char ch) { return std::tolower(ch); });
+                   [](unsigned char ch) { return static_cast<char>(std::tolower(ch)); });
     return "original." + suffix;
 }
 
