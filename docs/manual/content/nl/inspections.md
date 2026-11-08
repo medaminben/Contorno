@@ -23,7 +23,7 @@ Het bestand is een gewone zip die elk programma kan lezen:
 
 Druk op `Openen` en kies een opgeslagen zip. Foto, contour en oppervlak komen precies terug zoals ze opgeslagen zijn, zonder nieuwe analyse, met de opgeslagen camera. Het meldingenpaneel sluit de regel af met *opgeslagen resultaat*.
 
-De volgende `Importeren` keert terug naar de camera van `Instellen`.
+De volgende `Import` keert terug naar de camera van `Instellen`.
 
 ::: note
 Een inspectie die door een oudere versie van Contorno is opgeslagen (een huidinspectie) opent haar foto en camera en wordt opnieuw geanalyseerd met de AI-contour. Het meldingenpaneel zegt het.
@@ -31,4 +31,4 @@ Een inspectie die door een oudere versie van Contorno is opgeslagen (een huidins
 
 ## Mappen {#folders}
 
-`Importeren`, `Openen` en `Opslaan` beginnen allemaal in de map van het laatste bestand dat in een van hen gekozen is.
+`Import`, `Openen` en `Opslaan` beginnen allemaal in de map van het laatste bestand dat in een van hen gekozen is.
