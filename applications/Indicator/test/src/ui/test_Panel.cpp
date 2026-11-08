@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <wx/display.h>
 #include <wx/frame.h>
 #include <wx/image.h>
 #include <wx/statbmp.h>
@@ -55,7 +56,9 @@ struct Fixture {
     wxFrame* frame = new wxFrame(nullptr, wxID_ANY, "t");
     ControlPanel* panel = new ControlPanel(frame);
     Fixture() {
-        frame->SetClientSize(1600, panel->GetBestSize().y);
+        // on the screen whole, or the parts past its edge cannot be read back from it
+        int const width = std::min(1600, wxDisplay().GetClientArea().width);
+        frame->SetClientSize(width, panel->GetBestSize().y);
         panel->SetSize(frame->GetClientSize());
         panel->Layout();
     }
