@@ -84,8 +84,9 @@ create_library(
 if(CONTORNO_WITH_TORCH)
     target_compile_definitions(contorno_vision PRIVATE CONTORNO_WITH_TORCH=1)
     if(MSVC)
-        # LibTorch's headers narrow size_t and double; MSVC reports it in this file
-        set_source_files_properties(src/Ai_impl.cpp PROPERTIES COMPILE_OPTIONS "/wd4244;/wd4267")
+        # LibTorch's headers narrow size_t and double and hold unreachable code;
+        # MSVC reports it in this file
+        set_source_files_properties(src/Ai_impl.cpp PROPERTIES COMPILE_OPTIONS "/wd4244;/wd4267;/wd4702")
     endif()
     if(TARGET test_contorno_vision)
         target_compile_definitions(test_contorno_vision PRIVATE CONTORNO_TEST_WITH_TORCH=1)
