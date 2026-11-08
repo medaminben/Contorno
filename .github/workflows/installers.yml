@@ -92,7 +92,8 @@ jobs:
         with:
           name: isnet-model
           path: model
-      - uses: actions/cache@v4
+      - id: vcpkg-cache
+        uses: actions/cache/restore@v4
         with:
           path: C:\vcpkg-cache
           key: vcpkg-${{ hashFiles('vcpkg.json') }}
@@ -112,13 +113,21 @@ jobs:
             choco install innosetup -y --no-progress
           }
       - uses: ilammy/msvc-dev-cmd@v1
-      - name: Build the installer
+      - name: Configure (vcpkg builds wxWidgets)
         shell: pwsh
         run: |
           $model = (Resolve-Path model/isnet-general-use.pt).Path -replace '\\', '/'
           cmake --preset windows-installer "-DCONTORNO_ISNET_MODEL=$model"
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          cmake --build --preset windows-installer --target Indicator_installer
+      # saved even when the build fails, so a retry does not build wxWidgets again
+      - if: always() && steps.vcpkg-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: C:\vcpkg-cache
+          key: vcpkg-${{ hashFiles('vcpkg.json') }}
+      - name: Build the installer
+        shell: pwsh
+        run: |
+          cmake --build --preset windows-installer --target Indicator_installer -- -k 0
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           Copy-Item build/windows-installer/dist/contorno-indicator-*-setup.exe contorno-indicator-setup.exe
       - uses: actions/upload-artifact@v4

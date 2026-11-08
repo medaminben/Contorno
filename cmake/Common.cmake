@@ -7,6 +7,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # No C++20 modules are used; module dependency scanning only slows builds and
 # triggers a Ninja dyndep assertion when source lists change.
 set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
+# Exported classes hold standard library members; the DLLs and the program are
+# always built together with one compiler and runtime, so MSVC's "needs to
+# have dll-interface" warnings do not apply.
+if(MSVC)
+    add_compile_options(/wd4251 /wd4275)
+endif()
 
 include(GNUInstallDirs)
 # Override buildkit's create_library, create_application and generate_libraries.
