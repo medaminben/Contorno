@@ -96,14 +96,18 @@ jobs:
         with:
           path: C:\vcpkg-cache
           key: vcpkg-${{ hashFiles('vcpkg.json') }}
-      - name: Update vcpkg to the manifest's baseline
+      - name: Get vcpkg at the manifest's baseline
         shell: pwsh
         run: |
-          git -C $env:VCPKG_INSTALLATION_ROOT fetch --quiet origin
-          & "$env:VCPKG_INSTALLATION_ROOT\bootstrap-vcpkg.bat" -disableMetrics
-      - name: Install Inno Setup
+          $baseline = (Get-Content vcpkg.json | ConvertFrom-Json).'builtin-baseline'
+          git clone --quiet https://github.com/microsoft/vcpkg C:\vcpkg-contorno
+          git -C C:\vcpkg-contorno checkout --quiet $baseline
+          & C:\vcpkg-contorno\bootstrap-vcpkg.bat -disableMetrics
+          "VCPKG_INSTALLATION_ROOT=C:\vcpkg-contorno" >> $env:GITHUB_ENV
+      - name: Install Ninja and Inno Setup
         shell: pwsh
         run: |
+          choco install ninja -y --no-progress
           if (-not (Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) {
             choco install innosetup -y --no-progress
           }
