@@ -1,0 +1,29 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Contorno
+Upstream-Contact: Mohamed Lamine Ben Hassine <mohamed.ben-hassine@mailfence.com>
+Source: https://github.com/medaminben/Contorno
+
+Files: *
+Copyright: 2026 Mohamed Lamine Ben Hassine
+License: MIT
+
+Files: usr/share/contorno/samples/*
+Copyright: see usr/share/contorno/samples/SOURCES.md
+License: public-domain and CC-BY-4.0
+ The origin, author and licence of each photo are listed in
+ /usr/share/contorno/samples/SOURCES.md. The CC BY 4.0 text is at
+ https://creativecommons.org/licenses/by/4.0/legalcode.
+
+Files: usr/lib/contorno/libtorch* usr/lib/contorno/libc10.so usr/lib/contorno/libshm.so
+Copyright: Facebook, Inc. and the PyTorch contributors
+License: BSD-3-Clause
+ LibTorch, the C++ distribution of PyTorch. The licence text is at
+ https://github.com/pytorch/pytorch/blob/main/LICENSE.
+
+Files: usr/lib/contorno/libgomp.so.1
+Copyright: Free Software Foundation, Inc.
+License: GPL-3+ with GCC-Runtime-Library-Exception-3.1
+ On Debian systems the GPL 3 is in /usr/share/common-licenses/GPL-3.
+
+License: MIT
+@CONTORNO_LICENCE_TEXT@

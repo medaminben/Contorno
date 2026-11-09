@@ -34,6 +34,16 @@ void send_to(wxWindow* window, wxLayoutDirection direction, std::unordered_set<w
         send_to(child, direction, done);
 }
 
+/// Destroy() on a top-level window, or on its owner, deletes it when idle; until then it stays in
+/// wxTopLevelWindows, and its handlers may refer to an owner that is already gone.
+bool waiting_for_deletion(wxWindow* window) {
+    for (; window; window = window->GetParent()) {
+        if (window->IsBeingDeleted() || wxPendingDelete.Member(window))
+            return true;
+    }
+    return false;
+}
+
 }  // namespace
 
 wxLayoutDirection language_layout_direction() {
@@ -51,6 +61,8 @@ void apply_language(std::string const& code) {
 #endif
     std::vector<wxWindow*> const tops(wxTopLevelWindows.begin(), wxTopLevelWindows.end());
     std::unordered_set<wxWindow*> done;
-    for (wxWindow* top : tops)
-        send_to(top, direction, done);
+    for (wxWindow* top : tops) {
+        if (!waiting_for_deletion(top))
+            send_to(top, direction, done);
+    }
 }

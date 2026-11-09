@@ -24,6 +24,7 @@ endif()
 add_library(indicator_model STATIC
     src/model/Analyser.cpp
     src/model/CameraMessage.cpp
+    src/model/DataFolder.cpp
     src/model/ImageSize.cpp
     src/model/IndicatorSettings.cpp
     src/model/Inspection.cpp
@@ -47,15 +48,16 @@ target_compile_features(indicator_model PUBLIC cxx_std_20)
 include(cmake/WxCatalogue.cmake)
 indicator_embed_wx_catalogue(INDICATOR_WX_CATALOGUE_CPP)
 
-# The window icon, compiled into the library. A runtime path is invisible once the
-# process is not started from the source tree, and Wayland does not ask the
-# window for a file.
+# The window icon and the panel's wordmark, compiled into the library. A runtime path
+# is invisible once the process is not started from the source tree, and Wayland does
+# not ask the window for a file.
 set(INDICATOR_ICON_CPP ${CMAKE_CURRENT_BINARY_DIR}/indicator_icon_data.cpp)
 set(INDICATOR_ICON_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/contorno-indicator-dark.png
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/contorno-indicator-light.png
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/contorno-indicator-dark.svg
-    ${CMAKE_CURRENT_SOURCE_DIR}/resources/contorno-indicator-light.svg)
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/contorno-indicator-light.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/contorno-indicator-wordmark.svg)
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${INDICATOR_ICON_FILES})
 function(indicator_icon_array path symbol)
     file(READ "${path}" _hex HEX)
@@ -72,6 +74,8 @@ string(APPEND _icon_cpp "${_piece}")
 indicator_icon_array(${CMAKE_CURRENT_SOURCE_DIR}/resources/contorno-indicator-dark.svg indicator_icon_dark_svg)
 string(APPEND _icon_cpp "${_piece}")
 indicator_icon_array(${CMAKE_CURRENT_SOURCE_DIR}/resources/contorno-indicator-light.svg indicator_icon_light_svg)
+string(APPEND _icon_cpp "${_piece}")
+indicator_icon_array(${CMAKE_CURRENT_SOURCE_DIR}/resources/contorno-indicator-wordmark.svg indicator_wordmark_svg)
 string(APPEND _icon_cpp "${_piece}")
 file(WRITE ${INDICATOR_ICON_CPP} "${_icon_cpp}")
 
@@ -118,7 +122,6 @@ if(UNIX AND NOT APPLE)
     endif()
 endif()
 target_compile_definitions(indicator_ui PRIVATE
-    INDICATOR_RESOURCES_DIR="${CMAKE_CURRENT_SOURCE_DIR}/resources"
     INDICATOR_MANUAL_DIR="${CMAKE_SOURCE_DIR}/docs/manual"
     # where the build put the IS-Net model (empty without AI) and the samples the file dialogs start in;
     # an installed model is found first at run time
@@ -132,6 +135,8 @@ create_application(
     DEPENDENCIES indicator_ui
 )
 target_compile_definitions(Indicator PRIVATE INDICATOR_VERSION="${CONTORNO_VERSION_FULL}")
+# the file the user runs: the package's name, not a bare "Indicator" in /usr/bin
+set_target_properties(Indicator PROPERTIES OUTPUT_NAME contorno-indicator)
 
 if(BUILD_TESTING AND TARGET Indicator)
     build_gtest_executable(
@@ -140,6 +145,7 @@ if(BUILD_TESTING AND TARGET Indicator)
              test/src/model/test_LibraryText.cpp test/src/model/test_CameraMessage.cpp
              test/src/model/test_Measure.cpp
              test/src/model/test_ModelPath.cpp test/src/model/test_ManualLocation.cpp
+             test/src/model/test_DataFolder.cpp
              test/src/model/test_ImageSize.cpp test/src/model/test_Inspection.cpp
              test/src/model/test_Analyser.cpp test/src/model/test_Settings.cpp test/src/model/test_Utf8Path.cpp test/src/model/test_TempDir.cpp
              test/src/model/TestStrings.cpp
@@ -202,6 +208,9 @@ if(TARGET Indicator)
     set(_paper ${CMAKE_SOURCE_DIR}/docs/articles/contorno-indicator)
     install(FILES ${_paper}/contorno-indicator.html ${_paper}/paper.css DESTINATION ${CMAKE_INSTALL_DATADIR}/contorno/articles/contorno-indicator)
     install(DIRECTORY ${_paper}/figures DESTINATION ${CMAKE_INSTALL_DATADIR}/contorno/articles/contorno-indicator)
+    # the photos the file dialogs open first, with their sources (one is CC BY: the credit travels with it)
+    install(DIRECTORY ${CMAKE_SOURCE_DIR}/docs/samples/ DESTINATION ${CMAKE_INSTALL_DATADIR}/contorno/samples
+            PATTERN "check_sources.py" EXCLUDE)
 endif()
 
 if(TARGET Indicator AND WIN32)
@@ -249,7 +258,7 @@ elseif(TARGET Indicator AND UNIX)
     # does this; undo by deleting the copied files.
     set(INDICATOR_USER_DATA "$ENV{HOME}/.local/share")
     file(READ resources/contorno-indicator.desktop INDICATOR_DESKTOP)
-    string(REPLACE "Exec=Indicator" "Exec=$<TARGET_FILE:Indicator>" INDICATOR_DESKTOP "${INDICATOR_DESKTOP}")
+    string(REPLACE "Exec=contorno-indicator" "Exec=$<TARGET_FILE:Indicator>" INDICATOR_DESKTOP "${INDICATOR_DESKTOP}")
     file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/contorno-indicator.desktop CONTENT "${INDICATOR_DESKTOP}")
     set(INDICATOR_DESKTOP_COMMANDS
         COMMAND ${CMAKE_COMMAND} -E make_directory ${INDICATOR_USER_DATA}/applications

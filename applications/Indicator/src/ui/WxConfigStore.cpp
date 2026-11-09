@@ -1,11 +1,13 @@
 #include "ui/WxConfigStore.h"
 
+#include "model/DataFolder.h"
 #include "model/Utf8Path.h"
 #include "ui/Text.h"
 
 #include <wx/fileconf.h>
 #include <wx/log.h>
 #include <wx/stdpaths.h>
+#include <wx/utils.h>
 
 #include <system_error>
 
@@ -45,4 +47,13 @@ std::filesystem::path default_settings_file() {
 #endif
     return path_from_utf8(utf8(wxStandardPaths::Get().GetUserConfigDir())) / "Contorno" /
            "Indicator" / "indicator.ini";
+}
+
+std::filesystem::path user_data_folder() {
+    wxString chosen;
+    if (wxGetEnv("CONTORNO_DATA_FOLDER", &chosen) && !chosen.empty())
+        return path_from_utf8(utf8(chosen));
+    auto const& paths = wxStandardPaths::Get();
+    return data_folder(path_from_utf8(utf8(paths.GetExecutablePath())).parent_path(),
+                       path_from_utf8(utf8(paths.GetDocumentsDir())));
 }

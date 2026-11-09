@@ -13,11 +13,13 @@ struct Rect {
 
 /// The manual page to open for `language`: the first that exists of
 /// `<app_dir>/../share/contorno/manual/<language>/index.html`,
-/// `<source_manual>/<language>/index.html`, the same two for English, then
-/// the language chooser `index.html` of each. An empty `source_manual` is
-/// skipped. Empty when none exists.
+/// `<data_manual>/<language>/index.html` (the copy in the user's data folder),
+/// `<source_manual>/<language>/index.html`, the same three for English, then
+/// the language chooser `index.html` of each. An empty `data_manual` or
+/// `source_manual` is skipped. Empty when none exists.
 std::filesystem::path find_manual(std::string const& language, std::filesystem::path const& app_dir,
-                                  std::filesystem::path const& source_manual);
+                                  std::filesystem::path const& source_manual,
+                                  std::filesystem::path const& data_manual = {});
 
 struct ManualBrowserCommand {
     std::string program;

@@ -91,6 +91,19 @@ TEST(WxLanguage, DialogOfAFrameGetsLanguageChangeOnce) {
     dialog = nullptr;
 }
 
+// a destroyed frame stays listed until idle: its handlers may belong to an owner that is gone
+TEST(WxLanguage, WindowsWaitingForDeletionGetNoLanguageChange) {
+    wxFrame* frame = new wxFrame(nullptr, wxID_ANY, "t");
+    auto* widget = new Counter(frame);
+    auto* dialog = new wxDialog(frame, wxID_ANY, "d");
+    auto* in_dialog = new Counter(dialog);
+    frame->Destroy();
+    apply_language("de");
+    EXPECT_EQ(widget->changes, 0);
+    EXPECT_EQ(in_dialog->changes, 0);
+    apply_language("en");
+}
+
 TEST(WxLanguage, ApplyRerendersAnExistingLogLine) {
     add_strings("en", {{"t.lang", "Hello"}});
     add_strings("de", {{"t.lang", "Hallo"}});

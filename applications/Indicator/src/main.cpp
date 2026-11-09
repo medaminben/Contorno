@@ -1,3 +1,4 @@
+#include "model/DataFolder.h"
 #include "model/IndicatorSettings.h"
 #include "model/Language.h"
 #include "model/Measure.h"
@@ -16,6 +17,8 @@
 
 #include <wx/app.h>
 #include <wx/image.h>
+#include <wx/statbmp.h>
+#include <wx/stdpaths.h>
 #include <wx/utils.h>
 
 #ifdef INDICATOR_GTK3
@@ -125,14 +128,14 @@ wxImage screenshot(wxWindow& window) {
 #endif
 }
 
-/// `Indicator --self-test <photo> <dir>`: import the photo and check the
+/// `contorno-indicator --self-test <photo> <dir>`: import the photo and check the
 /// result and the readout; import while an analysis runs; export, check the
 /// zip and open it again without an analysis; save a window screenshot in
 /// <dir>.
 /// Exits with 77 (skipped) when the AI outline is unavailable.
 int self_test(MainWindow& window, std::vector<std::string> const& args) {
     if (args.size() < 4) {
-        std::fprintf(stderr, "usage: Indicator --self-test <photo> <dir>\n");
+        std::fprintf(stderr, "usage: contorno-indicator --self-test <photo> <dir>\n");
         return 2;
     }
     auto const photo = path_from_utf8(args[2]);
@@ -141,6 +144,13 @@ int self_test(MainWindow& window, std::vector<std::string> const& args) {
     std::filesystem::create_directories(out, ignored);
     if (window.GetIcons().IsEmpty())
         return fail("icon", "the window has no icon");
+    bool wordmark = false;
+    for (wxWindow* child : window.panel().GetChildren()) {
+        if (auto* logo = dynamic_cast<wxStaticBitmap*>(child))
+            wordmark = wordmark || logo->GetBitmap().IsOk();
+    }
+    if (!wordmark)
+        return fail("wordmark", "the panel shows no wordmark");
 
     if (!Vision::ai_available()) {
         std::fprintf(stderr, "self-test: skipped: Vision was built without LibTorch\n");
@@ -261,16 +271,23 @@ public:
         for (int i = 0; i < argc; ++i)
             args.push_back(utf8(argv[i]));
         if (args.size() > 1 && args[1] == "--version") {
-            std::printf("Indicator %s\n", INDICATOR_VERSION);
+            std::printf("Contorno Indicator %s\n", INDICATOR_VERSION);
             return false;
         }
         bool const testing = args.size() > 1 && args[1] == "--self-test";
         // self-tests never touch the user's settings
         std::shared_ptr<SettingsStore> store;
-        if (testing)
+        if (testing) {
             store = std::make_shared<MemorySettingsStore>();
-        else
+        } else {
             store = std::make_shared<WxConfigStore>(default_settings_file());
+            // Linux: the package's samples, manual and articles into ~/Documents/Contorno
+            std::string reason;
+            auto const app_dir =
+                path_from_utf8(utf8(wxStandardPaths::Get().GetExecutablePath())).parent_path();
+            if (!fill_data_folder(app_dir, user_data_folder(), reason))
+                std::fprintf(stderr, "Indicator: data folder: %s\n", reason.c_str());
+        }
         register_indicator_strings();
         install_wx_catalogues();
         apply_language(load_indicator_settings(*store).language);

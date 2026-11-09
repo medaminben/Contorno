@@ -36,8 +36,10 @@ std::string file_url(fs::path const& path) {
 }  // namespace
 
 fs::path find_manual(std::string const& language, fs::path const& app_dir,
-                     fs::path const& source_manual) {
+                     fs::path const& source_manual, fs::path const& data_manual) {
     std::vector<fs::path> roots {(app_dir / ".." / "share/contorno/manual").lexically_normal()};
+    if (!data_manual.empty())
+        roots.push_back(data_manual);
     if (!source_manual.empty())
         roots.push_back(source_manual);
     std::vector<fs::path> candidates;

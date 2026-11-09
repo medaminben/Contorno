@@ -457,20 +457,32 @@ is the current set; the Indicator counts are the former wx suites.
 Installed layout (Linux, `CMAKE_INSTALL_PREFIX`):
 
 ```
-bin/Indicator                                    (when BUILD_WX_UI)
+bin/contorno-indicator                           (when BUILD_WX_UI)
 lib/libcontorno_*.so, LibTorch .so files        (RPATH $ORIGIN)
 share/contorno/models/isnet-general-use.pt      (when built)
 share/contorno/manual/{index.html,assets/,<lang>/}
-share/contorno/articles/contorno-area-measurement/   (linked from the manual)
+share/contorno/articles/<article>/              (linked from the manual)
+share/contorno/samples/                         (with SOURCES.md)
+share/doc/contorno-indicator/copyright
 share/applications/contorno-indicator.desktop
 share/icons/hicolor/{scalable,symbolic}/apps/contorno-indicator.svg
 share/icons/hicolor/<size>/apps/contorno-indicator.png
 ```
 
-Indicator installs the model, the manual and the article.
+Indicator installs the model, the manual, the articles and the samples.
 
-The model and the manual are found next to the executable first, then in
-the source/build tree, so a developer build works without installing.
+The manual, the articles and the samples are the user's: they live in a
+data folder. The Windows installer asks for it (`Documents\Contorno` by
+default), puts them there and writes its path to
+`share\contorno\data-folder`; the program folder keeps only `bin` and the
+model. On Linux the first start copies each one that is missing from
+`share/contorno` into `~/Documents/Contorno`. `CONTORNO_DATA_FOLDER`
+overrides the folder. The file dialogs start in its `samples` until a
+folder is remembered.
+
+The model and the manual are found next to the executable first (the
+manual then in the data folder), then in the source/build tree, so a
+developer build works without installing.
 
 ---
 

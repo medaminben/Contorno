@@ -102,7 +102,7 @@ Contorno/
 
 Vision is the measuring core. Inspection owns the file format and calls
 Vision and Tools. The application is two static libraries and then the
-executable `Indicator`.
+executable `contorno-indicator` (CMake target `Indicator`).
 
 `indicator_model` is plain C++20. Text is UTF-8 `std::string`. Paths are
 `std::filesystem::path`. It links Tools, Vision and Inspection. The seven
@@ -467,13 +467,14 @@ follows.
 | `test_contorno_inspection` | 14 | the zip schema, older versions, legacy files |
 | `test_indicator_model` | 90 | analysis, settings, languages, messages, the manual locator. No display |
 | `test_indicator` | 170 | windows on a display: panel, readout, log, file dialog, set-up, languages, right-to-left |
-| `indicator_self_test` | 1 | the real `Indicator` process |
+| `indicator_self_test` | 1 | the real `contorno-indicator` process |
 | `indicator_manual` | 1 | every manual page, its links, and every label it quotes |
 | `samples_sources` | 1 | every sample file has a row in `docs/samples/SOURCES.md` |
 
-The self-test is the integration check. It launches `Indicator
+The self-test is the integration check. It launches `contorno-indicator
 --self-test` on `docs/samples/leather/calf_black.jpg` with
-`GDK_BACKEND=x11` and a timeout of 300 s. It imports the photograph and
+`GDK_BACKEND=x11` and a timeout of 300 s. It checks that the window has
+its icon and the panel its wordmark, imports the photograph and
 waits, checks that the readout shows the area of the result, imports
 again while an analysis is running and checks that the readout never
 shows a stale number, writes the zip and checks the six entry names and
@@ -489,10 +490,10 @@ quotes with the string tables. A renamed key fails this test, which is
 the reason the manual and the translations can be reviewed as text.
 
 What this suite does not do: it does not compare an area with a
-reference instrument, it does not run on Windows or macOS in this
-project's continuous practice (the desktop entry and the icon path are
-written for Linux; the executable has resource branches for Windows and
-macOS), and it does not treat the duration as a pass or fail. Section 7
+reference instrument, it does not run on Windows on every change (the
+installers workflow builds the Windows installer, installs it and runs
+the self-test on the installed program; macOS is not built), and it
+does not treat the duration as a pass or fail. Section 7
 is a reading of that duration, not a limit in the test suite. The
 application still logs its own seconds with each result.
 
@@ -504,19 +505,25 @@ with an RPATH of `$ORIGIN`, so the executable finds them without a
 system-wide torch.
 
 ```
-bin/Indicator
+bin/contorno-indicator
 lib/libcontorno_*.so    and the LibTorch objects
 share/contorno/models/isnet-general-use.pt
 share/contorno/manual/
-share/contorno/articles/contorno-area-measurement/
+share/contorno/articles/
+share/contorno/samples/
+share/doc/contorno-indicator/copyright
 share/applications/contorno-indicator.desktop
 share/icons/hicolor/.../contorno-indicator.png
 ```
 
-The model, the manual and the measurement article are installed with
-the application. A developer build finds the model and the manual next
-to the executable first, then in the source tree, and does not need an
-install to run. Building `Indicator` also copies the desktop entry into
+The model, the manual, both articles and the sample photographs are
+installed with the application. The last three belong to the user and
+live in a data folder: the Windows installer asks for it
+(`Documents\Contorno` by default), and on Linux the first start copies
+them from `share/contorno` into `~/Documents/Contorno`. The file dialogs
+start in its samples. A developer build finds the model and the manual
+next to the executable first, then in the source tree, and does not need
+an install to run. Building `Indicator` also copies the desktop entry into
 the current user's `~/.local/share`, with `Exec` rewritten to the
 build-tree binary, so a Wayland session shows the icon before anything
 is installed.
