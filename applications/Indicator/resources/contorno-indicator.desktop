@@ -2,7 +2,8 @@
 Type=Application
 Name=Contorno Indicator
 Comment=Object outline and surface area
-Exec=Indicator %f
+Exec=contorno-indicator %f
 Icon=contorno-indicator
 Categories=Graphics;Engineering;
 StartupWMClass=contorno-indicator
+MimeType=image/png;image/jpeg;image/bmp;image/tiff;

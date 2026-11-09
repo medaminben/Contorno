@@ -39,6 +39,18 @@ TEST(WxManualLocation, SourceTreeWhenNotInstalled) {
     EXPECT_EQ(find_manual("ar", dir.path / "bin", source), source / "ar/index.html");
 }
 
+TEST(WxManualLocation, DataFolderAfterTheInstalledCopyBeforeTheSources) {
+    TempDir dir;
+    fs::path const source = dir.path / "docs/manual";
+    fs::path const data = dir.path / "Documents/Contorno/manual";
+    touch(data / "de/index.html");
+    touch(source / "de/index.html");
+    EXPECT_EQ(find_manual("de", dir.path / "bin", source, data), data / "de/index.html");
+    touch(dir.path / "share/contorno/manual/de/index.html");
+    EXPECT_EQ(find_manual("de", dir.path / "bin", source, data),
+              (dir.path / "share/contorno/manual/de/index.html").lexically_normal());
+}
+
 TEST(WxManualLocation, FallsBackToEnglishThenTheChooser) {
     TempDir dir;
     fs::path const source = dir.path / "docs/manual";

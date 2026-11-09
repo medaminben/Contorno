@@ -1139,6 +1139,20 @@ TEST(WxWindow, MissingLastFolderStartsInTheSamples) {
               std::filesystem::path(INDICATOR_SAMPLES_DIR));
 }
 
+// an installed copy: the samples in the user's data folder come before those of the sources
+TEST(WxWindow, FirstStartOpensTheDataFolderSamples) {
+    TempDir data;
+    std::filesystem::create_directories(data.path / "samples");
+    wxString kept;
+    wxGetEnv("CONTORNO_DATA_FOLDER", &kept);
+    wxSetEnv("CONTORNO_DATA_FOLDER", wx(utf8(data.path)));
+    {
+        Over fresh(std::make_shared<MemorySettingsStore>());
+        EXPECT_EQ(path_from_utf8(utf8(import_dialog_folder(*fresh.window))), data.path / "samples");
+    }
+    wxSetEnv("CONTORNO_DATA_FOLDER", kept);
+}
+
 // a photo and an inspection named in German and Arabic letters: imported, analysed, saved and
 // opened again
 TEST(WxWindow, NonAsciiPhotoImportsAndSaves) {

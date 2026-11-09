@@ -25,4 +25,9 @@ private:
 /// layout, which this sets: `$XDG_CONFIG_HOME` or `~/.config`.
 std::filesystem::path default_settings_file();
 
+/// The user's folder for the samples, manual and articles: `$CONTORNO_DATA_FOLDER`
+/// when set, else data_folder: the installer's choice, else `Contorno` in the
+/// system's Documents folder.
+std::filesystem::path user_data_folder();
+
 #endif  // INDICATOR_WXCONFIGSTORE_H
