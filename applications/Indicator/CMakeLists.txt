@@ -135,6 +135,8 @@ create_application(
     DEPENDENCIES indicator_ui
 )
 target_compile_definitions(Indicator PRIVATE INDICATOR_VERSION="${CONTORNO_VERSION_FULL}")
+# the file the user runs: the package's name, not a bare "Indicator" in /usr/bin
+set_target_properties(Indicator PROPERTIES OUTPUT_NAME contorno-indicator)
 
 if(BUILD_TESTING AND TARGET Indicator)
     build_gtest_executable(
@@ -256,7 +258,7 @@ elseif(TARGET Indicator AND UNIX)
     # does this; undo by deleting the copied files.
     set(INDICATOR_USER_DATA "$ENV{HOME}/.local/share")
     file(READ resources/contorno-indicator.desktop INDICATOR_DESKTOP)
-    string(REPLACE "Exec=Indicator" "Exec=$<TARGET_FILE:Indicator>" INDICATOR_DESKTOP "${INDICATOR_DESKTOP}")
+    string(REPLACE "Exec=contorno-indicator" "Exec=$<TARGET_FILE:Indicator>" INDICATOR_DESKTOP "${INDICATOR_DESKTOP}")
     file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/contorno-indicator.desktop CONTENT "${INDICATOR_DESKTOP}")
     set(INDICATOR_DESKTOP_COMMANDS
         COMMAND ${CMAKE_COMMAND} -E make_directory ${INDICATOR_USER_DATA}/applications

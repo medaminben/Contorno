@@ -23,7 +23,7 @@ DefaultDirName={autopf}\Contorno Indicator
 DisableProgramGroupPage=yes
 LicenseFile=..\..\..\LICENSE
 SetupIconFile=indicator.ico
-UninstallDisplayIcon={app}\bin\Indicator.exe
+UninstallDisplayIcon={app}\bin\contorno-indicator.exe
 OutputBaseFilename=contorno-indicator-{#AppVersion}-setup
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
@@ -57,8 +57,8 @@ Source: "{#StageDir}\share\contorno\articles\*"; DestDir: "{code:DataDir}\articl
 ; "Open with" for the photos Import takes; the user's default program for each type stays
 [Registry]
 Root: HKA; Subkey: "Software\Classes\Contorno.Indicator.Photo"; ValueType: string; ValueData: "Contorno Indicator"; Flags: uninsdeletekey
-Root: HKA; Subkey: "Software\Classes\Contorno.Indicator.Photo\DefaultIcon"; ValueType: string; ValueData: "{app}\bin\Indicator.exe,0"
-Root: HKA; Subkey: "Software\Classes\Contorno.Indicator.Photo\shell\open\command"; ValueType: string; ValueData: """{app}\bin\Indicator.exe"" ""%1"""
+Root: HKA; Subkey: "Software\Classes\Contorno.Indicator.Photo\DefaultIcon"; ValueType: string; ValueData: "{app}\bin\contorno-indicator.exe,0"
+Root: HKA; Subkey: "Software\Classes\Contorno.Indicator.Photo\shell\open\command"; ValueType: string; ValueData: """{app}\bin\contorno-indicator.exe"" ""%1"""
 Root: HKA; Subkey: "Software\Classes\.png\OpenWithProgids"; ValueType: string; ValueName: "Contorno.Indicator.Photo"; ValueData: ""; Flags: uninsdeletevalue
 Root: HKA; Subkey: "Software\Classes\.jpg\OpenWithProgids"; ValueType: string; ValueName: "Contorno.Indicator.Photo"; ValueData: ""; Flags: uninsdeletevalue
 Root: HKA; Subkey: "Software\Classes\.jpeg\OpenWithProgids"; ValueType: string; ValueName: "Contorno.Indicator.Photo"; ValueData: ""; Flags: uninsdeletevalue
@@ -66,15 +66,22 @@ Root: HKA; Subkey: "Software\Classes\.bmp\OpenWithProgids"; ValueType: string; V
 Root: HKA; Subkey: "Software\Classes\.tif\OpenWithProgids"; ValueType: string; ValueName: "Contorno.Indicator.Photo"; ValueData: ""; Flags: uninsdeletevalue
 Root: HKA; Subkey: "Software\Classes\.tiff\OpenWithProgids"; ValueType: string; ValueName: "Contorno.Indicator.Photo"; ValueData: ""; Flags: uninsdeletevalue
 
+; left by 0.1.1: the program's old name, and the manual and articles now in the data folder
+; (the program reads share\contorno\manual first, so an old copy would hide the new one)
+[InstallDelete]
+Type: files; Name: "{app}\bin\Indicator.exe"
+Type: filesandordirs; Name: "{app}\share\contorno\manual"
+Type: filesandordirs; Name: "{app}\share\contorno\articles"
+
 [UninstallDelete]
 Type: files; Name: "{app}\share\contorno\data-folder"
 
 [Icons]
-Name: "{autoprograms}\Contorno Indicator"; Filename: "{app}\bin\Indicator.exe"
-Name: "{autodesktop}\Contorno Indicator"; Filename: "{app}\bin\Indicator.exe"; Tasks: desktopicon
+Name: "{autoprograms}\Contorno Indicator"; Filename: "{app}\bin\contorno-indicator.exe"
+Name: "{autodesktop}\Contorno Indicator"; Filename: "{app}\bin\contorno-indicator.exe"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\bin\Indicator.exe"; Description: "{cm:LaunchProgram,Contorno Indicator}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\bin\contorno-indicator.exe"; Description: "{cm:LaunchProgram,Contorno Indicator}"; Flags: nowait postinstall skipifsilent
 
 [CustomMessages]
 en.DataDirCaption=Samples, manual and articles

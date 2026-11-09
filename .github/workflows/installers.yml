@@ -85,7 +85,7 @@ jobs:
           apt-get install -y --no-install-recommends "$GITHUB_WORKSPACE/contorno-indicator_amd64.deb" xvfb xauth
           mv "$GITHUB_WORKSPACE" "$GITHUB_WORKSPACE.hidden"
           code=0
-          HOME=$(mktemp -d) xvfb-run -a Indicator --self-test \
+          HOME=$(mktemp -d) xvfb-run -a contorno-indicator --self-test \
             /usr/share/contorno/samples/leather/calf_black.jpg /tmp/self-test || code=$?
           mv "$GITHUB_WORKSPACE.hidden" "$GITHUB_WORKSPACE"
           test -s /usr/share/doc/contorno-indicator/copyright
@@ -148,7 +148,7 @@ jobs:
         timeout-minutes: 10
         run: |
           # a GUI program: Start-Process waits for it and gives its exit code (77: no AI)
-          $p = Start-Process build/windows-installer/stage/bin/Indicator.exe -Wait -PassThru `
+          $p = Start-Process build/windows-installer/stage/bin/contorno-indicator.exe -Wait -PassThru `
             -ArgumentList '--self-test', 'docs/samples/leather/calf_black.jpg', "$env:RUNNER_TEMP/self-test"
           if ($p.ExitCode -ne 0) { Write-Error "self-test exit code $($p.ExitCode)"; exit 1 }
           Get-ChildItem "$env:RUNNER_TEMP/self-test"
@@ -180,7 +180,7 @@ jobs:
           }
           Rename-Item $env:GITHUB_WORKSPACE "$env:GITHUB_WORKSPACE.hidden"
           try {
-            $p = Start-Process "$app\bin\Indicator.exe" -Wait -PassThru `
+            $p = Start-Process "$app\bin\contorno-indicator.exe" -Wait -PassThru `
               -ArgumentList '--self-test', "$data\samples\leather\calf_black.jpg", "$env:RUNNER_TEMP\installed-self-test"
           } finally {
             Rename-Item "$env:GITHUB_WORKSPACE.hidden" $env:GITHUB_WORKSPACE

@@ -100,7 +100,7 @@ cmake --preset default
 cmake --build --preset default --target isnet_model   # once: exports the AI model (downloads about 1 GB)
 cmake --build --preset default
 ctest --preset default
-build/default/bin/Indicator
+build/default/bin/contorno-indicator
 ```
 
 The presets are `default` (release), `debug`, `coverage`, `asan` and `ci`;
