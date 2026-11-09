@@ -10,7 +10,7 @@
 [![release](https://img.shields.io/github/v/release/medaminben/Contorno)](https://github.com/medaminben/Contorno/releases/latest)
 [![downloads](https://img.shields.io/github/downloads/medaminben/Contorno/total)](https://github.com/medaminben/Contorno/releases)
 ![C++20](https://img.shields.io/badge/C%2B%2B-20-00599C)
-![Qt 6](https://img.shields.io/badge/Qt-6-41CD52)
+![wxWidgets 3.2](https://img.shields.io/badge/wxWidgets-3.2-1A6FA5)
 ![platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-555)
 [![license](https://img.shields.io/badge/license-proprietary-lightgrey)](LICENSE)
 
