@@ -77,6 +77,19 @@ jobs:
         with:
           name: debian
           path: contorno-indicator_amd64.deb
+      # The installed package, with the checkout moved away: a file the program still reads from
+      # the source tree fails here, not on a user's machine. 77: no LibTorch in this build.
+      - name: Install the package and self-test it
+        working-directory: /tmp
+        run: |
+          apt-get install -y --no-install-recommends "$GITHUB_WORKSPACE/contorno-indicator_amd64.deb" xvfb xauth
+          mv "$GITHUB_WORKSPACE" "$GITHUB_WORKSPACE.hidden"
+          code=0
+          HOME=$(mktemp -d) xvfb-run -a Indicator --self-test \
+            /usr/share/contorno/samples/leather/calf_black.jpg /tmp/self-test || code=$?
+          mv "$GITHUB_WORKSPACE.hidden" "$GITHUB_WORKSPACE"
+          test -s /usr/share/doc/contorno-indicator/copyright
+          if [ "$code" -ne 0 ] && [ "$code" -ne 77 ]; then echo "self-test exit code $code"; exit 1; fi
 
   windows:
     needs: model
@@ -149,6 +162,30 @@ jobs:
         with:
           name: windows
           path: contorno-indicator-setup.exe
+      # The installer itself, then the installed program with the checkout renamed: a file the
+      # program still reads from the source tree (the missing wordmark of 0.1.1) fails here.
+      - name: Install and self-test the installed program
+        shell: pwsh
+        working-directory: ${{ runner.temp }}
+        timeout-minutes: 15
+        run: |
+          $app = "$env:RUNNER_TEMP\installed"
+          $setup = Start-Process "$env:GITHUB_WORKSPACE\contorno-indicator-setup.exe" -Wait -PassThru `
+            -ArgumentList '/VERYSILENT', '/SUPPRESSMSGBOXES', '/CURRENTUSER', "/DIR=$app", "/LOG=$env:RUNNER_TEMP\setup.log"
+          if ($setup.ExitCode -ne 0) { Get-Content "$env:RUNNER_TEMP\setup.log"; Write-Error "setup exit code $($setup.ExitCode)"; exit 1 }
+          $data = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'Contorno'
+          foreach ($file in "$app\share\contorno\data-folder", "$app\share\contorno\models\isnet-general-use.pt",
+                            "$data\samples\leather\calf_black.jpg", "$data\manual\index.html") {
+            if (-not (Test-Path $file)) { Write-Error "not installed: $file"; exit 1 }
+          }
+          Rename-Item $env:GITHUB_WORKSPACE "$env:GITHUB_WORKSPACE.hidden"
+          try {
+            $p = Start-Process "$app\bin\Indicator.exe" -Wait -PassThru `
+              -ArgumentList '--self-test', "$data\samples\leather\calf_black.jpg", "$env:RUNNER_TEMP\installed-self-test"
+          } finally {
+            Rename-Item "$env:GITHUB_WORKSPACE.hidden" $env:GITHUB_WORKSPACE
+          }
+          if ($p.ExitCode -ne 0) { Write-Error "installed self-test exit code $($p.ExitCode)"; exit 1 }
 
   publish:
     needs: [debian, windows]

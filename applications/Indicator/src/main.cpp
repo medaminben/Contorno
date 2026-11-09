@@ -17,6 +17,7 @@
 
 #include <wx/app.h>
 #include <wx/image.h>
+#include <wx/statbmp.h>
 #include <wx/stdpaths.h>
 #include <wx/utils.h>
 
@@ -143,6 +144,13 @@ int self_test(MainWindow& window, std::vector<std::string> const& args) {
     std::filesystem::create_directories(out, ignored);
     if (window.GetIcons().IsEmpty())
         return fail("icon", "the window has no icon");
+    bool wordmark = false;
+    for (wxWindow* child : window.panel().GetChildren()) {
+        if (auto* logo = dynamic_cast<wxStaticBitmap*>(child))
+            wordmark = wordmark || logo->GetBitmap().IsOk();
+    }
+    if (!wordmark)
+        return fail("wordmark", "the panel shows no wordmark");
 
     if (!Vision::ai_available()) {
         std::fprintf(stderr, "self-test: skipped: Vision was built without LibTorch\n");
