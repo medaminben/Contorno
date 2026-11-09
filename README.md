@@ -22,7 +22,7 @@
 <p align="center">
   <a href="https://medaminben.github.io/Contorno/">Website</a> ·
   <a href="#download">Download</a> ·
-  <a href="docs/README.md">Docs</a> ·
+  <a href="https://medaminben.github.io/Contorno/manual/">Docs</a> ·
   <a href="https://github.com/medaminben/Contorno/releases">Changelog</a>
 </p>
 
