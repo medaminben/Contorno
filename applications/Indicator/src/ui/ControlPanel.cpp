@@ -13,6 +13,9 @@
 #include "ui/Text.h"
 #include "ui/Theme.h"
 
+// The wordmark, compiled into the executable (see indicator_icon_data.cpp).
+extern unsigned char const indicator_wordmark_svg[];
+
 namespace {
 
 /// The control panel as laid out on a 1920×1080 screen.
@@ -274,9 +277,8 @@ void ControlPanel::retranslate() {
 }
 
 void ControlPanel::update_wordmark() {
-    wxBitmapBundle const svg = wxBitmapBundle::FromSVGFile(
-        wxString::FromUTF8(INDICATOR_RESOURCES_DIR) + "/contorno-indicator-wordmark.svg",
-        wxSize(2125, 725));
+    wxBitmapBundle const svg = wxBitmapBundle::FromSVG(
+        reinterpret_cast<char const*>(indicator_wordmark_svg), wxSize(2125, 725));
     if (!svg.IsOk())
         return;
     wxSize const natural = svg.GetDefaultSize();

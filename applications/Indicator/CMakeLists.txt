@@ -47,15 +47,16 @@ target_compile_features(indicator_model PUBLIC cxx_std_20)
 include(cmake/WxCatalogue.cmake)
 indicator_embed_wx_catalogue(INDICATOR_WX_CATALOGUE_CPP)
 
-# The window icon, compiled into the library. A runtime path is invisible once the
-# process is not started from the source tree, and Wayland does not ask the
-# window for a file.
+# The window icon and the panel's wordmark, compiled into the library. A runtime path
+# is invisible once the process is not started from the source tree, and Wayland does
+# not ask the window for a file.
 set(INDICATOR_ICON_CPP ${CMAKE_CURRENT_BINARY_DIR}/indicator_icon_data.cpp)
 set(INDICATOR_ICON_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/contorno-indicator-dark.png
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/contorno-indicator-light.png
     ${CMAKE_CURRENT_SOURCE_DIR}/resources/contorno-indicator-dark.svg
-    ${CMAKE_CURRENT_SOURCE_DIR}/resources/contorno-indicator-light.svg)
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/contorno-indicator-light.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/resources/contorno-indicator-wordmark.svg)
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${INDICATOR_ICON_FILES})
 function(indicator_icon_array path symbol)
     file(READ "${path}" _hex HEX)
@@ -72,6 +73,8 @@ string(APPEND _icon_cpp "${_piece}")
 indicator_icon_array(${CMAKE_CURRENT_SOURCE_DIR}/resources/contorno-indicator-dark.svg indicator_icon_dark_svg)
 string(APPEND _icon_cpp "${_piece}")
 indicator_icon_array(${CMAKE_CURRENT_SOURCE_DIR}/resources/contorno-indicator-light.svg indicator_icon_light_svg)
+string(APPEND _icon_cpp "${_piece}")
+indicator_icon_array(${CMAKE_CURRENT_SOURCE_DIR}/resources/contorno-indicator-wordmark.svg indicator_wordmark_svg)
 string(APPEND _icon_cpp "${_piece}")
 file(WRITE ${INDICATOR_ICON_CPP} "${_icon_cpp}")
 
@@ -118,7 +121,6 @@ if(UNIX AND NOT APPLE)
     endif()
 endif()
 target_compile_definitions(indicator_ui PRIVATE
-    INDICATOR_RESOURCES_DIR="${CMAKE_CURRENT_SOURCE_DIR}/resources"
     INDICATOR_MANUAL_DIR="${CMAKE_SOURCE_DIR}/docs/manual"
     # where the build put the IS-Net model (empty without AI) and the samples the file dialogs start in;
     # an installed model is found first at run time
