@@ -12,6 +12,8 @@
   <a href="https://github.com/medaminben/Contorno/releases"><img alt="downloads" src="https://img.shields.io/github/downloads/medaminben/Contorno/total"></a>
   <img alt="C++20" src="https://img.shields.io/badge/C%2B%2B-20-00599C">
   <img alt="wxWidgets 3.2" src="https://img.shields.io/badge/wxWidgets-3.2-1A6FA5">
+  <img alt="OpenCV 4" src="https://img.shields.io/badge/OpenCV-4-5C3EE8">
+  <img alt="LibTorch 2.12" src="https://img.shields.io/badge/LibTorch-2.12-EE4C2C">
   <img alt="platform: Windows | Linux" src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux-555">
   <a href="https://github.com/medaminben/Contorno/actions/workflows/docs-pages.yml"><img alt="Pages" src="https://github.com/medaminben/Contorno/actions/workflows/docs-pages.yml/badge.svg?branch=main"></a>
   <a href="https://medaminben.github.io/Contorno/manual/"><img alt="docs: manual" src="https://img.shields.io/badge/docs-manual-0A7BBB"></a>
@@ -22,7 +24,7 @@
 <p align="center">
   <a href="https://medaminben.github.io/Contorno/">Website</a> ·
   <a href="#download">Download</a> ·
-  <a href="https://medaminben.github.io/Contorno/manual/">Docs</a> ·
+  <a href="docs/">Docs</a> ·
   <a href="https://github.com/medaminben/Contorno/releases">Changelog</a>
 </p>
 
