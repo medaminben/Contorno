@@ -1,0 +1,65 @@
+name: Docs on Pages
+
+# Publishes the committed user manual (docs/manual/) and the articles
+# (docs/articles/) to GitHub Pages. The HTML is generated and committed, so
+# this only uploads it. Runs from main only: the site shows the documentation
+# of the latest release.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/manual/**"
+      - "docs/articles/**"
+      - ".github/workflows/docs-pages.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/configure-pages@v6
+
+      # The manual keeps its sources and generator out of the site. The
+      # articles keep their HTML, stylesheet, figures and PDF; the Indicator
+      # article links into ../../manual/assets, so both keep the docs/ layout.
+      - name: Stage the site
+        run: |
+          mkdir -p _site/manual _site/articles
+          cp -r docs/manual/. _site/manual/
+          rm -rf _site/manual/content _site/manual/template.html _site/manual/build_manual.py
+          for dir in docs/articles/*/; do
+            name=$(basename "$dir")
+            mkdir -p "_site/articles/$name"
+            cp "$dir"*.html "$dir"*.css "$dir"*.pdf "_site/articles/$name/"
+            cp -r "$dir"figures "_site/articles/$name/"
+            rm -f "_site/articles/$name/title-logo.html"
+          done
+          cat > _site/index.html <<'EOF'
+          <!doctype html>
+          <meta charset="utf-8">
+          <meta http-equiv="refresh" content="0; url=manual/">
+          <title>Contorno</title>
+          <a href="manual/">Contorno user manual</a>
+          EOF
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v5
