@@ -1,30 +1,21 @@
-Copyright (c) 2026 Mohamed Lamine Ben Hassine. All rights reserved.
+MIT License
 
-This repository and everything in it (source code, documentation, articles,
-figures, the user manual, the Contorno name, wordmark and icons) is the
-property of the copyright holder, except the third-party material listed
-below.
+Copyright (c) 2026 Mohamed Lamine Ben Hassine
 
-No licence is granted. You may not use, copy, modify, merge, publish,
-distribute, sublicense or sell any part of it, or build products or services
-from it, without prior written permission from the copyright holder. Viewing
-the repository on GitHub and forking it there are allowed only as far as the
-GitHub Terms of Service require for public repositories.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-Third-party material keeps its own licence:
-
-- The sample photographs in docs/samples/ are public domain or licensed by
-  their authors (for example CC BY 4.0); docs/samples/image-sources.md lists
-  the author, the licence and the changes made for each one.
-- Libraries and models that the build downloads or links (wxWidgets, OpenCV,
-  LibTorch, GoogleTest, the IS-Net weights and others) are not part of this
-  repository and are used under their own licences.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR ITS USE.
-
-For permission requests, contact the copyright holder through
-https://github.com/medaminben.
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

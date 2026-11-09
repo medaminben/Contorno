@@ -16,7 +16,7 @@
   <a href="https://github.com/medaminben/Contorno/actions/workflows/docs-pages.yml"><img alt="Pages" src="https://github.com/medaminben/Contorno/actions/workflows/docs-pages.yml/badge.svg?branch=main"></a>
   <a href="https://medaminben.github.io/Contorno/manual/"><img alt="docs: manual" src="https://img.shields.io/badge/docs-manual-0A7BBB"></a>
   <a href="#articles"><img alt="docs: articles" src="https://img.shields.io/badge/docs-articles-0A7BBB"></a>
-  <a href="LICENSE"><img alt="license: proprietary" src="https://img.shields.io/badge/license-proprietary-lightgrey"></a>
+  <a href="LICENSE"><img alt="license: MIT" src="https://img.shields.io/github/license/medaminben/Contorno"></a>
 </p>
 
 <p align="center">
@@ -121,5 +121,6 @@ issues. Everyone taking part follows the [code of conduct](CODE_OF_CONDUCT.md).
 
 ## Licence
 
-Copyright © 2026 Mohamed Lamine Ben Hassine. All rights reserved; see
-[LICENSE](LICENSE). The sample photographs keep their own licences.
+Contorno is released under the [MIT licence](LICENSE). The sample
+photographs keep their own licences, listed in
+[docs/samples/image-sources.md](docs/samples/image-sources.md).
