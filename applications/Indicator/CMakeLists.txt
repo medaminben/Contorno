@@ -24,6 +24,7 @@ endif()
 add_library(indicator_model STATIC
     src/model/Analyser.cpp
     src/model/CameraMessage.cpp
+    src/model/DataFolder.cpp
     src/model/ImageSize.cpp
     src/model/IndicatorSettings.cpp
     src/model/Inspection.cpp
@@ -142,6 +143,7 @@ if(BUILD_TESTING AND TARGET Indicator)
              test/src/model/test_LibraryText.cpp test/src/model/test_CameraMessage.cpp
              test/src/model/test_Measure.cpp
              test/src/model/test_ModelPath.cpp test/src/model/test_ManualLocation.cpp
+             test/src/model/test_DataFolder.cpp
              test/src/model/test_ImageSize.cpp test/src/model/test_Inspection.cpp
              test/src/model/test_Analyser.cpp test/src/model/test_Settings.cpp test/src/model/test_Utf8Path.cpp test/src/model/test_TempDir.cpp
              test/src/model/TestStrings.cpp
@@ -204,6 +206,9 @@ if(TARGET Indicator)
     set(_paper ${CMAKE_SOURCE_DIR}/docs/articles/contorno-indicator)
     install(FILES ${_paper}/contorno-indicator.html ${_paper}/paper.css DESTINATION ${CMAKE_INSTALL_DATADIR}/contorno/articles/contorno-indicator)
     install(DIRECTORY ${_paper}/figures DESTINATION ${CMAKE_INSTALL_DATADIR}/contorno/articles/contorno-indicator)
+    # the photos the file dialogs open first, with their sources (one is CC BY: the credit travels with it)
+    install(DIRECTORY ${CMAKE_SOURCE_DIR}/docs/samples/ DESTINATION ${CMAKE_INSTALL_DATADIR}/contorno/samples
+            PATTERN "check_sources.py" EXCLUDE)
 endif()
 
 if(TARGET Indicator AND WIN32)

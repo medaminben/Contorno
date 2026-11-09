@@ -1,8 +1,11 @@
 # Installers of the Indicator: a Debian package on Linux (cpack -G DEB in the
 # build directory) and an Inno Setup installer on Windows (target
 # Indicator_installer). Both carry the program, its libraries, the IS-Net
-# model, the manual and the articles the manual links to. The sample photos,
-# the sources and the development files (headers, CMake package, import
+# model, the manual, the articles the manual links to and the sample photos.
+# The last three are the user's: the Windows installer asks for their folder
+# (Documents\Contorno), and on Linux the program copies them from
+# /usr/share/contorno into ~/Documents/Contorno at its first start. The
+# sources and the development files (headers, CMake package, import
 # libraries) are not installed: they are in the repository.
 #
 # The installer presets (deb, windows-installer) set the library directory and

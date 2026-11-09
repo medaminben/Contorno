@@ -61,8 +61,15 @@ The installers of the latest release:
 - **Debian 13:** [contorno-indicator_amd64.deb](https://github.com/medaminben/Contorno/releases/latest/download/contorno-indicator_amd64.deb),
   installed with `sudo apt install ./contorno-indicator_amd64.deb`
 
-They contain the program, the AI model, the manual and both articles. The sample photos, the sources and the articles' scripts are in this
-repository: clone it to get them. Earlier versions and beta builds are on the
+They contain the program, the AI model, the manual, both articles and the
+sample photos. The Windows installer asks for two folders: one for the
+program (Program Files by default) and one for the samples, the manual and
+the articles (Documents\Contorno by default). On Debian the program goes
+in /usr, and its first start copies the samples, the manual and the
+articles into ~/Documents/Contorno. Import, Open and Save start in the
+samples until you pick another folder, and then remember the last one used.
+The sources and the articles' scripts are in this repository: clone it to
+get them. Earlier versions and beta builds are on the
 [releases page](https://github.com/medaminben/Contorno/releases).
 
 ## Articles

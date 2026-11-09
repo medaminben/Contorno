@@ -1,3 +1,4 @@
+#include "model/DataFolder.h"
 #include "model/IndicatorSettings.h"
 #include "model/Language.h"
 #include "model/Measure.h"
@@ -16,6 +17,7 @@
 
 #include <wx/app.h>
 #include <wx/image.h>
+#include <wx/stdpaths.h>
 #include <wx/utils.h>
 
 #ifdef INDICATOR_GTK3
@@ -267,10 +269,17 @@ public:
         bool const testing = args.size() > 1 && args[1] == "--self-test";
         // self-tests never touch the user's settings
         std::shared_ptr<SettingsStore> store;
-        if (testing)
+        if (testing) {
             store = std::make_shared<MemorySettingsStore>();
-        else
+        } else {
             store = std::make_shared<WxConfigStore>(default_settings_file());
+            // Linux: the package's samples, manual and articles into ~/Documents/Contorno
+            std::string reason;
+            auto const app_dir =
+                path_from_utf8(utf8(wxStandardPaths::Get().GetExecutablePath())).parent_path();
+            if (!fill_data_folder(app_dir, user_data_folder(), reason))
+                std::fprintf(stderr, "Indicator: data folder: %s\n", reason.c_str());
+        }
         register_indicator_strings();
         install_wx_catalogues();
         apply_language(load_indicator_settings(*store).language);

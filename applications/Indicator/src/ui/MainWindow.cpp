@@ -129,11 +129,15 @@ std::string scale_with_unit(Vision::PixelFrame const& frame) {
     return scale_text({frame.mm_per_px_x, frame.mm_per_px_y}) + " mm/px";
 }
 
-/// Where the file dialogs start before a folder is remembered: the samples
-/// when built from the sources and they are there, else the home folder.
+/// Where the file dialogs start before a folder is remembered: the samples in
+/// the user's data folder, else those of the sources when they are there,
+/// else the home folder.
 std::string first_folder() {
-#ifdef INDICATOR_SAMPLES_DIR
     std::error_code ignored;
+    auto const samples = user_data_folder() / "samples";
+    if (std::filesystem::is_directory(samples, ignored))
+        return utf8(samples);
+#ifdef INDICATOR_SAMPLES_DIR
     if (std::filesystem::is_directory(path_from_utf8(INDICATOR_SAMPLES_DIR), ignored))
         return INDICATOR_SAMPLES_DIR;
 #endif
