@@ -12,6 +12,9 @@
 ![C++20](https://img.shields.io/badge/C%2B%2B-20-00599C)
 ![wxWidgets 3.2](https://img.shields.io/badge/wxWidgets-3.2-1A6FA5)
 ![platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-555)
+[![Pages](https://github.com/medaminben/Contorno/actions/workflows/docs-pages.yml/badge.svg?branch=main)](https://github.com/medaminben/Contorno/actions/workflows/docs-pages.yml)
+[![manual](https://img.shields.io/badge/docs-manual-0A7BBB)](https://medaminben.github.io/Contorno/manual/)
+[![articles](https://img.shields.io/badge/docs-articles-0A7BBB)](#articles)
 [![license](https://img.shields.io/badge/license-proprietary-lightgrey)](LICENSE)
 
 Contorno measures the surface of a flat animal hide from one photograph taken
@@ -56,8 +59,10 @@ repository: clone it to get them. Earlier versions and beta builds are on the
 
 - [*Measuring the surface of animal hides from a single photograph*](docs/articles/contorno-area-measurement/contorno-area-measurement.pdf):
   the method, how accurate the area is and why, and its limits.
+  [Read online](https://medaminben.github.io/Contorno/articles/contorno-area-measurement/contorno-area-measurement.html).
 - [*Contorno Indicator: the desktop application*](docs/articles/contorno-indicator/contorno-indicator.pdf):
   how the method is implemented, and the tools that build and check it.
+  [Read online](https://medaminben.github.io/Contorno/articles/contorno-indicator/contorno-indicator.html).
 
 ## Building
 
@@ -93,7 +98,7 @@ release.
 
 | Document | For |
 |---|---|
-| [User manual](docs/manual/content/en/) | operators; built into `docs/manual/index.html` and opened from the program |
+| [User manual](docs/manual/content/en/) | operators; built into `docs/manual/index.html`, opened from the program and [online](https://medaminben.github.io/Contorno/manual/) |
 | [Architecture](docs/architecture/architecture.md) | engineers who build, change or review Contorno |
 | [Sample images](docs/samples/image-sources.md) | the origin and licence of every photo in the repository |
 
