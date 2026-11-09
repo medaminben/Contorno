@@ -33,6 +33,8 @@ SolidCompression=yes
 WizardStyle=modern
 ; the data folder defaults to the installing user's Documents, also in an administrative install
 UsedUserAreasWarning=no
+; Explorer reloads the "Open with" lists after install and uninstall
+ChangesAssociations=yes
 
 [Languages]
 Name: "en"; MessagesFile: "compiler:Default.isl"
@@ -51,6 +53,18 @@ Source: "{#StageDir}\share\contorno\models\*"; DestDir: "{app}\share\contorno\mo
 Source: "{#StageDir}\share\contorno\samples\*"; DestDir: "{code:DataDir}\samples"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#StageDir}\share\contorno\manual\*"; DestDir: "{code:DataDir}\manual"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#StageDir}\share\contorno\articles\*"; DestDir: "{code:DataDir}\articles"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+; "Open with" for the photos Import takes; the user's default program for each type stays
+[Registry]
+Root: HKA; Subkey: "Software\Classes\Contorno.Indicator.Photo"; ValueType: string; ValueData: "Contorno Indicator"; Flags: uninsdeletekey
+Root: HKA; Subkey: "Software\Classes\Contorno.Indicator.Photo\DefaultIcon"; ValueType: string; ValueData: "{app}\bin\Indicator.exe,0"
+Root: HKA; Subkey: "Software\Classes\Contorno.Indicator.Photo\shell\open\command"; ValueType: string; ValueData: """{app}\bin\Indicator.exe"" ""%1"""
+Root: HKA; Subkey: "Software\Classes\.png\OpenWithProgids"; ValueType: string; ValueName: "Contorno.Indicator.Photo"; ValueData: ""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\.jpg\OpenWithProgids"; ValueType: string; ValueName: "Contorno.Indicator.Photo"; ValueData: ""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\.jpeg\OpenWithProgids"; ValueType: string; ValueName: "Contorno.Indicator.Photo"; ValueData: ""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\.bmp\OpenWithProgids"; ValueType: string; ValueName: "Contorno.Indicator.Photo"; ValueData: ""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\.tif\OpenWithProgids"; ValueType: string; ValueName: "Contorno.Indicator.Photo"; ValueData: ""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\.tiff\OpenWithProgids"; ValueType: string; ValueName: "Contorno.Indicator.Photo"; ValueData: ""; Flags: uninsdeletevalue
 
 [UninstallDelete]
 Type: files; Name: "{app}\share\contorno\data-folder"

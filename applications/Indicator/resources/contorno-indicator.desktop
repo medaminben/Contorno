@@ -6,3 +6,4 @@ Exec=Indicator %f
 Icon=contorno-indicator
 Categories=Graphics;Engineering;
 StartupWMClass=contorno-indicator
+MimeType=image/png;image/jpeg;image/bmp;image/tiff;
