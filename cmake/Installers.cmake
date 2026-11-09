@@ -1,7 +1,7 @@
 # Installers of the Indicator: a Debian package on Linux (cpack -G DEB in the
 # build directory) and an Inno Setup installer on Windows (target
 # Indicator_installer). Both carry the program, its libraries, the IS-Net
-# model, the manual and the article the manual links to. The sample photos,
+# model, the manual and the articles the manual links to. The sample photos,
 # the sources and the development files (headers, CMake package, import
 # libraries) are not installed: they are in the repository.
 #

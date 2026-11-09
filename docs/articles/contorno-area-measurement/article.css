@@ -21,11 +21,17 @@ th { border-bottom: 1.5px solid var(--text); }
 math[display="block"] { margin: .6rem 0; }
 ol li, ul li { margin: .2rem 0; }
 p em:only-child { display: block; font-size: .9em; color: var(--muted); text-align: center; }
+/* the links back to the manual and between the articles; not printed */
+.docs-nav { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; margin: 0 0 1.5rem;
+            padding-bottom: .6rem; border-bottom: 1px solid #ddd; font-size: .9rem; }
+.docs-nav span { color: #666; margin-inline-start: auto; }
+.docs-nav a { color: var(--accent); }
 /* the Contorno wordmark above the title, in the section titles' green; the introduction starts on page 2 */
 .title-logo { text-align: center; margin: 0 0 1.2rem; }
 .title-logo img { width: 38%; }
 .first-page-end { height: 0; }
 @media print {
+  .docs-nav { display: none; }
   .first-page-end { break-after: page; }
   /* smaller figures on paper, so a figure that does not fit leaves less empty space before it */
   figure { margin: .6rem 0; }

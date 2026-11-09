@@ -6,7 +6,7 @@ here="$(cd "$(dirname "$0")/.." && pwd)"
 article="$(cd "$here/../contorno-area-measurement" && pwd)"
 pandoc "$here/contorno-indicator.md" --standalone --math-method=mathml \
     --css "$article/article.css" --css "$here/paper.css" \
-    --include-before-body "$here/title-logo.html" \
+    --include-before-body "$here/../nav.html" --include-before-body "$here/title-logo.html" \
     --resource-path "$here:$article" -o "$here/contorno-indicator.html"
 # Pandoc writes the stylesheet name as given. Point the HTML at the shared file.
 sed -i 's|href="[^"]*article.css"|href="../contorno-area-measurement/article.css"|' \

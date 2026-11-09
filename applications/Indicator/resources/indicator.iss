@@ -1,7 +1,7 @@
 ; Inno Setup script of the Contorno Indicator installer (target Indicator_installer).
 ; buildkit passes /DAppVersion=<version> and /DStageDir=<the cmake --install tree>.
 ; Only bin and share\contorno are packed: the program with its DLLs, and the
-; model, manual and article. bin\..\share\contorno is where the program looks.
+; model, manual and articles. bin\..\share\contorno is where the program looks.
 #ifndef AppVersion
   #define AppVersion "0.0.0-dev"
 #endif

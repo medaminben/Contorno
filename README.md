@@ -1,21 +1,30 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="applications/Indicator/resources/contorno-indicator-dark.svg">
-  <img src="applications/Indicator/resources/contorno-indicator-light.svg" alt="Contorno logo" width="96">
-</picture>
+<h1 align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/brand/contorno-wordmark-dark.svg">
+    <img src="applications/Indicator/resources/contorno-indicator-wordmark.svg" alt="Contorno" width="320">
+  </picture>
+</h1>
 
-# Contorno
+<p align="center">
+  <a href="https://github.com/medaminben/Contorno/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/medaminben/Contorno/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+  <a href="https://github.com/medaminben/Contorno/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/medaminben/Contorno/actions/workflows/codeql.yml/badge.svg?branch=main"></a>
+  <a href="https://github.com/medaminben/Contorno/releases/latest"><img alt="release" src="https://img.shields.io/github/v/release/medaminben/Contorno"></a>
+  <a href="https://github.com/medaminben/Contorno/releases"><img alt="downloads" src="https://img.shields.io/github/downloads/medaminben/Contorno/total"></a>
+  <img alt="C++20" src="https://img.shields.io/badge/C%2B%2B-20-00599C">
+  <img alt="wxWidgets 3.2" src="https://img.shields.io/badge/wxWidgets-3.2-1A6FA5">
+  <img alt="platform: Windows | Linux" src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux-555">
+  <a href="https://github.com/medaminben/Contorno/actions/workflows/docs-pages.yml"><img alt="Pages" src="https://github.com/medaminben/Contorno/actions/workflows/docs-pages.yml/badge.svg?branch=main"></a>
+  <a href="https://medaminben.github.io/Contorno/manual/"><img alt="docs: manual" src="https://img.shields.io/badge/docs-manual-0A7BBB"></a>
+  <a href="#articles"><img alt="docs: articles" src="https://img.shields.io/badge/docs-articles-0A7BBB"></a>
+  <a href="LICENSE"><img alt="license: MIT" src="https://img.shields.io/github/license/medaminben/Contorno"></a>
+</p>
 
-[![CI](https://github.com/medaminben/Contorno/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/medaminben/Contorno/actions/workflows/ci.yml)
-[![CodeQL](https://github.com/medaminben/Contorno/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/medaminben/Contorno/actions/workflows/codeql.yml)
-[![release](https://img.shields.io/github/v/release/medaminben/Contorno)](https://github.com/medaminben/Contorno/releases/latest)
-[![downloads](https://img.shields.io/github/downloads/medaminben/Contorno/total)](https://github.com/medaminben/Contorno/releases)
-![C++20](https://img.shields.io/badge/C%2B%2B-20-00599C)
-![wxWidgets 3.2](https://img.shields.io/badge/wxWidgets-3.2-1A6FA5)
-![platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-555)
-[![Pages](https://github.com/medaminben/Contorno/actions/workflows/docs-pages.yml/badge.svg?branch=main)](https://github.com/medaminben/Contorno/actions/workflows/docs-pages.yml)
-[![manual](https://img.shields.io/badge/docs-manual-0A7BBB)](https://medaminben.github.io/Contorno/manual/)
-[![articles](https://img.shields.io/badge/docs-articles-0A7BBB)](#articles)
-[![license](https://img.shields.io/badge/license-proprietary-lightgrey)](LICENSE)
+<p align="center">
+  <a href="https://medaminben.github.io/Contorno/">Website</a> ·
+  <a href="#download">Download</a> ·
+  <a href="https://medaminben.github.io/Contorno/manual/">Docs</a> ·
+  <a href="https://github.com/medaminben/Contorno/releases">Changelog</a>
+</p>
 
 Contorno measures the surface of a flat animal hide from one photograph taken
 straight down onto a table. The desktop application, **Contorno Indicator**,
@@ -37,8 +46,8 @@ Cowhide Skin" by Enda012, [Wikimedia Commons](https://commons.wikimedia.org/wiki
   come from the set-up.
 - Outlines the hide with IS-Net, and finds it from the background instead when
   the network misses parts of a two-tone hide.
-- Shows the area in m² (cm² for small objects), and exports an inspection archive with the
-  photo, the mask and the outline as DXF for CAD and cutting.
+- Shows the area in m² (cm² for small objects), and exports an inspection
+  archive with the photo, the mask and the outline as DXF for CAD and cutting.
 - Runs offline. The interface and the manual are in English, Deutsch, Español,
   Italiano, Français, Nederlands and العربية.
 
@@ -50,8 +59,7 @@ The installers of the latest release:
 - **Debian 13:** [contorno-indicator_amd64.deb](https://github.com/medaminben/Contorno/releases/latest/download/contorno-indicator_amd64.deb),
   installed with `sudo apt install ./contorno-indicator_amd64.deb`
 
-They contain the program, the AI model, the manual and the area-measurement
-article. The sample photos, the sources and the articles' scripts are in this
+They contain the program, the AI model, the manual and both articles. The sample photos, the sources and the articles' scripts are in this
 repository: clone it to get them. Earlier versions and beta builds are on the
 [releases page](https://github.com/medaminben/Contorno/releases).
 
@@ -96,6 +104,9 @@ release.
 
 ## Documentation
 
+The full index, with how each document is rebuilt, is in
+[docs/README.md](docs/README.md).
+
 | Document | For |
 |---|---|
 | [User manual](docs/manual/content/en/) | operators; built into `docs/manual/index.html`, opened from the program and [online](https://medaminben.github.io/Contorno/manual/) |
@@ -110,5 +121,6 @@ issues. Everyone taking part follows the [code of conduct](CODE_OF_CONDUCT.md).
 
 ## Licence
 
-Copyright © 2026 Mohamed Lamine Ben Hassine. All rights reserved; see
-[LICENSE](LICENSE). The sample photographs keep their own licences.
+Contorno is released under the [MIT licence](LICENSE). The sample
+photographs keep their own licences, listed in
+[docs/samples/image-sources.md](docs/samples/image-sources.md).

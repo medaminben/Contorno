@@ -29,23 +29,30 @@ RTL = {"ar"}
 PAGES = (
     "index", "getting-started", "set-up", "measure", "camera", "inspections", "messages", "reference",
 )
+# the articles, relative to the manual's root; English only
+ARTICLES = (
+    ("../articles/contorno-area-measurement/contorno-area-measurement.html",
+     "Measuring the surface of animal hides from a single photograph"),
+    ("../articles/contorno-indicator/contorno-indicator.html",
+     "Contorno Indicator: the desktop application"),
+)
 LANG_NAMES = {"en": "English", "de": "Deutsch", "es": "Español", "it": "Italiano", "fr": "Français",
               "nl": "Nederlands", "ar": "العربية"}
 UI = {
     "en": {"contents": "Contents", "prev": "Previous", "next": "Next", "manual": "User manual",
-           "language": "Language"},
+           "language": "Language", "articles": "Articles"},
     "de": {"contents": "Inhalt", "prev": "Zurück", "next": "Weiter", "manual": "Benutzerhandbuch",
-           "language": "Sprache"},
+           "language": "Sprache", "articles": "Artikel"},
     "es": {"contents": "Contenido", "prev": "Anterior", "next": "Siguiente", "manual": "Manual de usuario",
-           "language": "Idioma"},
+           "language": "Idioma", "articles": "Artículos"},
     "it": {"contents": "Indice", "prev": "Precedente", "next": "Successivo", "manual": "Manuale utente",
-           "language": "Lingua"},
+           "language": "Lingua", "articles": "Articoli"},
     "fr": {"contents": "Sommaire", "prev": "Précédent", "next": "Suivant", "manual": "Manuel d'utilisation",
-           "language": "Langue"},
+           "language": "Langue", "articles": "Articles"},
     "nl": {"contents": "Inhoud", "prev": "Vorige", "next": "Volgende", "manual": "Handleiding",
-           "language": "Taal"},
+           "language": "Taal", "articles": "Artikelen"},
     "ar": {"contents": "المحتويات", "prev": "السابق", "next": "التالي", "manual": "دليل الاستخدام",
-           "language": "اللغة"},
+           "language": "اللغة", "articles": "مقالات"},
 }
 
 
@@ -273,6 +280,8 @@ def build(root: Path) -> dict[Path, str]:
                 "contents": UI[lang]["contents"],
                 "language": UI[lang]["language"],
                 "nav": nav,
+                "articles": UI[lang]["articles"],
+                "article_links": _article_links("../"),
                 "switcher": switcher,
                 "body": render_markdown(body, lang),
                 "prev": prev_link,
@@ -280,6 +289,11 @@ def build(root: Path) -> dict[Path, str]:
             })
     result[root / "index.html"] = _chooser()
     return result
+
+
+def _article_links(up: str) -> str:
+    return "".join(f'<li><a href="{up}{href}" lang="en" dir="ltr">{html.escape(title)}</a></li>'
+                   for href, title in ARTICLES)
 
 
 def current_attr(page: str, name: str) -> str:
@@ -304,7 +318,8 @@ def _chooser() -> str:
         '<body class="chooser">\n<main>\n'
         '<picture class="logo"><source srcset="assets/brand/icon-dark.png" media="(prefers-color-scheme: dark)">'
         '<img src="assets/brand/icon-light.png" alt=""></picture>\n<h1>Contorno Indicator</h1>\n'
-        f'<nav class="choices">{cards}</nav>\n</main>\n</body>\n</html>\n')
+        f'<nav class="choices">{cards}</nav>\n'
+        f'<nav class="articles" aria-label="Articles"><h2>Articles</h2><ul>{_article_links("")}</ul></nav>\n</main>\n</body>\n</html>\n')
 
 
 # ---------------------------------------------------------------- checks

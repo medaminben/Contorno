@@ -2,11 +2,9 @@
 
 Thanks for helping out. Bug reports, ideas and pull requests are all welcome.
 
-Contorno is not open source: the code is published under an all rights
-reserved [licence](LICENSE). By opening a pull request you agree that the
-copyright holder may use, change and distribute your contribution as part of
-Contorno, under any licence, and you confirm that you have the right to give
-that permission.
+Contorno is published under the [MIT licence](LICENSE). By opening a pull
+request you agree that your contribution is published under the same licence,
+and you confirm that you have the right to do so.
 
 ## Reporting bugs and asking for features
 
