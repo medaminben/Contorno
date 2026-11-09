@@ -247,7 +247,8 @@ alt="Dependencies, top-down. The arrow is “uses”." />
 </figure>
 <p>Vision is the measuring core. Inspection owns the file format and
 calls Vision and Tools. The application is two static libraries and then
-the executable <code>Indicator</code>.</p>
+the executable <code>contorno-indicator</code> (CMake target
+<code>Indicator</code>).</p>
 <p><code>indicator_model</code> is plain C++20. Text is UTF-8
 <code>std::string</code>. Paths are <code>std::filesystem::path</code>.
 It links Tools, Vision and Inspection. The seven string tables
@@ -850,7 +851,7 @@ languages, right-to-left</td>
 <tr>
 <td><code>indicator_self_test</code></td>
 <td>1</td>
-<td>the real <code>Indicator</code> process</td>
+<td>the real <code>contorno-indicator</code> process</td>
 </tr>
 <tr>
 <td><code>indicator_manual</code></td>
@@ -866,46 +867,54 @@ languages, right-to-left</td>
 </tbody>
 </table>
 <p>The self-test is the integration check. It launches
-<code>Indicator --self-test</code> on
+<code>contorno-indicator --self-test</code> on
 <code>docs/samples/leather/calf_black.jpg</code> with
-<code>GDK_BACKEND=x11</code> and a timeout of 300 s. It imports the
-photograph and waits, checks that the readout shows the area of the
-result, imports again while an analysis is running and checks that the
-readout never shows a stale number, writes the zip and checks the six
-entry names and the DXF rings, opens that zip and checks that no new
-analysis starts and that the rings match, then writes a screenshot. Exit
-code 77 means the outline is unavailable (no LibTorch, or no model
-file). CTest treats 77 as a skip, not as a failure. The self-test uses
-the in-memory settings store.</p>
+<code>GDK_BACKEND=x11</code> and a timeout of 300 s. It checks that the
+window has its icon and the panel its wordmark, imports the photograph
+and waits, checks that the readout shows the area of the result, imports
+again while an analysis is running and checks that the readout never
+shows a stale number, writes the zip and checks the six entry names and
+the DXF rings, opens that zip and checks that no new analysis starts and
+that the rings match, then writes a screenshot. Exit code 77 means the
+outline is unavailable (no LibTorch, or no model file). CTest treats 77
+as a skip, not as a failure. The self-test uses the in-memory settings
+store.</p>
 <p>The manual check is the other kind of integration.
 <code>build_manual.py --check</code> builds every page in every language
 and compares the labels it quotes with the string tables. A renamed key
 fails this test, which is the reason the manual and the translations can
 be reviewed as text.</p>
 <p>What this suite does not do: it does not compare an area with a
-reference instrument, it does not run on Windows or macOS in this
-project’s continuous practice (the desktop entry and the icon path are
-written for Linux; the executable has resource branches for Windows and
-macOS), and it does not treat the duration as a pass or fail. Section 7
-is a reading of that duration, not a limit in the test suite. The
-application still logs its own seconds with each result.</p>
+reference instrument, it does not run on Windows on every change (the
+installers workflow builds the Windows installer, installs it and runs
+the self-test on the installed program; macOS is not built), and it does
+not treat the duration as a pass or fail. Section 7 is a reading of that
+duration, not a limit in the test suite. The application still logs its
+own seconds with each result.</p>
 <h2 id="what-is-installed">9. What is installed</h2>
 <p><code>cmake --install</code> on Linux lays the program out as
 follows. Libraries are shared, and the LibTorch shared objects are
 installed beside them with an RPATH of <code>$ORIGIN</code>, so the
 executable finds them without a system-wide torch.</p>
-<pre><code>bin/Indicator
+<pre><code>bin/contorno-indicator
 lib/libcontorno_*.so    and the LibTorch objects
 share/contorno/models/isnet-general-use.pt
 share/contorno/manual/
-share/contorno/articles/contorno-area-measurement/
+share/contorno/articles/
+share/contorno/samples/
+share/doc/contorno-indicator/copyright
 share/applications/contorno-indicator.desktop
 share/icons/hicolor/.../contorno-indicator.png</code></pre>
-<p>The model, the manual and the measurement article are installed with
-the application. A developer build finds the model and the manual next
-to the executable first, then in the source tree, and does not need an
-install to run. Building <code>Indicator</code> also copies the desktop
-entry into the current user’s <code>~/.local/share</code>, with
+<p>The model, the manual, both articles and the sample photographs are
+installed with the application. The last three belong to the user and
+live in a data folder: the Windows installer asks for it
+(<code>Documents\Contorno</code> by default), and on Linux the first
+start copies them from <code>share/contorno</code> into
+<code>~/Documents/Contorno</code>. The file dialogs start in its
+samples. A developer build finds the model and the manual next to the
+executable first, then in the source tree, and does not need an install
+to run. Building <code>Indicator</code> also copies the desktop entry
+into the current user’s <code>~/.local/share</code>, with
 <code>Exec</code> rewritten to the build-tree binary, so a Wayland
 session shows the icon before anything is installed.</p>
 <h2 id="limits-that-belong-to-the-system-not-to-one-file">10. Limits
