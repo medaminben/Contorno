@@ -454,9 +454,8 @@ void CameraDialog::open_manual() {
     wxString const title = wx(Message("setup.help").render(language_));
     std::filesystem::path const app_dir =
         path_from_utf8(utf8(wxFileName(wxStandardPaths::Get().GetExecutablePath()).GetPath()));
-    std::filesystem::path const page =
-        find_manual(language_, app_dir, path_from_utf8(INDICATOR_MANUAL_DIR),
-                    user_data_folder() / "manual");
+    std::filesystem::path const page = find_manual(
+        language_, app_dir, path_from_utf8(INDICATOR_MANUAL_DIR), user_data_folder() / "manual");
     if (page.empty()) {
         warn(this, title, wx(Message("help.not_found").render(language_)));
         return;

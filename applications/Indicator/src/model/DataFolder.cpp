@@ -14,7 +14,8 @@ fs::path installed_share(fs::path const& app_dir) {
     return (app_dir / ".." / "share/contorno").lexically_normal();
 }
 
-/// The first line of `path` without a byte order mark or trailing white space; empty when unreadable.
+/// The first line of `path` without a byte order mark or trailing white space; empty when
+/// unreadable.
 std::string recorded_folder(fs::path const& path) {
     std::ifstream file(path, std::ios::binary);
     std::string text(std::istreambuf_iterator<char>(file), {});
