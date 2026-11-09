@@ -186,7 +186,7 @@ if(BUILD_TESTING AND TARGET Indicator)
     endif()
 endif()
 
-# Platform integration: desktop entry, icons, and the installed model, manual and article.
+# Platform integration: desktop entry, icons, and the installed model, manual and articles.
 if(TARGET Indicator)
     if(CONTORNO_ISNET_MODEL)
         install(FILES ${CONTORNO_ISNET_MODEL} DESTINATION ${CMAKE_INSTALL_DATADIR}/contorno/models OPTIONAL)
@@ -199,6 +199,9 @@ if(TARGET Indicator)
     install(FILES ${_article}/contorno-area-measurement.html ${_article}/article.css
             DESTINATION ${CMAKE_INSTALL_DATADIR}/contorno/articles/contorno-area-measurement)
     install(DIRECTORY ${_article}/figures DESTINATION ${CMAKE_INSTALL_DATADIR}/contorno/articles/contorno-area-measurement)
+    set(_paper ${CMAKE_SOURCE_DIR}/docs/articles/contorno-indicator)
+    install(FILES ${_paper}/contorno-indicator.html ${_paper}/paper.css DESTINATION ${CMAKE_INSTALL_DATADIR}/contorno/articles/contorno-indicator)
+    install(DIRECTORY ${_paper}/figures DESTINATION ${CMAKE_INSTALL_DATADIR}/contorno/articles/contorno-indicator)
 endif()
 
 if(TARGET Indicator AND WIN32)
