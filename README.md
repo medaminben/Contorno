@@ -1,6 +1,18 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="applications/Indicator/resources/contorno-indicator-dark.svg">
+  <img src="applications/Indicator/resources/contorno-indicator-light.svg" alt="Contorno logo" width="96">
+</picture>
+
 # Contorno
 
 [![CI](https://github.com/medaminben/Contorno/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/medaminben/Contorno/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/medaminben/Contorno/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/medaminben/Contorno/actions/workflows/codeql.yml)
+[![release](https://img.shields.io/github/v/release/medaminben/Contorno)](https://github.com/medaminben/Contorno/releases/latest)
+[![downloads](https://img.shields.io/github/downloads/medaminben/Contorno/total)](https://github.com/medaminben/Contorno/releases)
+![C++20](https://img.shields.io/badge/C%2B%2B-20-00599C)
+![Qt 6](https://img.shields.io/badge/Qt-6-41CD52)
+![platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-555)
+[![license](https://img.shields.io/badge/license-proprietary-lightgrey)](LICENSE)
 
 Contorno measures the surface of a flat animal hide from one photograph taken
 straight down onto a table. The desktop application, **Contorno Indicator**,
