@@ -34,6 +34,23 @@ set(CPACK_CONTORNO_LIBDIR ${CMAKE_INSTALL_LIBDIR})
 set(CPACK_PRE_BUILD_SCRIPTS ${CMAKE_CURRENT_LIST_DIR}/InstallerPrune.cmake)
 include(CPack)
 
+if(UNIX AND NOT APPLE)
+    # Debian policy 12.5: the package's copyright file, in the machine-readable format
+    # (the licence text indented one space, an empty line written " .")
+    file(STRINGS ${CMAKE_SOURCE_DIR}/LICENSE _licence)
+    set(CONTORNO_LICENCE_TEXT "")
+    foreach(_line IN LISTS _licence)
+        if(_line STREQUAL "")
+            set(_line ".")
+        endif()
+        string(APPEND CONTORNO_LICENCE_TEXT " ${_line}\n")
+    endforeach()
+    string(STRIP "${CONTORNO_LICENCE_TEXT}" CONTORNO_LICENCE_TEXT)
+    set(CONTORNO_LICENCE_TEXT " ${CONTORNO_LICENCE_TEXT}")
+    configure_file(${CMAKE_CURRENT_LIST_DIR}/debian-copyright.in ${CMAKE_BINARY_DIR}/copyright @ONLY)
+    install(FILES ${CMAKE_BINARY_DIR}/copyright DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/contorno-indicator)
+endif()
+
 if(WIN32)
     # the MSVC runtime, for machines without the Visual C++ redistributable
     include(InstallRequiredSystemLibraries)
