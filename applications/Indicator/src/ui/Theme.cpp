@@ -23,6 +23,11 @@
 #include <gtk/gtk.h>
 #endif
 
+#ifdef __WXMSW__
+#include <dwmapi.h>
+#include <uxtheme.h>
+#endif
+
 #include <algorithm>
 #include <cmath>
 #include <memory>
@@ -122,12 +127,24 @@ void apply_gtk_class(wxWindow* field, bool light) {
 }
 #endif
 
+#ifdef __WXMSW__
+/// The frame and the drop-down button that Windows draws itself: its dark visual style on the
+/// black panels, the default one on the light panels.
+void apply_windows_style(wxWindow* field, bool light) {
+    SetWindowTheme(static_cast<HWND>(field->GetHandle()), light ? nullptr : L"DarkMode_CFD",
+                   nullptr);
+}
+#endif
+
 void apply(wxWindow* window, Palette const& p, bool light) {
     if (is_field(window)) {
         window->SetBackgroundColour(p.field);
         window->SetForegroundColour(p.field_text);
 #ifdef INDICATOR_GTK3
         apply_gtk_class(window, light);
+#endif
+#ifdef __WXMSW__
+        apply_windows_style(window, light);
 #endif
     } else {
         window->SetBackgroundColour(p.panel);
@@ -144,6 +161,21 @@ void apply(wxWindow* window, Palette const& p, bool light) {
 
 void apply_theme(wxWindow* top, bool light) {
     apply(top, palette(light), light);
+    if (top->IsTopLevel())
+        apply_title_bar(top, light);
+}
+
+void apply_title_bar(wxWindow* top, bool light) {
+#ifdef __WXMSW__
+    // DWMWA_USE_IMMERSIVE_DARK_MODE: 20 since Windows 10 20H1, 19 before it
+    BOOL const dark = light ? FALSE : TRUE;
+    HWND const window = static_cast<HWND>(top->GetHandle());
+    if (FAILED(DwmSetWindowAttribute(window, 20, &dark, sizeof dark)))
+        DwmSetWindowAttribute(window, 19, &dark, sizeof dark);
+#else
+    (void)top;
+    (void)light;
+#endif
 }
 
 // ---------------------------------------------------------------- tinted icons

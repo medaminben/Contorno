@@ -218,6 +218,7 @@ void ControlPanel::apply_metrics(ControlPanelMetrics const& metrics) {
     retranslate();
     InvalidateBestSize();
     if (GetSizer()) {
+        SetMinSize(GetSizer()->CalcMin());  // SetSizerAndFit fixed it at the first scale
         Layout();
         if (GetParent())
             GetParent()->Layout();

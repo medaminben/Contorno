@@ -4,6 +4,7 @@
 #include "model/Measure.h"
 #include "model/SettingsStore.h"
 #include "model/Utf8Path.h"
+#include "ui/CameraDialog.h"
 #include "ui/Catalogue.h"
 #include "ui/Localise.h"
 #include "ui/MainWindow.h"
@@ -24,8 +25,8 @@
 #ifdef INDICATOR_GTK3
 #include <gtk/gtk.h>
 #else
-#include <wx/dcclient.h>
 #include <wx/dcmemory.h>
+#include <wx/dcscreen.h>
 #endif
 
 #include <cctype>
@@ -118,11 +119,12 @@ wxImage screenshot(wxWindow& window) {
     g_object_unref(pixbuf);
     return image;
 #else
-    wxClientDC screen(&window);
-    wxSize const size = window.GetClientSize();
-    wxBitmap bitmap(size);
+    // read from the screen, the title bar included
+    wxScreenDC screen;
+    wxRect const rect = window.GetScreenRect();
+    wxBitmap bitmap(rect.GetSize());
     wxMemoryDC memory(bitmap);
-    memory.Blit(0, 0, size.x, size.y, &screen, 0, 0);
+    memory.Blit(0, 0, rect.width, rect.height, &screen, rect.x, rect.y);
     memory.SelectObject(wxNullBitmap);
     return bitmap.ConvertToImage();
 #endif
@@ -130,8 +132,8 @@ wxImage screenshot(wxWindow& window) {
 
 /// `contorno-indicator --self-test <photo> <dir>`: import the photo and check the
 /// result and the readout; import while an analysis runs; export, check the
-/// zip and open it again without an analysis; save a window screenshot in
-/// <dir>.
+/// zip and open it again without an analysis; save screenshots of the window, the
+/// maximised window and the Set Up dialog in the dark theme in <dir>.
 /// Exits with 77 (skipped) when the AI outline is unavailable.
 int self_test(MainWindow& window, std::vector<std::string> const& args) {
     if (args.size() < 4) {
@@ -244,6 +246,26 @@ int self_test(MainWindow& window, std::vector<std::string> const& args) {
     wxImage const shot = screenshot(window);
     if (!shot.IsOk() || !shot.SaveFile(wx(utf8(out / "self_test_window.png")), wxBITMAP_TYPE_PNG)) {
         return fail("screenshot", utf8(out));
+    }
+
+    // maximised, as the program starts: the panel whole under the photos
+    window.Maximize();
+    pump_until([] { return false; }, std::chrono::seconds(1));
+    wxImage const maximised = screenshot(window);
+    if (!maximised.IsOk() ||
+        !maximised.SaveFile(wx(utf8(out / "self_test_maximised.png")), wxBITMAP_TYPE_PNG)) {
+        return fail("maximised screenshot", utf8(out));
+    }
+
+    // the Set Up dialog in the dark theme: its title bar and fields
+    auto* dialog = new CameraDialog(&window, {}, wxSize(), false, "en", false);
+    dialog->Show();
+    pump_until([] { return false; }, std::chrono::seconds(1));
+    wxImage const dark = screenshot(*dialog);
+    dialog->Destroy();
+    if (!dark.IsOk() ||
+        !dark.SaveFile(wx(utf8(out / "self_test_setup_dark.png")), wxBITMAP_TYPE_PNG)) {
+        return fail("dialog screenshot", utf8(out));
     }
     std::fprintf(stderr, "self-test: ok: %zu object(s), %s %s\n", shown.objects.size(),
                  utf8(display.text()).c_str(), utf8(display.unit()).c_str());

@@ -66,6 +66,10 @@ public:
     /// drawn children, which show it in their corners.
     bool SetBackgroundColour(wxColour const& colour) override;
 
+    /// Sizes the row with `metrics`, unless they are at the scale already applied. The panel's
+    /// own minimum follows, so the window's layout gives it the new height.
+    void apply_metrics(ControlPanelMetrics const& metrics);
+
 private:
     /// The labels and tooltips of the keys in the current language, each key in its text direction,
     /// the font as large as lets every label fit.
@@ -74,7 +78,6 @@ private:
     void update_wordmark();
     /// Sizes the row for the screen the window is on, when that scale changed.
     void apply_screen();
-    void apply_metrics(ControlPanelMetrics const& metrics);
     void on_move(wxMoveEvent& event);
     void on_display(wxDisplayChangedEvent& event);
 
