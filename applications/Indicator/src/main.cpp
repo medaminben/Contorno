@@ -10,6 +10,7 @@
 #include "ui/MainWindow.h"
 #include "ui/PhotoFile.h"
 #include "ui/Text.h"
+#include "ui/Theme.h"
 #include "ui/WxConfigStore.h"
 
 #include <Tools/Dxf.h>
@@ -22,6 +23,11 @@
 #include <wx/stdpaths.h>
 #include <wx/utils.h>
 
+#ifdef __WXMSW__
+#include <dwmapi.h>
+#pragma comment(lib, "dwmapi.lib")
+#endif
+
 #ifdef INDICATOR_GTK3
 #include <gtk/gtk.h>
 #else
@@ -33,6 +39,7 @@
 #include <chrono>
 #include <cstdio>
 #include <filesystem>
+#include <fstream>
 #include <functional>
 #include <memory>
 #include <string>
@@ -262,6 +269,25 @@ int self_test(MainWindow& window, std::vector<std::string> const& args) {
     dialog->Show();
     pump_until([] { return false; }, std::chrono::seconds(1));
     wxImage const dark = screenshot(*dialog);
+    {  // DIAGNOSTIC (temporary): the title bar attribute, then the theme applied once more
+        std::ofstream log(out / "self_test_setup_dark.txt");
+#ifdef __WXMSW__
+        BOOL value = 2;
+        HRESULT const result =
+            DwmGetWindowAttribute(static_cast<HWND>(dialog->GetHandle()), 20, &value, sizeof value);
+        log << "dwm 20: hr=" << result << " value=" << value << "\n";
+#endif
+        apply_theme(dialog, false);
+        pump_until([] { return false; }, std::chrono::seconds(1));
+        wxImage const again = screenshot(*dialog);
+        if (again.IsOk())
+            again.SaveFile(wx(utf8(out / "self_test_setup_dark_again.png")), wxBITMAP_TYPE_PNG);
+#ifdef __WXMSW__
+        value = 2;
+        DwmGetWindowAttribute(static_cast<HWND>(dialog->GetHandle()), 20, &value, sizeof value);
+        log << "dwm 20 after apply_theme: value=" << value << "\n";
+#endif
+    }
     dialog->Destroy();
     if (!dark.IsOk() ||
         !dark.SaveFile(wx(utf8(out / "self_test_setup_dark.png")), wxBITMAP_TYPE_PNG))

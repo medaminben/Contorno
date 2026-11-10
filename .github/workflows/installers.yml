@@ -156,7 +156,9 @@ jobs:
         if: always()
         with:
           name: windows-self-test
-          path: ${{ runner.temp }}/self-test/*.png
+          path: |
+            ${{ runner.temp }}/self-test/*.png
+            ${{ runner.temp }}/self-test/*.txt
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         with:
