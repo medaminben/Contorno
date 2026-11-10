@@ -427,4 +427,5 @@ void MainWindow::apply_theme(bool light) {
     panel_->Refresh();
     progress_->Refresh();    // its corners
     set_light_theme(light);  // the dialogs opened from now on
+    apply_title_bar(this, light);
 }

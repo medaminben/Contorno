@@ -29,6 +29,10 @@ void set_light_theme(bool light);
 /// keys' surround. Native controls take the colours the toolkit lets them take.
 void apply_theme(wxWindow* top, bool light);
 
+/// On Windows, the title bar of the top-level window `top` dark or light; elsewhere nothing (the
+/// desktop draws it).
+void apply_title_bar(wxWindow* top, bool light);
+
 /// A tool icon of the theme ("back", "forward", "up", "new folder", "link",
 /// "list", "details", "moon", "sun", "help", or "ok" and "cancel": a check
 /// mark and a "no" sign), a line drawing `size` px square at every scale, in
