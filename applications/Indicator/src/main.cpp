@@ -8,6 +8,7 @@
 #include "ui/Catalogue.h"
 #include "ui/Localise.h"
 #include "ui/MainWindow.h"
+#include "ui/NumberField.h"
 #include "ui/PhotoFile.h"
 #include "ui/Text.h"
 #include "ui/Theme.h"
@@ -20,16 +21,12 @@
 #include <wx/app.h>
 #include <wx/combobox.h>
 #include <wx/dialog.h>
+#include <wx/radiobut.h>
 #include <wx/sizer.h>
 #include <wx/image.h>
 #include <wx/statbmp.h>
 #include <wx/stdpaths.h>
 #include <wx/utils.h>
-
-#ifdef __WXMSW__
-#include <dwmapi.h>
-#pragma comment(lib, "dwmapi.lib")
-#endif
 
 #ifdef INDICATOR_GTK3
 #include <gtk/gtk.h>
@@ -42,7 +39,6 @@
 #include <chrono>
 #include <cstdio>
 #include <filesystem>
-#include <fstream>
 #include <functional>
 #include <memory>
 #include <string>
@@ -272,45 +268,37 @@ int self_test(MainWindow& window, std::vector<std::string> const& args) {
     dialog->Show();
     pump_until([] { return false; }, std::chrono::seconds(1));
     wxImage const dark = screenshot(*dialog);
-    {  // DIAGNOSTIC (temporary): the Windows properties of the Set Up dialog and of a plain one
-        std::ofstream log(out / "self_test_windows.txt");
-        auto describe = [&](wxWindow& w, char const* name) {
-#ifdef __WXMSW__
-            HWND const hwnd = static_cast<HWND>(w.GetHandle());
-            wchar_t cls[128] = {};
-            GetClassNameW(hwnd, cls, 128);
-            BOOL dark = 2, ncr = 2;
-            DwmGetWindowAttribute(hwnd, 20, &dark, sizeof dark);
-            DwmGetWindowAttribute(hwnd, DWMWA_NCRENDERING_ENABLED, &ncr, sizeof ncr);
-            log << name << ": class=" << utf8(wxString(cls)) << std::hex
-                << " style=" << GetWindowLongPtrW(hwnd, GWL_STYLE)
-                << " exstyle=" << GetWindowLongPtrW(hwnd, GWL_EXSTYLE) << std::dec
-                << " dark=" << dark << " ncrendering=" << ncr
-                << " layered=" << ((GetWindowLongPtrW(hwnd, GWL_EXSTYLE) & WS_EX_LAYERED) != 0)
-                << " active=" << (GetActiveWindow() == hwnd) << "\n";
-            for (wxWindow* child : w.GetChildren()) {
-                HWND const c = static_cast<HWND>(child->GetHandle());
-                wchar_t ccls[128] = {};
-                GetClassNameW(c, ccls, 128);
-                log << "  " << utf8(wxString(child->GetClassInfo()->GetClassName())) << " "
-                    << utf8(wxString(ccls)) << std::hex
-                    << " exstyle=" << GetWindowLongPtrW(c, GWL_EXSTYLE) << std::dec << "\n";
-            }
-#else
-            log << name << " " << utf8(wxString(w.GetClassInfo()->GetClassName())) << "\n";
-#endif
+    {  // DIAGNOSTIC (temporary): plain dialogs with one part of the Set Up dialog each, and a
+       // second Set Up dialog
+        auto save = [&](wxWindow& w, std::string const& name) {
+            wxImage const image = screenshot(w);
+            if (image.IsOk())
+                image.SaveFile(wx(utf8(out / name)), wxBITMAP_TYPE_PNG);
         };
-        describe(*dialog, "setup");
-        auto* plain = new wxDialog(&window, wxID_ANY, "plain", wxPoint(0, 0), wxDefaultSize,
-                                   wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
-        auto* sizer = new wxBoxSizer(wxVERTICAL);
-        sizer->Add(new wxComboBox(plain, wxID_ANY, "combo"), 0, wxALL, 12);
-        plain->SetSizerAndFit(sizer);
-        apply_theme(plain, false);
-        plain->Show();
+        for (int part = 1; part <= 3; ++part) {
+            auto* plain =
+                new wxDialog(&window, wxID_ANY, "part " + std::to_string(part), wxPoint(0, 0),
+                             wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+            auto* sizer = new wxBoxSizer(wxVERTICAL);
+            sizer->Add(new wxComboBox(plain, wxID_ANY, "combo"), 0, wxALL, 12);
+            if (part == 1)
+                sizer->Add(new NumberField(plain, 1, 100000, 0, " mm", 1500), 0, wxALL, 12);
+            if (part == 2)
+                sizer->Add(new Key(plain, wxID_ANY, "", tinted_icon("link"), 4, 6), 0, wxALL, 12);
+            if (part == 3)
+                sizer->Add(new wxRadioButton(plain, wxID_ANY, "radio"), 0, wxALL, 12);
+            plain->SetSizerAndFit(sizer);
+            apply_theme(plain, false);
+            plain->Show();
+            pump_until([] { return false; }, std::chrono::seconds(1));
+            save(*plain, "part_" + std::to_string(part) + ".png");
+            plain->Destroy();
+        }
+        auto* second = new CameraDialog(&window, {}, wxSize(), false, "en", false);
+        second->Show();
         pump_until([] { return false; }, std::chrono::seconds(1));
-        describe(*plain, "plain");
-        plain->Destroy();
+        save(*second, "second_setup.png");
+        second->Destroy();
     }
     dialog->Destroy();
     if (!dark.IsOk() ||
