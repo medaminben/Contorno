@@ -18,15 +18,14 @@
 #include <Vision/Objects.h>
 
 #include <wx/app.h>
+#include <wx/combobox.h>
+#include <wx/dialog.h>
+#include <wx/sizer.h>
+#include <wx/textctrl.h>
 #include <wx/image.h>
 #include <wx/statbmp.h>
 #include <wx/stdpaths.h>
 #include <wx/utils.h>
-
-#ifdef __WXMSW__
-#include <dwmapi.h>
-#pragma comment(lib, "dwmapi.lib")
-#endif
 
 #ifdef INDICATOR_GTK3
 #include <gtk/gtk.h>
@@ -39,7 +38,6 @@
 #include <chrono>
 #include <cstdio>
 #include <filesystem>
-#include <fstream>
 #include <functional>
 #include <memory>
 #include <string>
@@ -269,24 +267,36 @@ int self_test(MainWindow& window, std::vector<std::string> const& args) {
     dialog->Show();
     pump_until([] { return false; }, std::chrono::seconds(1));
     wxImage const dark = screenshot(*dialog);
-    {  // DIAGNOSTIC (temporary): the title bar attribute, then the theme applied once more
-        std::ofstream log(out / "self_test_setup_dark.txt");
+    {  // DIAGNOSTIC (temporary): B the Set Up dialog repainted; C, D small dialogs with and
+       // without a resize border
+        auto save = [&](wxWindow& w, char const* name) {
+            wxImage const image = screenshot(w);
+            if (image.IsOk())
+                image.SaveFile(wx(utf8(out / name)), wxBITMAP_TYPE_PNG);
+        };
 #ifdef __WXMSW__
-        BOOL value = 2;
-        HRESULT const result =
-            DwmGetWindowAttribute(static_cast<HWND>(dialog->GetHandle()), 20, &value, sizeof value);
-        log << "dwm 20: hr=" << result << " value=" << value << "\n";
+        HWND const hwnd = static_cast<HWND>(dialog->GetHandle());
+        SetWindowPos(hwnd, nullptr, 0, 0, 0, 0,
+                     SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+        RedrawWindow(hwnd, nullptr, nullptr,
+                     RDW_FRAME | RDW_INVALIDATE | RDW_ERASE | RDW_ALLCHILDREN | RDW_UPDATENOW);
 #endif
-        apply_theme(dialog, false);
         pump_until([] { return false; }, std::chrono::seconds(1));
-        wxImage const again = screenshot(*dialog);
-        if (again.IsOk())
-            again.SaveFile(wx(utf8(out / "self_test_setup_dark_again.png")), wxBITMAP_TYPE_PNG);
-#ifdef __WXMSW__
-        value = 2;
-        DwmGetWindowAttribute(static_cast<HWND>(dialog->GetHandle()), 20, &value, sizeof value);
-        log << "dwm 20 after apply_theme: value=" << value << "\n";
-#endif
+        save(*dialog, "probe_b_setup_redrawn.png");
+        for (bool resizable : {true, false}) {
+            auto* small = new wxDialog(&window, wxID_ANY, resizable ? "C resizable" : "D fixed",
+                                       wxPoint(0, 0), wxDefaultSize,
+                                       wxDEFAULT_DIALOG_STYLE | (resizable ? wxRESIZE_BORDER : 0));
+            auto* sizer = new wxBoxSizer(wxVERTICAL);
+            sizer->Add(new wxComboBox(small, wxID_ANY, "combo"), 0, wxALL, 12);
+            sizer->Add(new wxTextCtrl(small, wxID_ANY, "text"), 0, wxALL, 12);
+            small->SetSizerAndFit(sizer);
+            apply_theme(small, false);
+            small->Show();
+            pump_until([] { return false; }, std::chrono::seconds(1));
+            save(*small, resizable ? "probe_c_resizable.png" : "probe_d_fixed.png");
+            small->Destroy();
+        }
     }
     dialog->Destroy();
     if (!dark.IsOk() ||
