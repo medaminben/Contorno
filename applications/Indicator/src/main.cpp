@@ -8,10 +8,8 @@
 #include "ui/Catalogue.h"
 #include "ui/Localise.h"
 #include "ui/MainWindow.h"
-#include "ui/NumberField.h"
 #include "ui/PhotoFile.h"
 #include "ui/Text.h"
-#include "ui/Theme.h"
 #include "ui/WxConfigStore.h"
 
 #include <Tools/Dxf.h>
@@ -19,10 +17,6 @@
 #include <Vision/Objects.h>
 
 #include <wx/app.h>
-#include <wx/combobox.h>
-#include <wx/dialog.h>
-#include <wx/radiobut.h>
-#include <wx/sizer.h>
 #include <wx/image.h>
 #include <wx/statbmp.h>
 #include <wx/stdpaths.h>
@@ -268,38 +262,6 @@ int self_test(MainWindow& window, std::vector<std::string> const& args) {
     dialog->Show();
     pump_until([] { return false; }, std::chrono::seconds(1));
     wxImage const dark = screenshot(*dialog);
-    {  // DIAGNOSTIC (temporary): plain dialogs with one part of the Set Up dialog each, and a
-       // second Set Up dialog
-        auto save = [&](wxWindow& w, std::string const& name) {
-            wxImage const image = screenshot(w);
-            if (image.IsOk())
-                image.SaveFile(wx(utf8(out / name)), wxBITMAP_TYPE_PNG);
-        };
-        for (int part = 1; part <= 3; ++part) {
-            auto* plain =
-                new wxDialog(&window, wxID_ANY, "part " + std::to_string(part), wxPoint(0, 0),
-                             wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
-            auto* sizer = new wxBoxSizer(wxVERTICAL);
-            sizer->Add(new wxComboBox(plain, wxID_ANY, "combo"), 0, wxALL, 12);
-            if (part == 1)
-                sizer->Add(new NumberField(plain, 1, 100000, 0, " mm", 1500), 0, wxALL, 12);
-            if (part == 2)
-                sizer->Add(new Key(plain, wxID_ANY, "", tinted_icon("link"), 4, 6), 0, wxALL, 12);
-            if (part == 3)
-                sizer->Add(new wxRadioButton(plain, wxID_ANY, "radio"), 0, wxALL, 12);
-            plain->SetSizerAndFit(sizer);
-            apply_theme(plain, false);
-            plain->Show();
-            pump_until([] { return false; }, std::chrono::seconds(1));
-            save(*plain, "part_" + std::to_string(part) + ".png");
-            plain->Destroy();
-        }
-        auto* second = new CameraDialog(&window, {}, wxSize(), false, "en", false);
-        second->Show();
-        pump_until([] { return false; }, std::chrono::seconds(1));
-        save(*second, "second_setup.png");
-        second->Destroy();
-    }
     dialog->Destroy();
     if (!dark.IsOk() ||
         !dark.SaveFile(wx(utf8(out / "self_test_setup_dark.png")), wxBITMAP_TYPE_PNG))
