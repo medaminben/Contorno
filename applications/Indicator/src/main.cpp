@@ -267,7 +267,7 @@ int self_test(MainWindow& window, std::vector<std::string> const& args) {
     dialog->Show();
     pump_until([] { return false; }, std::chrono::seconds(1));
     wxImage const dark = screenshot(*dialog);
-    {  // DIAGNOSTIC (temporary): B the Set Up dialog repainted; C, D small dialogs with and
+    {  // DIAGNOSTIC (temporary): B the Set Up dialog repainted; C, D probe dialogs with and
        // without a resize border
         auto save = [&](wxWindow& w, char const* name) {
             wxImage const image = screenshot(w);
@@ -284,18 +284,18 @@ int self_test(MainWindow& window, std::vector<std::string> const& args) {
         pump_until([] { return false; }, std::chrono::seconds(1));
         save(*dialog, "probe_b_setup_redrawn.png");
         for (bool resizable : {true, false}) {
-            auto* small = new wxDialog(&window, wxID_ANY, resizable ? "C resizable" : "D fixed",
+            auto* probe = new wxDialog(&window, wxID_ANY, resizable ? "C resizable" : "D fixed",
                                        wxPoint(0, 0), wxDefaultSize,
                                        wxDEFAULT_DIALOG_STYLE | (resizable ? wxRESIZE_BORDER : 0));
             auto* sizer = new wxBoxSizer(wxVERTICAL);
-            sizer->Add(new wxComboBox(small, wxID_ANY, "combo"), 0, wxALL, 12);
-            sizer->Add(new wxTextCtrl(small, wxID_ANY, "text"), 0, wxALL, 12);
-            small->SetSizerAndFit(sizer);
-            apply_theme(small, false);
-            small->Show();
+            sizer->Add(new wxComboBox(probe, wxID_ANY, "combo"), 0, wxALL, 12);
+            sizer->Add(new wxTextCtrl(probe, wxID_ANY, "text"), 0, wxALL, 12);
+            probe->SetSizerAndFit(sizer);
+            apply_theme(probe, false);
+            probe->Show();
             pump_until([] { return false; }, std::chrono::seconds(1));
-            save(*small, resizable ? "probe_c_resizable.png" : "probe_d_fixed.png");
-            small->Destroy();
+            save(*probe, resizable ? "probe_c_resizable.png" : "probe_d_fixed.png");
+            probe->Destroy();
         }
     }
     dialog->Destroy();
