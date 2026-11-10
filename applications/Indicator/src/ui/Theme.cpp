@@ -137,15 +137,14 @@ void apply_windows_style(wxWindow* field, bool light) {
 #endif
 
 void apply(wxWindow* window, Palette const& p, bool light) {
-#ifdef __WXMSW__
-    if (is_field(window))
-        apply_windows_style(window, light);
-#endif
     if (is_field(window)) {
         window->SetBackgroundColour(p.field);
         window->SetForegroundColour(p.field_text);
 #ifdef INDICATOR_GTK3
         apply_gtk_class(window, light);
+#endif
+#ifdef __WXMSW__
+        apply_windows_style(window, light);
 #endif
     } else {
         window->SetBackgroundColour(p.panel);

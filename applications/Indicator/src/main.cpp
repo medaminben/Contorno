@@ -264,8 +264,9 @@ int self_test(MainWindow& window, std::vector<std::string> const& args) {
     wxImage const dark = screenshot(*dialog);
     dialog->Destroy();
     if (!dark.IsOk() ||
-        !dark.SaveFile(wx(utf8(out / "self_test_setup_dark.png")), wxBITMAP_TYPE_PNG))
+        !dark.SaveFile(wx(utf8(out / "self_test_setup_dark.png")), wxBITMAP_TYPE_PNG)) {
         return fail("dialog screenshot", utf8(out));
+    }
     std::fprintf(stderr, "self-test: ok: %zu object(s), %s %s\n", shown.objects.size(),
                  utf8(display.text()).c_str(), utf8(display.unit()).c_str());
     return 0;
