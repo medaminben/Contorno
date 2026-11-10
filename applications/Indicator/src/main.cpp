@@ -17,23 +17,10 @@
 #include <Vision/Objects.h>
 
 #include <wx/app.h>
-#include <wx/combobox.h>
-#include <wx/dialog.h>
-#include <wx/panel.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
 #include <wx/image.h>
 #include <wx/statbmp.h>
 #include <wx/stdpaths.h>
 #include <wx/utils.h>
-
-#ifdef __WXMSW__
-#include <dwmapi.h>
-#include <uxtheme.h>
-#pragma comment(lib, "dwmapi.lib")
-#pragma comment(lib, "uxtheme.lib")
-#endif
 
 #ifdef INDICATOR_GTK3
 #include <gtk/gtk.h>
@@ -141,61 +128,6 @@ wxImage screenshot(wxWindow& window) {
     memory.SelectObject(wxNullBitmap);
     return bitmap.ConvertToImage();
 #endif
-}
-
-// DIAGNOSTIC (temporary): which way of building a field paints it dark on Windows, and whether
-// DWM gives the window a dark title bar. Saved as self_test_probe.png.
-void probe_dark_fields(wxWindow& parent, std::filesystem::path const& out) {
-    wxColour const back(0x05, 0x08, 0x05), text(0xFF, 0xFF, 0xFF);
-    auto* probe = new wxDialog(&parent, wxID_ANY, "Probe", wxPoint(0, 0), wxDefaultSize,
-                               wxDEFAULT_DIALOG_STYLE);
-    probe->SetBackgroundColour(*wxBLACK);
-    auto* grid = new wxFlexGridSizer(2, 6, 12);
-    auto row = [&](wxString const& name, wxWindow* field) {
-        auto* label = new wxStaticText(probe, wxID_ANY, name);
-        label->SetForegroundColour(text);
-        grid->Add(label, 0, wxALIGN_CENTER_VERTICAL);
-        grid->Add(field, 0, wxEXPAND);
-        field->SetBackgroundColour(back);
-        field->SetForegroundColour(text);
-        return field;
-    };
-    row("1 text", new wxTextCtrl(probe, wxID_ANY, "one"));
-    row("2 text rich2",
-        new wxTextCtrl(probe, wxID_ANY, "two", wxDefaultPosition, wxDefaultSize, wxTE_RICH2));
-    row("3 text simple border", new wxTextCtrl(probe, wxID_ANY, "three", wxDefaultPosition,
-                                               wxDefaultSize, wxBORDER_SIMPLE));
-    auto* panel = new wxPanel(probe);
-    auto* inner = new wxTextCtrl(panel, wxID_ANY, "four");
-    inner->SetBackgroundColour(back);
-    inner->SetForegroundColour(text);
-    panel->SetSizer(new wxBoxSizer(wxHORIZONTAL));
-    panel->GetSizer()->Add(inner, 1);
-    row("4 text in panel", panel);
-    row("5 combo", new wxComboBox(probe, wxID_ANY, "five"));
-    wxWindow* six = row("6 text no theme", new wxTextCtrl(probe, wxID_ANY, "six"));
-    wxWindow* seven = row("7 text DarkMode_Explorer", new wxTextCtrl(probe, wxID_ANY, "seven"));
-    wxWindow* eight = row("8 combo DarkMode_CFD", new wxComboBox(probe, wxID_ANY, "eight"));
-    wxWindow* nine = row("9 text DarkMode_CFD", new wxTextCtrl(probe, wxID_ANY, "nine"));
-#ifdef __WXMSW__
-    SetWindowTheme(static_cast<HWND>(six->GetHandle()), L"", L"");
-    SetWindowTheme(static_cast<HWND>(seven->GetHandle()), L"DarkMode_Explorer", nullptr);
-    SetWindowTheme(static_cast<HWND>(eight->GetHandle()), L"DarkMode_CFD", nullptr);
-    SetWindowTheme(static_cast<HWND>(nine->GetHandle()), L"DarkMode_CFD", nullptr);
-    BOOL const dark = TRUE;
-    DwmSetWindowAttribute(static_cast<HWND>(probe->GetHandle()), 20, &dark, sizeof dark);
-#else
-    (void)six, (void)seven, (void)eight, (void)nine;
-#endif
-    auto* column = new wxBoxSizer(wxVERTICAL);
-    column->Add(grid, 0, wxALL, 12);
-    probe->SetSizerAndFit(column);
-    probe->Show();
-    pump_until([] { return false; }, std::chrono::seconds(1));
-    wxImage const shot = screenshot(*probe);
-    if (shot.IsOk())
-        shot.SaveFile(wx(utf8(out / "self_test_probe.png")), wxBITMAP_TYPE_PNG);
-    probe->Destroy();
 }
 
 /// `contorno-indicator --self-test <photo> <dir>`: import the photo and check the
@@ -330,7 +262,6 @@ int self_test(MainWindow& window, std::vector<std::string> const& args) {
     dialog->Show();
     pump_until([] { return false; }, std::chrono::seconds(1));
     wxImage const dark = screenshot(*dialog);
-    probe_dark_fields(window, out);  // DIAGNOSTIC (temporary)
     dialog->Destroy();
     if (!dark.IsOk() ||
         !dark.SaveFile(wx(utf8(out / "self_test_setup_dark.png")), wxBITMAP_TYPE_PNG))
