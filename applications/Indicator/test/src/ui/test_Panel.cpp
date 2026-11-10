@@ -161,6 +161,20 @@ TEST(WxPanel, SizesFollowTheScreenTheWindowIsOn) {
     EXPECT_EQ(logo->GetBitmap().GetLogicalHeight(), m.wordmark);
 }
 
+// Built on a 1280×720 screen, then shown on a 1920×1080 one: the panel's minimum grows with its
+// parts, or the window's layout keeps the small height and cuts the lower keys off.
+TEST(WxPanel, MinimumFollowsANewScale) {
+    Fixture f;
+    auto const small = control_panel_metrics(1280, 720);
+    auto const full = control_panel_metrics(1920, 1080);
+    f.panel->apply_metrics(small);
+    f.panel->apply_metrics(full);
+    EXPECT_GE(f.panel->GetEffectiveMinSize().y, full.height + 2 * full.margin);
+    // and back: a smaller screen lets the panel shrink
+    f.panel->apply_metrics(small);
+    EXPECT_EQ(f.panel->GetEffectiveMinSize().y, small.height + 2 * small.margin);
+}
+
 // The Qt key draws "Import" with a 16 px em (QFont::setPixelSize): its ink 16 px high, 51-53 px
 // wide on the 67 px key. wxFont::SetPixelSize would make the whole line 16 px high, the ink
 // only 11.

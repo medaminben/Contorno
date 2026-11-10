@@ -321,6 +321,46 @@ TEST(WxWindow, TwoSquareImageBoxes) {
               (row->GetSize().x - 3 * 8) / 2 - 1);  // smaller than half the row
 }
 
+// A maximised window on a 1920×1080 Windows screen: the 48 px taskbar and the 23 px title bar
+// leave a 1918×1009 client area. The photos, wider than high there, yield the height the panel
+// needs: the keys, the mask, the log and the readout stay whole. The panel first sized for a
+// smaller screen, as on Windows, still gets its full height.
+TEST(WxWindow, PanelWholeInAMaximisedFullHdWindow) {
+    Window window;
+    auto& panel = window->panel();
+    panel.apply_metrics(control_panel_metrics(1280, 720));
+    panel.SetMinSize(panel.GetSizer()->CalcMin());  // what SetSizerAndFit leaves when built there
+    window.show(wxSize(1918, 1009));
+    panel.apply_metrics(control_panel_metrics_for(&panel));
+    window.resize(wxSize(1918, 1009));
+    int const height = control_panel_metrics_for(&panel).height;
+    EXPECT_GE(panel.GetSize().y, height);
+    for (Key const* key : keys_of(panel)) {
+        EXPECT_EQ(key->GetSize().x, key->GetSize().y) << utf8(key->GetLabelText());
+        EXPECT_GE(key->GetPosition().y, 0) << utf8(key->GetLabelText());
+        EXPECT_LE(key->GetPosition().y + key->GetSize().y, panel.GetSize().y)
+            << utf8(key->GetLabelText());
+    }
+    for (wxWindow const* part :
+         {static_cast<wxWindow const*>(&panel.mask()), static_cast<wxWindow const*>(&panel.log()),
+          static_cast<wxWindow const*>(&panel.display())}) {
+        EXPECT_EQ(part->GetSize().y, height);
+        EXPECT_GE(part->GetPosition().y, 0);
+        EXPECT_LE(part->GetPosition().y + part->GetSize().y, panel.GetSize().y);
+    }
+    // the photos end above the panel, the status strip starts below it
+    auto const boxes = photo_boxes(*window);
+    ASSERT_EQ(boxes.size(), 2u);
+    int const photos_bottom =
+        boxes[0]->GetParent()->GetPosition().y + boxes[0]->GetPosition().y + boxes[0]->GetSize().y;
+    EXPECT_LE(photos_bottom, panel.GetPosition().y);
+    auto* bar = find_descendant<ProgressBar>(window.window);
+    ASSERT_NE(bar, nullptr);
+    EXPECT_GE(bar->GetParent()->GetPosition().y, panel.GetPosition().y + panel.GetSize().y);
+    EXPECT_LE(bar->GetParent()->GetPosition().y + bar->GetParent()->GetSize().y,
+              window->GetClientSize().y);
+}
+
 TEST(WxWindow, LogInThePanelProgressFillsStatusBar) {
     Window window;
     window.show(wxSize(1500, 1000));
