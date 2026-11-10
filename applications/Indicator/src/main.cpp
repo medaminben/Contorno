@@ -33,6 +33,7 @@
 #include <chrono>
 #include <cstdio>
 #include <filesystem>
+#include <fstream>
 #include <functional>
 #include <memory>
 #include <string>
@@ -263,7 +264,7 @@ int self_test(MainWindow& window, std::vector<std::string> const& args) {
     pump_until([] { return false; }, std::chrono::seconds(1));
     wxImage const dark = screenshot(*dialog);
     {  // DIAGNOSTIC (temporary): the fields' colours as wx holds them and as painted
-        std::FILE* log = std::fopen(utf8(out / "self_test_setup_dark.txt").c_str(), "w");
+        std::ofstream log(out / "self_test_setup_dark.txt");
         wxPoint const origin = dialog->GetScreenPosition();
         std::function<void(wxWindow*, int)> walk = [&](wxWindow* w, int depth) {
             wxPoint const c = w->GetScreenPosition() - origin + w->GetSize() / 2;
@@ -276,19 +277,18 @@ int self_test(MainWindow& window, std::vector<std::string> const& args) {
                                  .GetAsString(wxC2S_HTML_SYNTAX)
                            : wxString("-");
             };
-            std::fprintf(log, "%*s%s bg=%s own_bg=%d fg=%s own_fg=%d px_left=%s px_mid=%s\n",
-                         depth * 2, "", utf8(wxString(w->GetClassInfo()->GetClassName())).c_str(),
-                         utf8(w->GetBackgroundColour().GetAsString(wxC2S_HTML_SYNTAX)).c_str(),
-                         w->UseBgCol(),
-                         utf8(w->GetForegroundColour().GetAsString(wxC2S_HTML_SYNTAX)).c_str(),
-                         w->UseForegroundColour(), utf8(px(in)).c_str(), utf8(px(c)).c_str());
+            auto hex = [](wxColour const& colour) {
+                return utf8(colour.GetAsString(wxC2S_HTML_SYNTAX));
+            };
+            log << std::string(static_cast<std::size_t>(depth) * 2, ' ')
+                << utf8(wxString(w->GetClassInfo()->GetClassName()))
+                << " bg=" << hex(w->GetBackgroundColour()) << " own_bg=" << w->UseBgCol()
+                << " fg=" << hex(w->GetForegroundColour()) << " own_fg=" << w->UseForegroundColour()
+                << " px_left=" << utf8(px(in)) << " px_mid=" << utf8(px(c)) << "\n";
             for (wxWindow* child : w->GetChildren())
                 walk(child, depth + 1);
         };
-        if (log) {
-            walk(dialog, 0);
-            std::fclose(log);
-        }
+        walk(dialog, 0);
     }
     dialog->Destroy();
     if (!dark.IsOk() ||
