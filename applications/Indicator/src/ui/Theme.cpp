@@ -14,7 +14,6 @@
 #include <wx/listbox.h>
 #include <wx/listctrl.h>
 #include <wx/sizer.h>
-#include <wx/spinbutt.h>
 #include <wx/spinctrl.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
@@ -129,18 +128,17 @@ void apply_gtk_class(wxWindow* field, bool light) {
 #endif
 
 #ifdef __WXMSW__
-/// The frame, the drop-down button and the spin arrows that Windows draws itself: its dark
-/// visual styles on the black panels, the default ones on the light panels.
-void apply_windows_style(wxWindow* control, bool light) {
-    wchar_t const* dark =
-        dynamic_cast<wxSpinButton*>(control) ? L"DarkMode_Explorer" : L"DarkMode_CFD";
-    SetWindowTheme(static_cast<HWND>(control->GetHandle()), light ? nullptr : dark, nullptr);
+/// The frame and the drop-down button that Windows draws itself: its dark visual style on the
+/// black panels, the default one on the light panels.
+void apply_windows_style(wxWindow* field, bool light) {
+    SetWindowTheme(static_cast<HWND>(field->GetHandle()), light ? nullptr : L"DarkMode_CFD",
+                   nullptr);
 }
 #endif
 
 void apply(wxWindow* window, Palette const& p, bool light) {
 #ifdef __WXMSW__
-    if (is_field(window) || dynamic_cast<wxSpinButton*>(window))
+    if (is_field(window))
         apply_windows_style(window, light);
 #endif
     if (is_field(window)) {
