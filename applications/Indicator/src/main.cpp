@@ -21,11 +21,15 @@
 #include <wx/combobox.h>
 #include <wx/dialog.h>
 #include <wx/sizer.h>
-#include <wx/textctrl.h>
 #include <wx/image.h>
 #include <wx/statbmp.h>
 #include <wx/stdpaths.h>
 #include <wx/utils.h>
+
+#ifdef __WXMSW__
+#include <dwmapi.h>
+#pragma comment(lib, "dwmapi.lib")
+#endif
 
 #ifdef INDICATOR_GTK3
 #include <gtk/gtk.h>
@@ -38,6 +42,7 @@
 #include <chrono>
 #include <cstdio>
 #include <filesystem>
+#include <fstream>
 #include <functional>
 #include <memory>
 #include <string>
@@ -267,36 +272,45 @@ int self_test(MainWindow& window, std::vector<std::string> const& args) {
     dialog->Show();
     pump_until([] { return false; }, std::chrono::seconds(1));
     wxImage const dark = screenshot(*dialog);
-    {  // DIAGNOSTIC (temporary): B the Set Up dialog repainted; C, D probe dialogs with and
-       // without a resize border
-        auto save = [&](wxWindow& w, char const* name) {
-            wxImage const image = screenshot(w);
-            if (image.IsOk())
-                image.SaveFile(wx(utf8(out / name)), wxBITMAP_TYPE_PNG);
-        };
+    {  // DIAGNOSTIC (temporary): the Windows properties of the Set Up dialog and of a plain one
+        std::ofstream log(out / "self_test_windows.txt");
+        auto describe = [&](wxWindow& w, char const* name) {
 #ifdef __WXMSW__
-        HWND const hwnd = static_cast<HWND>(dialog->GetHandle());
-        SetWindowPos(hwnd, nullptr, 0, 0, 0, 0,
-                     SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-        RedrawWindow(hwnd, nullptr, nullptr,
-                     RDW_FRAME | RDW_INVALIDATE | RDW_ERASE | RDW_ALLCHILDREN | RDW_UPDATENOW);
+            HWND const hwnd = static_cast<HWND>(w.GetHandle());
+            wchar_t cls[128] = {};
+            GetClassNameW(hwnd, cls, 128);
+            BOOL dark = 2, ncr = 2;
+            DwmGetWindowAttribute(hwnd, 20, &dark, sizeof dark);
+            DwmGetWindowAttribute(hwnd, DWMWA_NCRENDERING_ENABLED, &ncr, sizeof ncr);
+            log << name << ": class=" << utf8(wxString(cls)) << std::hex
+                << " style=" << GetWindowLongPtrW(hwnd, GWL_STYLE)
+                << " exstyle=" << GetWindowLongPtrW(hwnd, GWL_EXSTYLE) << std::dec
+                << " dark=" << dark << " ncrendering=" << ncr
+                << " layered=" << ((GetWindowLongPtrW(hwnd, GWL_EXSTYLE) & WS_EX_LAYERED) != 0)
+                << " active=" << (GetActiveWindow() == hwnd) << "\n";
+            for (wxWindow* child : w.GetChildren()) {
+                HWND const c = static_cast<HWND>(child->GetHandle());
+                wchar_t ccls[128] = {};
+                GetClassNameW(c, ccls, 128);
+                log << "  " << utf8(wxString(child->GetClassInfo()->GetClassName())) << " "
+                    << utf8(wxString(ccls)) << std::hex
+                    << " exstyle=" << GetWindowLongPtrW(c, GWL_EXSTYLE) << std::dec << "\n";
+            }
+#else
+            log << name << " " << utf8(wxString(w.GetClassInfo()->GetClassName())) << "\n";
 #endif
+        };
+        describe(*dialog, "setup");
+        auto* plain = new wxDialog(&window, wxID_ANY, "plain", wxPoint(0, 0), wxDefaultSize,
+                                   wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+        auto* sizer = new wxBoxSizer(wxVERTICAL);
+        sizer->Add(new wxComboBox(plain, wxID_ANY, "combo"), 0, wxALL, 12);
+        plain->SetSizerAndFit(sizer);
+        apply_theme(plain, false);
+        plain->Show();
         pump_until([] { return false; }, std::chrono::seconds(1));
-        save(*dialog, "probe_b_setup_redrawn.png");
-        for (bool resizable : {true, false}) {
-            auto* probe = new wxDialog(&window, wxID_ANY, resizable ? "C resizable" : "D fixed",
-                                       wxPoint(0, 0), wxDefaultSize,
-                                       wxDEFAULT_DIALOG_STYLE | (resizable ? wxRESIZE_BORDER : 0));
-            auto* sizer = new wxBoxSizer(wxVERTICAL);
-            sizer->Add(new wxComboBox(probe, wxID_ANY, "combo"), 0, wxALL, 12);
-            sizer->Add(new wxTextCtrl(probe, wxID_ANY, "text"), 0, wxALL, 12);
-            probe->SetSizerAndFit(sizer);
-            apply_theme(probe, false);
-            probe->Show();
-            pump_until([] { return false; }, std::chrono::seconds(1));
-            save(*probe, resizable ? "probe_c_resizable.png" : "probe_d_fixed.png");
-            probe->Destroy();
-        }
+        describe(*plain, "plain");
+        plain->Destroy();
     }
     dialog->Destroy();
     if (!dark.IsOk() ||
